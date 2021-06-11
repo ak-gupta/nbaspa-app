@@ -7,8 +7,7 @@ class Config:
 
     STATIC_FOLDER = "static"
     TEMPLATES_FOLDER = "templates"
-    ASSETS_DEBUG = False
-    ASSETS_AUTO_BUILD = True
+    SECRET_KEY = os.environ.get("SECRET_KEY")
 
     # Data location
     DATA_DIR = os.environ.get("DATA_DIR")

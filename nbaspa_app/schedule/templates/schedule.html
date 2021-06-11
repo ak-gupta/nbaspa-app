@@ -2,7 +2,20 @@
 
 {% block content %}
     <br>
-    <h4 class="title">Games for {{ gamedate }}</h2>
+    <h4 class="title">Games for {{ gamedate }}</h4>
+    <form method="POST" action="{{ url_for('schedule_bp.schedule') }}">
+        <fieldset class="form-field">
+            {{ form.gamedate }}
+            {% if form.gamedate.errors %}
+                <ul class="errors">
+                    {% for error in form.gamedate.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </fieldset>
+        {{ form.submit }}
+    </form>
     <div class="container">
         {% for seg in data %}
             <div class="row">
