@@ -36,3 +36,5 @@ series. In particular, this repository uses
 * [Organizing Flask Apps with Blueprints](https://hackersandslackers.com/flask-blueprints/),
 * [Demystifying Flask's Application Factory](https://hackersandslackers.com/flask-application-factory/), and
 * [The Art of Routing in Flask](https://hackersandslackers.com/flask-routes/)
+
+Additionally, this project uses [Skeleton](https://github.com/dhg/Skeleton) to take care of the boilerplate.

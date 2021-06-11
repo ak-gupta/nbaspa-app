@@ -26,6 +26,10 @@ def game(gameid):
         The game ID.
     """
     tbs, pbs, prediction = get_data(app=app, GameID=gameid)
+    # Round the percentages
+    tbs["FG_PCT"] = (tbs["FG_PCT"] * 100).round(2)
+    tbs["FG3_PCT"] = (tbs["FG3_PCT"] * 100).round(2)
+    tbs["FT_PCT"] = (tbs["FT_PCT"] * 100).round(2)
 
     plot = create_lineplot(data=prediction)
     img = io.BytesIO()
