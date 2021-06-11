@@ -3,6 +3,8 @@
 from flask import Blueprint, render_template
 from flask import current_app as app
 
+from .data import gen_teamlist
+
 teams_bp = Blueprint(
     "teams_bp",
     __name__,
@@ -13,9 +15,11 @@ teams_bp = Blueprint(
 @teams_bp.get("/teams")
 def teams_home():
     """Team homepage."""
+    teamlist = gen_teamlist(app=app)
     return render_template(
         "team_nav.html",
         title="Teams",
+        teamlist=[teamlist[i:i+6] for i in range(0, len(teamlist), 6)]
     )
 
 
