@@ -17,5 +17,5 @@ def home():
     """Homepage."""
     return render_template(
         "home.html",
-        title="My Demo Title",
+        title="NBA SPA",
     )

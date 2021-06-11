@@ -11,10 +11,16 @@ model, you can install the requirements via `pip`:
 $ python -m pip install -r requirements.txt
 ```
 
-before setting an environment variable to indicate the path to your NBA data.
+before setting a environment variables, one to indicate the path to your NBA data
 
 ```console
 $ export DATA_DIR=nba-data
+```
+
+and a secret value
+
+```console
+$ export SECRET_KEY=mysecret
 ```
 
 # Usage
