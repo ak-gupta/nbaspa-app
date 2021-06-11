@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <table class="u-full-width">
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="https://cdn.nba.com/logos/nba/{{ teambox.loc[1, 'TEAM_ID'] }}/primary/L/logo.svg" width="100px">
+                    </td>
+                    <td>{{ teambox.loc[1, 'PTS'] }}</td>
+                    <td>{{ teambox.loc[0, 'PTS'] }}</td>
+                    <td>
+                        <img src="https://cdn.nba.com/logos/nba/{{ teambox.loc[0, 'TEAM_ID'] }}/primary/L/logo.svg" width="100px">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <img src="data:image/png;base64, {{ plot_url }}">
+    </div>
+{% endblock %}

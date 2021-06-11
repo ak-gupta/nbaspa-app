@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title }}</title>
+        {% block header %}{% endblock %}
+        <!-- FONT -->
+        <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+
+        <!-- Mobile specific notes -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- CSS -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/normalize.css') }}"
+            type='text/css'>
+        <link
+            rel="stylesheet"
+            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/skeleton.css') }}"
+            type='text/css'>
+        <link
+            rel="stylesheet"
+            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/custom.css') }}"
+            type='text/css'>
+    </head>
+    <body>
+        <div class="container">
+            <div class="navbar-spacer"></div>
+            <nav class="navbar">
+                <div class="container">
+                    <ul class="navbar-list">
+                        <li class="navbar-item">
+                            <a class="navbar-link" href="{{ url_for('home_bp.home') }}">Home</a>
+                            <a class="navbar-link" href="{{ url_for('schedule_bp.schedule') }}">Schedule</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

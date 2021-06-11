@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h4 class="title">Games for {{ gamedate }}</h2>
+    <div class="container">
+        {% for seg in data %}
+            <div class="row">
+                {% for game in seg %}
+                    <div class="four columns">
+                        <table class="u-full-width">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="https://cdn.nba.com/logos/nba/{{ game['home_id'] }}/primary/L/logo.svg" width="50px">
+                                    </td>
+                                    <td>{{ game['home_abbrev'] }}</td>
+                                    <td>{{ game['home_pts'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="https://cdn.nba.com/logos/nba/{{ game['visitor_id'] }}/primary/L/logo.svg" width="50px">
+                                    </td>
+                                    <td>{{ game['visitor_abbrev'] }}</td>
+                                    <td>{{ game['visitor_pts'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><a href="{{ url_for('game_bp.game', gameid=game['game_id']) }}">Game Summary</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
