@@ -25,14 +25,18 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <img src="https://cdn.nba.com/logos/nba/{{ game['home_id'] }}/primary/L/logo.svg" width="50px">
+                                        <a href="{{ url_for('teams_bp.team_summary', teamid=game['home_id']) }}">
+                                            <img src="https://cdn.nba.com/logos/nba/{{ game['home_id'] }}/primary/L/logo.svg" width="50px">
+                                        </a>
                                     </td>
                                     <td>{{ game['home_abbrev'] }}</td>
                                     <td>{{ game['home_pts'] }}</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <img src="https://cdn.nba.com/logos/nba/{{ game['visitor_id'] }}/primary/L/logo.svg" width="50px">
+                                        <a href="{{ url_for('teams_bp.team_summary', teamid=game['visitor_id']) }}">
+                                            <img src="https://cdn.nba.com/logos/nba/{{ game['visitor_id'] }}/primary/L/logo.svg" width="50px">
+                                        </a>
                                     </td>
                                     <td>{{ game['visitor_abbrev'] }}</td>
                                     <td>{{ game['visitor_pts'] }}</td>
