@@ -64,6 +64,7 @@ def team_gamelog(teamid: int, season: int):
     teamlist = gen_teamlist(app=app)
     teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
     data = gen_gamelog(app=app, teamid=teamid, season=season)
+    data["W_PCT"] = (data["W_PCT"] * 100).round(1)
     return render_template(
         "gamelog.html",
         season=season,

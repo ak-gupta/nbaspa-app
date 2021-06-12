@@ -1,5 +1,7 @@
 {% extends 'team_layout.html' %}
 
+{% block subtitle %}{{ teamname }} {{ season }} Gamelog{% endblock %}
+
 {% block datacontent %}
     <div class="container">
         <table class="u-full-width">
@@ -21,7 +23,7 @@
                             </a>
                         </td>
                         <td>{{ row['WL'] }}</td>
-                        <td>{{ row['W_PCT'] }}</td>
+                        <td>{{ row['W_PCT'] }}%</td>
                     </tr>
                 {% endfor %}
             </tbody>

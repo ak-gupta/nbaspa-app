@@ -4,7 +4,7 @@
     {% block imagehead %}
         <div style="text-align: center;">
             <img class="header-img" src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
-            <h2 class="title">{{ teamname }}</h2>
+            <h2 class="title">{% block subtitle %}{{ teamname }}{% endblock %}</h2>
         </div>
     {% endblock %}
     {% block datacontent %}{% endblock %}
