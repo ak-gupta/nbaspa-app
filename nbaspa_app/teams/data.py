@@ -35,3 +35,40 @@ def gen_teamlist(app: Flask) -> List[Dict]:
         output.append({"teamid": row["TEAM_ID"], "teamname": row["TEAM_NAME"]})
     
     return output
+
+
+def gen_summarymetrics(app: Flask, teamid: int) -> List[Dict]:
+    """Generate summary metrics for each team.
+
+    Parameters
+    ----------
+    app : Flask
+        The current application.
+    teamid : int
+        The team identifier.
+    
+    Returns
+    -------
+    List
+        A list with one dictionary per team.
+    """
+    output = []
+    allseasons = list(SEASONS.keys())
+    allseasons.sort(reverse=True)
+    for season in allseasons:
+        loader = TeamStats(
+            output_dir=Path(app.config["DATA_DIR"], season),
+            Season=season
+        )
+        loader.load()
+        data = loader.get_data()
+        data.set_index("TEAM_ID", inplace=True)
+        output.append(
+            {
+                "season": season,
+                "record": f"{data.loc[teamid, 'W']}-{data.loc[teamid, 'L']}",
+                "net_rating": data.loc[teamid, "E_NET_RATING"],
+            }
+        )
+
+    return output

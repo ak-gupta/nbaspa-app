@@ -2,8 +2,9 @@
 
 from flask import Blueprint, render_template
 from flask import current_app as app
+from nbaspa.data.endpoints.parameters import SEASONS
 
-from .data import gen_teamlist
+from .data import gen_teamlist, gen_summarymetrics
 
 teams_bp = Blueprint(
     "teams_bp",
@@ -32,15 +33,20 @@ def team_summary(teamid: int):
     team_id : int
         The team identifier.
     """
+    teamlist = gen_teamlist(app=app)
+    teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
+    summarydata = gen_summarymetrics(app=app, teamid=teamid)
     return render_template(
         "summary.html",
-        title="Summary",
-        teamid=teamid
+        title=teamname,
+        teamid=teamid,
+        teamname=teamname,
+        data=summarydata
     )
 
 
-@teams_bp.get("/teams/<int:team_id>/<int:season>/gamelog")
-def team_gamelog(team_id: int, season: int):
+@teams_bp.get("/teams/<int:teamid>/<season>/gamelog")
+def team_gamelog(teamid: int, season: int):
     """The team gamelog for a given season.
 
     Parameters
@@ -56,8 +62,8 @@ def team_gamelog(team_id: int, season: int):
     )
 
 
-@teams_bp.get("/teams/<int:team_id>/<int:season>/players")
-def team_players(team_id: int, season: int):
+@teams_bp.get("/teams/<int:teamid>/<season>/players")
+def team_players(teamid: int, season: int):
     """The team roster.
 
     Parameters
@@ -69,5 +75,5 @@ def team_players(team_id: int, season: int):
     """
     return render_template(
         "players.html",
-        title="{season} Roster"
+        title=f"{season} Roster"
     )

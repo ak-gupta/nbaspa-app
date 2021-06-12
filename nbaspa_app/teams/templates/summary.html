@@ -1,5 +1,40 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <img src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg" width="50px">
+    <div style="text-align: center;">
+        <img class="header-img" src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
+        <h2 class="title">{{ teamname }}</h2>
+    </div>
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <td>Season</td>
+                    <td>Record</td>
+                    <td>Net Rating</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        <td>{{ row['season'] }}</td>
+                        <td>{{ row['record'] }}</td>
+                        <td>{{ row['net_rating'] }}</td>
+                        <td>
+                            <a href="{{ url_for('teams_bp.team_gamelog', teamid=teamid, season=row['season']) }}">
+                                Gamelog
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('teams_bp.team_players', teamid=teamid, season=row['season']) }}">
+                                Roster
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
