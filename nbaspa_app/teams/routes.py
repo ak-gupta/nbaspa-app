@@ -4,7 +4,12 @@ from flask import Blueprint, render_template
 from flask import current_app as app
 from nbaspa.data.endpoints.parameters import SEASONS
 
-from .data import gen_teamlist, gen_summarymetrics, gen_gamelog
+from .data import (
+    gen_teamlist,
+    gen_summarymetrics,
+    gen_gamelog,
+    gen_roster
+)
 
 teams_bp = Blueprint(
     "teams_bp",
@@ -80,7 +85,14 @@ def team_players(teamid: int, season: int):
     season : int
         The season year.
     """
+    roster = gen_roster(app=app, teamid=teamid, season=season)
+    roster.sort_values(by="DISPLAY_LAST_COMMA_FIRST", ascending=True, inplace=True)
+    teamname = f"{roster.loc[0, 'TEAM_CITY']} {roster.loc[0, 'TEAM_NAME']}"
     return render_template(
         "players.html",
-        title=f"{season} Roster"
+        title=f"{season} Roster",
+        teamid=teamid,
+        teamname=teamname,
+        season=season,
+        data=roster
     )

@@ -1,10 +1,6 @@
-{% extends 'layout.html' %}
+{% extends 'team_layout.html' %}
 
-{% block content %}
-    <div style="text-align: center;">
-        <img class="header-img" src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
-        <h2 class="title">{{ teamname }} - {{ season }} Gamelog</h2>
-    </div>
+{% block datacontent %}
     <div class="container">
         <table class="u-full-width">
             <thead>
