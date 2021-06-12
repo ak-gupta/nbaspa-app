@@ -4,7 +4,7 @@ from flask import Blueprint, render_template
 from flask import current_app as app
 from nbaspa.data.endpoints.parameters import SEASONS
 
-from .data import gen_teamlist, gen_summarymetrics
+from .data import gen_teamlist, gen_summarymetrics, gen_gamelog
 
 teams_bp = Blueprint(
     "teams_bp",
@@ -56,9 +56,16 @@ def team_gamelog(teamid: int, season: int):
     season : int
         The season year.
     """
+    teamlist = gen_teamlist(app=app)
+    teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
+    data = gen_gamelog(app=app, teamid=teamid, season=season)
     return render_template(
         "gamelog.html",
-        title=f"{season} Gamelog"
+        season=season,
+        title=f"{teamname} - {season} Gamelog",
+        teamid=teamid,
+        teamname=teamname,
+        data=data
     )
 
 

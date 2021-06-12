@@ -1,4 +1,34 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+    <div style="text-align: center;">
+        <img class="header-img" src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
+        <h2 class="title">{{ teamname }} - {{ season }} Gamelog</h2>
+    </div>
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <td>Game Date</td>
+                    <td>Matchup</td>
+                    <td>Result</td>
+                    <td>Win Percentage</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for _, row in data.iterrows() %}
+                    <tr>
+                        <td>{{ row['GAME_DATE'] }}</td>
+                        <td>
+                            <a href="{{ url_for('game_bp.game', gameid=row['Game_ID']) }}">
+                                {{ row['MATCHUP'] }}
+                            </a>
+                        </td>
+                        <td>{{ row['WL'] }}</td>
+                        <td>{{ row['W_PCT'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

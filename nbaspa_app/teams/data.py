@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from flask import Flask
-from nbaspa.data.endpoints import TeamStats
+from nbaspa.data.endpoints import TeamGameLog, TeamStats
 from nbaspa.data.endpoints.parameters import SEASONS
 
 def gen_teamlist(app: Flask) -> List[Dict]:
@@ -72,3 +72,31 @@ def gen_summarymetrics(app: Flask, teamid: int) -> List[Dict]:
         )
 
     return output
+
+
+def gen_gamelog(app: Flask, teamid: int, season: str) -> List[Dict]:
+    """Get the gamelog for a given team in a season.
+
+    Parameters
+    ----------
+    app : Flask
+        The current application.
+    teamid : int
+        The team identifier.
+    season : str
+        The season.
+    
+    Returns
+    -------
+    List
+        A list with one dictionary per game.
+    """
+    loader = TeamGameLog(
+        output_dir=Path(app.config["DATA_DIR"], season),
+        TeamID=teamid,
+        Season=season
+    )
+    loader.load()
+    data = loader.get_data()
+
+    return data
