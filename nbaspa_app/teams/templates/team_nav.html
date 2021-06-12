@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% for row in teamlist %}
+        <div class="row">
+            {% for team in row %}
+                <div class="two columns">
+                    <figure>
+                        <a href="{{ url_for('teams_bp.team_summary', teamid=team['teamid']) }}">
+                            <img src="https://cdn.nba.com/logos/nba/{{ team['teamid'] }}/primary/L/logo.svg" width="100px">
+                        </a>
+                        <figcaption>{{ team['teamname'] }}</figcaption>
+                    </figure>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

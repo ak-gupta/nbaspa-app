@@ -1,0 +1,26 @@
+{% extends 'team_layout.html' %}
+
+{% block subtitle %}{{ teamname }} {{ season }} Roster{% endblock %}
+
+{% block datacontent %}
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+            {% for _, row in data.iterrows() %}
+                <tr>
+                    <td>
+                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PERSON_ID'] }}.png" height="100px">
+                    </td>
+                    <td>
+                        {{ row['DISPLAY_FIRST_LAST'] }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

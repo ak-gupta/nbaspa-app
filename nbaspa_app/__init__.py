@@ -28,9 +28,11 @@ def create_app(config: str = "development"):
         from .games.routes import game_bp
         from .home.routes import home_bp
         from .schedule.routes import schedule_bp
+        from .teams.routes import teams_bp
 
         app.register_blueprint(game_bp)
         app.register_blueprint(home_bp)
         app.register_blueprint(schedule_bp)
+        app.register_blueprint(teams_bp)
 
         return app

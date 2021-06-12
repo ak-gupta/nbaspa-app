@@ -5,6 +5,10 @@
     margin-top: 6rem;
     text-align: center;
 }
+.header-img {
+    position: relative;
+    height: 200px;
+}
 .value-prop {
     margin-top: 1rem;
 }

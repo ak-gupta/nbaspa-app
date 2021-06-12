@@ -1,0 +1,36 @@
+{% extends 'team_layout.html' %}
+
+{% block datacontent %}
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <td>Season</td>
+                    <td>Record</td>
+                    <td>Net Rating</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        <td>{{ row['season'] }}</td>
+                        <td>{{ row['record'] }}</td>
+                        <td>{{ row['net_rating'] }}</td>
+                        <td>
+                            <a href="{{ url_for('teams_bp.team_gamelog', teamid=teamid, season=row['season']) }}">
+                                Gamelog
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('teams_bp.team_players', teamid=teamid, season=row['season']) }}">
+                                Roster
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

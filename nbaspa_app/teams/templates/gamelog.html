@@ -1,0 +1,32 @@
+{% extends 'team_layout.html' %}
+
+{% block subtitle %}{{ teamname }} {{ season }} Gamelog{% endblock %}
+
+{% block datacontent %}
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <td>Game Date</td>
+                    <td>Matchup</td>
+                    <td>Result</td>
+                    <td>Win Percentage</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for _, row in data.iterrows() %}
+                    <tr>
+                        <td>{{ row['GAME_DATE'] }}</td>
+                        <td>
+                            <a href="{{ url_for('game_bp.game', gameid=row['Game_ID']) }}">
+                                {{ row['MATCHUP'] }}
+                            </a>
+                        </td>
+                        <td>{{ row['WL'] }}</td>
+                        <td>{{ row['W_PCT'] }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
