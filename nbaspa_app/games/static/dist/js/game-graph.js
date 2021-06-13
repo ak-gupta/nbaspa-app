@@ -1,3 +1,31 @@
+
+/**
+ * Create a hover format
+ * @function gameHover
+ * @param {number} wprob The win probability
+ * @param {number} margin The current scoring margin
+ * @param {number} time The game time
+ */
+function gameHover(wprob, margin, time) {
+    return `
+        <table class="u-full-width">
+            <tbody>
+                <tr>
+                    <td style="text-align: right;">Win Probability</td>
+                    <td style="text-align: left;">${wprob}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Margin</td>
+                    <td style="text-align: left;">Margin: ${margin}</td>
+                <tr>
+                    <td style="text-align: right;">Time</td>
+                    <td style="text-align: left;">${time}</td>
+                </tr>
+            </tbody>
+        </table>
+    `
+}
+
 /**
  * Creates a D3.js visualization for game win probability.
  * @function drawGameChart
@@ -25,7 +53,7 @@ function drawGameChart(data, tag) {
         )
     )
     const y = d3.scaleLinear().domain([0, 1]).range([graphHeight, 0])
-    const percentFormat = d3.format("~%")
+    const percentFormat = d3.format(".2%")
     const wProbAxis = d3.axisLeft(y).ticks(5).tickFormat(percentFormat)
     // Create the win probability line
     var winLine = d3.line().x(
@@ -47,6 +75,19 @@ function drawGameChart(data, tag) {
         .attr("transform", "translate(0," + graphHeight + ")")
         .call(d3.axisBottom(x))
     svg.append("g").call(wProbAxis)
+    // Add a horizontal line
+    var horiz = [
+        {TIME: 0, WIN_PROB: 0.5},
+        {TIME: d3.max(data, d => d.TIME), WIN_PROB: 0.5}
+    ]
+    svg.append("path")
+        .data([horiz])
+        .attr("class", "line")
+        .attr("d", winLine)
+        .style("stroke", "black")
+        .style("stroke-width", 0.5)
+        .style("stroke-dasharray", ("2, 2"))
+        .style("fill", "none")
     // Add the Win Probability line
     svg.append("path")
         .data([data])
@@ -81,7 +122,7 @@ function drawGameChart(data, tag) {
         .attr("fill", "#FFFFFF")
         .on(
             "mouseover",
-            function (d) {
+            function (event, d) {
                 d3.select(this)
                     .transition()
                     .duration("100")
@@ -92,13 +133,17 @@ function drawGameChart(data, tag) {
                     .style("opacity", 1)
                 // Add data
                 div.html(
-                    "Win Probability: " + d.WIN_PROB
+                    gameHover(
+                        wprob=percentFormat(d.WIN_PROB),
+                        margin=d.SCOREMARGIN,
+                        time=d.TIME
+                    )
                 )
             }
         )
         .on(
             "mouseout",
-            function (d, i) {
+            function (event, d) {
                 d3.select(this)
                     .transition()
                     .duration("200")
