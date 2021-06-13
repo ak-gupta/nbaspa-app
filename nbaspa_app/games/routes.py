@@ -33,6 +33,7 @@ def game(gameid):
     tbs["FG3_PCT"] = (tbs["FG3_PCT"] * 100).round(2)
     tbs["FT_PCT"] = (tbs["FT_PCT"] * 100).round(2)
 
+    prediction["WIN_PROB"] = prediction["WIN_PROB"].round(3)
     chart_data = prediction.to_dict(orient="records")
     chart_data = json.dumps(chart_data, indent=2)
 

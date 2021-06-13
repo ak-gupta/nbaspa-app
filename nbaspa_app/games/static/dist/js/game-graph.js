@@ -53,7 +53,7 @@ function drawGameChart(data, tag) {
         )
     )
     const y = d3.scaleLinear().domain([0, 1]).range([graphHeight, 0])
-    const percentFormat = d3.format(".2%")
+    const percentFormat = d3.format("~%")
     const wProbAxis = d3.axisLeft(y).ticks(5).tickFormat(percentFormat)
     // Create the win probability line
     var winLine = d3.line().x(
