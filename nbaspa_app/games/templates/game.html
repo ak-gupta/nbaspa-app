@@ -19,11 +19,11 @@
             </tr>
         </tbody>
     </table>
-    <div class="container">
-        <img src="data:image/png;base64, {{ plot_url }}">
-    </div>
     <br>
-    <h4>Team Boxscore Stats</h4>
+    <h4>Win probability over game time</h4>
+    <div id="gameGraph"></div>
+    <br>
+    <h4>Team boxscore</h4>
     <table class="u-full-width">
         <thead>
             <tr>
@@ -57,7 +57,7 @@
         </tbody>
     </table>
     <br>
-    <h4>Player Boxscore Stats</h4>
+    <h4>Player boxscore</h4>
     <table class="u-full-width">
         <thead>
             <tr>
@@ -94,4 +94,12 @@
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block jsScript %}
+    <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game-graph.js') }}"></script>
+    <script>
+        var graphData = {{ chart_data|safe }}
+        drawGameChart(graphData, "#gameGraph")
+    </script>
 {% endblock %}

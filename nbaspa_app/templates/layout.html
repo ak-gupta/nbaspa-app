@@ -22,6 +22,9 @@
             rel="stylesheet"
             href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/custom.css') }}"
             type='text/css'>
+        
+        <!-- D3.js for data visualization -->
+        <script src="https://d3js.org/d3.v7.min.js"></script>
     </head>
     <body>
         <div class="container">
@@ -40,5 +43,6 @@
 
             {% block content %}{% endblock %}
         </div>
+        {% block jsScript %}{% endblock %}
     </body>
 </html>
