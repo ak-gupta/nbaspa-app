@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
 
+{% block header %}
+    <link
+        rel="stylesheet"
+        href="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/css/game.css') }}"
+        type='text/css'>
+{% endblock %}
+
 {% block content %}
     <table class="u-full-width">
         <tbody>
@@ -21,6 +28,7 @@
     </table>
     <br>
     <h4>Win probability over game time</h4>
+    <div id="gameHover"></div>
     <div id="gameGraph"></div>
     <br>
     <h4>Team boxscore</h4>
@@ -100,6 +108,6 @@
     <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game-graph.js') }}"></script>
     <script>
         var graphData = {{ chart_data|safe }}
-        drawGameChart(graphData, "#gameGraph")
+        drawGameChart(graphData, tag="#gameGraph")
     </script>
 {% endblock %}
