@@ -26,6 +26,7 @@ def game(gameid):
         The game ID.
     """
     tbs, pbs, prediction = get_data(app=app, GameID=gameid)
+    # TODO: Replace player boxscore with the survival ratings
     # Round the percentages
     tbs["FG_PCT"] = (tbs["FG_PCT"] * 100).round(2)
     tbs["FG3_PCT"] = (tbs["FG3_PCT"] * 100).round(2)
@@ -43,5 +44,6 @@ def game(gameid):
         "game.html",
         title=f"{tbs.loc[1, 'TEAM_ABBREVIATION']} @ {tbs.loc[0, 'TEAM_ABBREVIATION']} Summary",
         plot_url=plot_url,
-        teambox=tbs
+        teambox=tbs,
+        playerbox=pbs,
     )
