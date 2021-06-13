@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% block imagehead %}
+        <br>
+        <div class="row">
+            <div class="nine columns">&nbsp;</div>
+            <div class="two columns">
+                <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ playerid }}.png" height="100px">                
+            </div>
+            <div class="one column">&nbsp;</div>
+        </div>
+    <h2 class="title">{{ playername }}</h2>
+    {% endblock %}
+    {% block datacontent %}{% endblock %}
+{% endblock %}

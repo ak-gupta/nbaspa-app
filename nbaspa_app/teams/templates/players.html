@@ -17,7 +17,9 @@
                         <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PERSON_ID'] }}.png" height="100px">
                     </td>
                     <td>
-                        {{ row['DISPLAY_FIRST_LAST'] }}
+                        <a href="{{ url_for('players_bp.player_summary', playerid=row['PERSON_ID']) }}">
+                            {{ row['DISPLAY_FIRST_LAST'] }}
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
