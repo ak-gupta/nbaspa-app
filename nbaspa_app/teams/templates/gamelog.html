@@ -16,9 +16,9 @@
             <tbody>
                 {% for _, row in data.iterrows() %}
                     <tr>
-                        <td>{{ row['GAME_DATE'] }}</td>
+                        <td>{{ row['GAME_DATE'].strftime('%B %d, %Y') }}</td>
                         <td>
-                            <a href="{{ url_for('game_bp.game', gameid=row['Game_ID']) }}">
+                            <a href="{{ url_for('game_bp.game', gameid=row['Game_ID'], day=row['GAME_DATE'].day, month=row['GAME_DATE'].month, year=row['GAME_DATE'].year) }}">
                                 {{ row['MATCHUP'] }}
                             </a>
                         </td>

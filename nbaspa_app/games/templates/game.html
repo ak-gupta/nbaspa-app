@@ -12,15 +12,15 @@
         <tbody>
             <tr>
                 <td style="text-align: left;">
-                    <a href="{{ url_for('teams_bp.team_summary', teamid=teambox.loc[1, 'TEAM_ID']) }}">
-                        <img src="https://cdn.nba.com/logos/nba/{{ teambox.loc[1, 'TEAM_ID'] }}/primary/L/logo.svg" width="100px">
+                    <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['visitor_id']) }}">
+                        <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['visitor_id'] }}/primary/L/logo.svg" width="100px">
                     </a>
                 </td>
-                <td style="text-align: right;">{{ teambox.loc[1, 'PTS'] }}</td>
-                <td style="text-align: left;">{{ teambox.loc[0, 'PTS'] }}</td>
+                <td style="text-align: right;">{{ teambox.loc[teambox['TEAM_ID'] == gameinfo['visitor_id'], 'PTS'].values[0] }}</td>
+                <td style="text-align: left;">{{ teambox.loc[teambox['TEAM_ID'] == gameinfo['home_id'], 'PTS'].values[0] }}</td>
                 <td style="text-align: right;">
-                    <a href="{{ url_for('teams_bp.team_summary', teamid=teambox.loc[0, 'TEAM_ID']) }}">
-                        <img src="https://cdn.nba.com/logos/nba/{{ teambox.loc[0, 'TEAM_ID'] }}/primary/L/logo.svg" width="100px">
+                    <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['home_id']) }}">
+                        <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['home_id'] }}/primary/L/logo.svg" width="100px">
                     </a>
                 </td>
             </tr>
