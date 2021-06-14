@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
 
+{% block header %}
+    <link
+        rel="stylesheet"
+        href="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/css/game.css') }}"
+        type='text/css'>
+{% endblock %}
+
 {% block content %}
     <table class="u-full-width">
         <tbody>
@@ -19,10 +26,12 @@
             </tr>
         </tbody>
     </table>
-    <div class="container">
-        <img src="data:image/png;base64, {{ plot_url }}">
-    </div>
-    <h4>Team Boxscore Stats</h4>
+    <br>
+    <h4>Win probability over game time</h4>
+    <div id="gameHover"></div>
+    <div id="gameGraph"></div>
+    <br>
+    <h4>Team boxscore</h4>
     <table class="u-full-width">
         <thead>
             <tr>
@@ -55,4 +64,50 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <h4>Player boxscore</h4>
+    <table class="u-full-width">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Minutes</th>
+                <th>Points</th>
+                <th>Rebounds</th>
+                <th>Assists</th>
+                <th>Steals</th>
+                <th>Blocks</th>
+                <th>Turnovers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for _, row in playerbox.iterrows() %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
+                            {{ row['PLAYER_NAME'] }}
+                        </a>
+                    </td>
+                    <td>
+                        <img src="https://cdn.nba.com/logos/nba/{{ row['TEAM_ID'] }}/primary/L/logo.svg" width="50px">
+                    </td>
+                    <td>{{ row['MIN'] }}</td>
+                    <td>{{ row['PTS']|int }}</td>
+                    <td>{{ row['REB']|int }}</td>
+                    <td>{{ row['AST']|int }}</td>
+                    <td>{{ row['STL']|int }}</td>
+                    <td>{{ row['BLK']|int }}</td>
+                    <td>{{ row['TO']|int }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block jsScript %}
+    <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game-graph.js') }}"></script>
+    <script>
+        var graphData = {{ chart_data|safe }}
+        drawGameChart(graphData, tag="#gameGraph")
+    </script>
 {% endblock %}
