@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+    <link
+        rel="stylesheet"
+        href="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/css/game.css') }}"
+        type='text/css'>
+{% endblock %}

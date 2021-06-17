@@ -74,6 +74,7 @@ def table_data(app: Flask, GameID: str) -> Tuple:
     ].to_dict(orient="records"), pdata[
         [
             "TEAM_ID",
+            "GAME_ID",
             "PLAYER_ID",
             "PLAYER_NAME",
             "MIN",

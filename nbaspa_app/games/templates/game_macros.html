@@ -26,7 +26,7 @@ box : list
         {% for row in box %}
             <tr>
                 <td>
-                    <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
+                    <a href="{{ url_for('game_bp.detail', gameid=row['GAME_ID'], playerid=row['PLAYER_ID']) }}">
                         {{ row['PLAYER_NAME'] }}
                     </a>
                 </td>

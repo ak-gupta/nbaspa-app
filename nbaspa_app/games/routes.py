@@ -117,5 +117,21 @@ def game(day: int, month: int, year: int, gameid: str):
         visitorpbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["visitor_id"]],
         line_chart_data=linechart,
         point_chart_data=pointchart,
-        gameinfo=gameinfo
+        gameinfo=gameinfo,
+        gameid=gameid
+    )
+
+
+@game_bp.get("/games/detail/<gameid>")
+def detail(gameid: str):
+    """Player-level page for each game.
+
+    Parameters
+    ----------
+    gameid : str
+        The game ID.
+    """
+    return render_template(
+        "detail.html",
+        title="Player-level detail for game"
     )
