@@ -7,3 +7,9 @@ div.tooltip {
     pointer-events: none;
     font-size: 12px;
 }
+.tab {
+    overflow: hidden;
+}
+.tabcontent {
+    display: none;
+}
