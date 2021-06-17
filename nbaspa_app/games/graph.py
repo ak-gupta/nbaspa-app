@@ -1,7 +1,7 @@
 """Generate the line plot data."""
 
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from flask import Flask
 import pandas as pd
@@ -37,7 +37,12 @@ def line_graph(app: Flask, GameID: str) -> List[Dict]:
     return linedata[["TIME", "WIN_PROB"]].to_dict(orient="records")
 
 
-def get_moments(app: Flask, GameID: str) -> List[Dict]:
+def get_moments(
+    app: Flask,
+    GameID: str,
+    num_moments: int = 5,
+    playerid: Optional[int] = None,
+) -> List[Dict]:
     """Get the top moments from a given game.
 
     Parameters
@@ -46,6 +51,10 @@ def get_moments(app: Flask, GameID: str) -> List[Dict]:
         The current application
     GameID : str
         The game identifier
+    num_moments : int, optional (default 5)
+        The number of moments to include.
+    playerid : int, optional (default None)
+        The player to include.
     
     Returns
     -------
@@ -72,10 +81,17 @@ def get_moments(app: Flask, GameID: str) -> List[Dict]:
     ]
     pbp = pbp[(pbp["PLAYER1_IMPACT"] != 0) & (~pbp["EVENTMSGTYPE"].isin(teamevents))]
     pbp.sort_values(by="SURV_PROB_CHANGE", ascending=False, key=abs, inplace=True)
-    pbp = pbp.head(n=5).copy()
+    if num_moments:
+        pbp = pbp.head(n=num_moments).copy()
     pbp["DESCRIPTION"] = pbp[["HOMEDESCRIPTION", "VISITORDESCRIPTION"]].bfill(axis=1).iloc[:, 0]
     pbp["SURV_PROB"] = pbp["SURV_PROB"].round(3)
     pbp["SURV_PROB_CHANGE"] = pbp["SURV_PROB_CHANGE"].round(3)
+    if playerid:
+        pbp = pbp[
+            (pbp["PLAYER1_ID"] == playerid)
+            | (pbp["PLAYER2_ID"] == playerid)
+            | (pbp["PLAYER3_ID"] == playerid)
+        ].copy()
 
     return pbp[
         [

@@ -1,8 +1,31 @@
-{% extends 'layout.html' %}
+{% extends 'game.html' %}
 
-{% block header %}
-    <link
-        rel="stylesheet"
-        href="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/css/game.css') }}"
-        type='text/css'>
+{% block content %}
+    <table class="u-full-width">
+        <thead>
+            <tr>
+                <th></th>
+                <th>SPA</th>
+                <th>Points</th>
+                <th>Rebounds</th>
+                <th>Assists</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: left;">
+                    <a href="{{ url_for('players_bp.player_summary', playerid=box['PLAYER_ID']) }}">
+                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ box['PLAYER_ID'] }}.png" height="100px">
+                    </a>
+                </td>
+                <td>{{ box['IMPACT'] }}</td>
+                <td>{{ box['PTS']|int }}</td>
+                <td>{{ box['REB']|int }}</td>
+                <td>{{ box['AST']|int }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <div id="gameHover"></div>
+    <div id="gameGraph"></div>
 {% endblock %}

@@ -8,7 +8,6 @@ from flask import Flask
 import pandas as pd
 
 from nbaspa.data.endpoints import BoxScoreTraditional
-from nbaspa.data.endpoints.pbp import EventTypes
 
 def table_data(app: Flask, GameID: str) -> Tuple:
     """Load the table data.

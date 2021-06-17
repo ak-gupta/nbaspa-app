@@ -1,13 +1,10 @@
 """Game information."""
 
 from datetime import datetime
-import io
 import json
-import base64
 
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, request, url_for
 from flask import current_app as app
-import pandas as pd
 
 from .calendar import get_scoreboard, create_list
 from .forms import ScheduleDatePicker
@@ -131,7 +128,22 @@ def detail(gameid: str):
     gameid : str
         The game ID.
     """
+    # Get the player boxscore information
+    playerid = int(request.args["playerid"])
+    _, pbs = table_data(app=app, GameID=gameid)
+    box = [record for record in pbs if record["PLAYER_ID"] == playerid][0]
+
+    # Get the chart data
+    linedata = line_graph(app=app, GameID=gameid)
+    linechart = json.dumps(linedata, indent=2)
+
+    moments = get_moments(app=app, GameID=gameid, num_moments=None, playerid=playerid)
+    pointchart = json.dumps(moments, indent=2)
+
     return render_template(
         "detail.html",
-        title="Player-level detail for game"
+        title=f"Game Detail - {box['PLAYER_NAME']}",
+        box=box,
+        line_chart_data=linechart,
+        point_chart_data=pointchart,
     )
