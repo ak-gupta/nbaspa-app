@@ -3,7 +3,7 @@
 {% block content %}
     <br>
     <h4 class="title">Games for {{ gamedate }}</h4>
-    <form method="POST" action="{{ url_for('schedule_bp.schedule') }}">
+    <form method="POST" action="{{ url_for('game_bp.schedule') }}">
         <fieldset class="form-field">
             {{ form.gamedate }}
             {% if form.gamedate.errors %}
@@ -42,7 +42,7 @@
                                     <td>{{ game['visitor_pts'] }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3"><a href="{{ url_for('game_bp.game', gameid=game['game_id']) }}">Game Summary</a></td>
+                                    <td colspan="3"><a href="{{ url_for('game_bp.game', gameid=game['game_id'], day=day, month=month, year=year) }}">Game Summary</a></td>
                                 </tr>
                             </tbody>
                         </table>

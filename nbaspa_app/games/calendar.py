@@ -1,13 +1,13 @@
 """Retrieve calendar-specific data."""
 
-import os
 from datetime import datetime
+from pathlib import Path
 from typing import List
 
 from flask import Flask
 from nbaspa.data.endpoints import Scoreboard
 
-def get_data(app: Flask, GameDate: datetime) -> Scoreboard:
+def get_scoreboard(app: Flask, GameDate: datetime) -> Scoreboard:
     """Load the scoreboard data.
 
     Parameters
@@ -27,7 +27,7 @@ def get_data(app: Flask, GameDate: datetime) -> Scoreboard:
     else:
         season = str(GameDate.year - 1) + "-" + str(GameDate.year)[2:]
     scoreboard = Scoreboard(
-        output_dir=os.path.join(app.config["DATA_DIR"], season),
+        output_dir=Path(app.config["DATA_DIR"], season),
         GameDate=GameDate.strftime("%m/%d/%Y")
     )
     scoreboard.load()
