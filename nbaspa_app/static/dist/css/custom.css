@@ -1,3 +1,10 @@
+.tab {
+    overflow: hidden;
+}
+.tabcontent {
+    display: none;
+}
+
 .container {
     max-width: 800px;
 }
