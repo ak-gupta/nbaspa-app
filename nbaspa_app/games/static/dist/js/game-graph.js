@@ -4,22 +4,29 @@
  * @function gameHover
  * @param {number} wprob The win probability
  * @param {number} margin The current scoring margin
- * @param {number} time The game time
+ * @param {string} description The event description
+ * @param {number} period The period of the game
+ * @param {string} time The game time
  */
-function gameHover(wprob, margin, time) {
+function gameHover(wprob, margin, description, period, time, playerid) {
     return `
         <table class="u-full-width">
             <tbody>
                 <tr>
-                    <td style="text-align: right;">Win Probability</td>
-                    <td style="text-align: left;">${wprob}</td>
+                    <td rowspan="4">
+                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/${playerid}.png">
+                    </td>
+                    <td colspan="2" style="text-align: center;">${description}</td>
                 </tr>
                 <tr>
+                    <td style="text-align: right;">Win Probability Change</td>
+                    <td style="text-align: left;">${wprob}</td>
+                </tr>
                     <td style="text-align: right;">Margin</td>
-                    <td style="text-align: left;">Margin: ${margin}</td>
+                    <td style="text-align: left;">${margin}</td>
                 <tr>
                     <td style="text-align: right;">Time</td>
-                    <td style="text-align: left;">${time}</td>
+                    <td style="text-align: left;">Q${period} ${time}</td>
                 </tr>
             </tbody>
         </table>
@@ -29,11 +36,12 @@ function gameHover(wprob, margin, time) {
 /**
  * Creates a D3.js visualization for game win probability.
  * @function drawGameChart
- * @param {Array} data The event-level game data
+ * @param {Array} lineData The event-level game data
+ * @param {Array} dotData The top 5 events in the game
  * @param {string} tag The HTML div ID for the graph
  */
 
-function drawGameChart(data, tag) {
+function drawGameChart(lineData, dotData, tag) {
     var margin = {
         top: 20,
         right: 20,
@@ -46,7 +54,7 @@ function drawGameChart(data, tag) {
     var x = d3.scaleLinear().range([0, graphWidth])
     x.domain(
         d3.extent(
-            data,
+            lineData,
             function (d) {
                 return d.TIME
             }
@@ -78,7 +86,7 @@ function drawGameChart(data, tag) {
     // Add a horizontal line
     var horiz = [
         {TIME: 0, WIN_PROB: 0.5},
-        {TIME: d3.max(data, d => d.TIME), WIN_PROB: 0.5}
+        {TIME: d3.max(lineData, d => d.TIME), WIN_PROB: 0.5}
     ]
     svg.append("path")
         .data([horiz])
@@ -90,7 +98,7 @@ function drawGameChart(data, tag) {
         .style("fill", "none")
     // Add the Win Probability line
     svg.append("path")
-        .data([data])
+        .data([lineData])
         .attr("class", "line")
         .attr("d", winLine)
         .style("stroke", "black")
@@ -101,7 +109,7 @@ function drawGameChart(data, tag) {
         .attr("class", "tooltip")
         .style("opacity", 0)
     svg.selectAll("dot")
-        .data(data)
+        .data(dotData)
         .enter()
         .append("circle")
         .attr("r", 4)
@@ -114,7 +122,7 @@ function drawGameChart(data, tag) {
         .attr(
             "cy",
             function (d) {
-                return y(d.WIN_PROB)
+                return y(d.SURV_PROB)
             }
         )
         .attr("stroke", "black")
@@ -134,9 +142,12 @@ function drawGameChart(data, tag) {
                 // Add data
                 div.html(
                     gameHover(
-                        wprob=percentFormat(d.WIN_PROB),
+                        wprob=percentFormat(d.SURV_PROB_CHANGE),
                         margin=d.SCOREMARGIN,
-                        time=d.TIME
+                        description=d.DESCRIPTION,
+                        period=d.PERIOD,
+                        time=d.PCTIMESTRING,
+                        playerid=d.PLAYER1_ID
                     )
                 )
             }

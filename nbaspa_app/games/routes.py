@@ -7,10 +7,12 @@ import base64
 
 from flask import Blueprint, render_template, redirect, url_for
 from flask import current_app as app
+import pandas as pd
 
 from .calendar import get_scoreboard, create_list
 from .forms import ScheduleDatePicker
-from .summary import get_data
+from .summary import table_data
+from .graph import line_graph, get_moments
 
 TODAY = datetime.today()
 
@@ -92,27 +94,28 @@ def game(day: int, month: int, year: int, gameid: str):
     gameid : str
         The game ID.
     """
-    tbs, pbs, prediction = get_data(app=app, GameID=gameid)
+    tbs, pbs = table_data(app=app, GameID=gameid)
     gamedate = datetime(year=year, month=month, day=day)
     scoreboard = get_scoreboard(app=app, GameDate=gamedate)
     if scoreboard.exists():
         datalist = create_list(scoreboard)
         gameinfo = [itm for itm in datalist if itm["game_id"] == gameid][0]
-    # TODO: Replace player boxscore with the survival ratings
-    # Round the percentages
-    tbs["FG_PCT"] = (tbs["FG_PCT"] * 100).round(2)
-    tbs["FG3_PCT"] = (tbs["FG3_PCT"] * 100).round(2)
-    tbs["FT_PCT"] = (tbs["FT_PCT"] * 100).round(2)
 
-    prediction["WIN_PROB"] = prediction["WIN_PROB"].round(3)
-    chart_data = prediction.to_dict(orient="records")
-    chart_data = json.dumps(chart_data, indent=2)
+    # Get the chart data
+    linedata = line_graph(app=app, GameID=gameid)
+    linechart = json.dumps(linedata, indent=2)
+
+    moments = get_moments(app=app, GameID=gameid)
+    pointchart = json.dumps(moments, indent=2)
 
     return render_template(
         "game.html",
         title=f"{gameinfo['visitor_abbrev']} @ {gameinfo['home_abbrev']} Summary",
-        teambox=tbs,
-        playerbox=pbs,
-        chart_data=chart_data,
+        hometbs=[record for record in tbs if record["TEAM_ID"] == gameinfo["home_id"]][0],
+        visitortbs=[record for record in tbs if record["TEAM_ID"] == gameinfo["visitor_id"]][0],
+        homepbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["home_id"]],
+        visitorpbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["visitor_id"]],
+        line_chart_data=linechart,
+        point_chart_data=pointchart,
         gameinfo=gameinfo
     )
