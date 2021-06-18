@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <table class="u-full-width">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>SPA</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Average</td>
+                    <td>Total</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        <td>
+                            <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
+                        </td>
+                        <td>
+                            {{ row['DISPLAY_FIRST_LAST'] }}
+                        </td>
+                        <td>{{ row['mean'] }}</td>
+                        <td>{{ row['sum'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
