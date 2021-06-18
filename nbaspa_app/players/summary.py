@@ -23,6 +23,7 @@ def get_top_players(app: Flask, Season: str) -> List[Dict]:
     List
         The JSON-ified output.
     """
+    app.logger.info("Loading player roster")
     loader = AllPlayers(
         output_dir=Path(app.config["DATA_DIR"], Season),
         Season=Season
@@ -33,10 +34,12 @@ def get_top_players(app: Flask, Season: str) -> List[Dict]:
 
     playerindex = loader.get_data()
     playerindex.set_index("PERSON_ID", inplace=True)
+    app.logger.info("Loading game ratings")
     gameratings = pd.concat(
         pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
         for fpath in Path(app.config["DATA_DIR"], Season, "game-impact").glob("data_*.csv")
     )
+    app.logger.info("Successfully loaded game ratings")
     avg = gameratings.groupby("PLAYER_ID")["IMPACT"].agg(["sum", "mean"])
     avg["sum"] = avg["sum"].round(3)
     avg["mean"] = avg["mean"].round(3)
