@@ -43,4 +43,4 @@ def get_top_players(app: Flask, Season: str) -> List[Dict]:
     gameratings.reset_index(inplace=True)
     gameratings.sort_values(by="MEAN_IMPACT", ascending=False, inplace=True)
 
-    return gameratings.to_dict(orient="records")[:25]
+    return gameratings.to_dict(orient="records")[:50]

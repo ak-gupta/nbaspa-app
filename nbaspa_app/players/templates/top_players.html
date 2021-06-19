@@ -9,6 +9,7 @@
                 <tr>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td>Average</td>
                     <td>Total</td>
                 </tr>
@@ -16,8 +17,11 @@
             <tbody>
                 {% for row in data %}
                     <tr>
+                        <td>{{ loop.index }}</td>
                         <td>
-                            <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
+                            <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
+                                <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
+                            </a>
                         </td>
                         <td>
                             {{ row['DISPLAY_FIRST_LAST'] }}
