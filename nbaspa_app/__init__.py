@@ -1,6 +1,14 @@
 """Initialize flask app."""
 
-from flask import Flask
+from flask import Flask, render_template
+
+
+def not_found(e):
+    """Not found error page."""
+    return render_template(
+        "not_found.html", title="Data Not Found"
+    )
+
 
 def create_app(config: str = "development"):
     """Create the core application.
@@ -30,6 +38,7 @@ def create_app(config: str = "development"):
         from .players.routes import players_bp
         from .teams.routes import teams_bp
 
+        app.register_error_handler(404, not_found)
         app.register_blueprint(game_bp)
         app.register_blueprint(home_bp)
         app.register_blueprint(players_bp)

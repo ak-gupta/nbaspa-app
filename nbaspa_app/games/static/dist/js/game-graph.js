@@ -102,7 +102,7 @@ function drawGameChart(lineData, dotData, tag) {
         .attr("class", "line")
         .attr("d", winLine)
         .style("stroke", "black")
-        .attr("stroke-width", 1)
+        .attr("stroke-width", 2)
         .style("fill", "none")
     // Add dots with mouseover
     var div = d3.select(tag).append("div")
