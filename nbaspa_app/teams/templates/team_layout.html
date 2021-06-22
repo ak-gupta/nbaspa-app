@@ -2,9 +2,17 @@
 
 {% block content %}
     {% block imagehead %}
-        <div style="text-align: center;">
-            <img class="header-img" src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
-            <h2 class="title">{% block subtitle %}{{ teamname }}{% endblock %}</h2>
+        <div class="columns is-mobile is-vcentered">
+            <div class="column">
+                <span class="title">{% block subtitle %}{{ teamname }}{% endblock %}</span>
+            </div>
+            <div class="column">
+                <div class="is-pulled-right">
+                    <figure class="image is-96x96">
+                        <img src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
+                    </figure>
+                </div>
+            </div>
         </div>
     {% endblock %}
     {% block datacontent %}{% endblock %}

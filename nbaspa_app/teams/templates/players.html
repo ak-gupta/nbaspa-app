@@ -3,26 +3,26 @@
 {% block subtitle %}{{ teamname }} {{ season }} Roster{% endblock %}
 
 {% block datacontent %}
-    <div class="container">
-        <table class="u-full-width">
-            <thead>
-                <tr>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </thead>
-            {% for _, row in data.iterrows() %}
-                <tr>
-                    <td>
+    <table class="table">
+        <thead>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        {% for _, row in data.iterrows() %}
+            <tr>
+                <td>
+                    <div class="image">
                         <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PERSON_ID'] }}.png" height="100px">
-                    </td>
-                    <td>
-                        <a href="{{ url_for('players_bp.player_summary', playerid=row['PERSON_ID']) }}">
-                            {{ row['DISPLAY_FIRST_LAST'] }}
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+                    </div>
+                </td>
+                <td>
+                    <a href="{{ url_for('players_bp.player_summary', playerid=row['PERSON_ID']) }}">
+                        {{ row['DISPLAY_FIRST_LAST'] }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
