@@ -88,14 +88,14 @@ def team_players(teamid: int, season: int):
     season : int
         The season year.
     """
+    teamlist = gen_teamlist(app=app)
+    teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
     roster = gen_roster(app=app, teamid=teamid, season=season)
-    roster.sort_values(by="DISPLAY_LAST_COMMA_FIRST", ascending=True, inplace=True)
-    teamname = f"{roster.loc[0, 'TEAM_CITY']} {roster.loc[0, 'TEAM_NAME']}"
     return render_template(
         "players.html",
         title=f"{season} Roster",
         teamid=teamid,
         teamname=teamname,
         season=season,
-        data=roster
+        data=[roster[i:i+3] for i in range(0, len(roster), 3)]
     )

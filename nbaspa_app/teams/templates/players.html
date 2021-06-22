@@ -3,26 +3,32 @@
 {% block subtitle %}{{ teamname }} {{ season }} Roster{% endblock %}
 
 {% block datacontent %}
-    <table class="table">
-        <thead>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-        </thead>
-        {% for _, row in data.iterrows() %}
-            <tr>
-                <td>
-                    <div class="image">
-                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PERSON_ID'] }}.png" height="100px">
+    {% for row in data %}
+        <div class="columns">
+            {% for player in row %}
+                <div class="column">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-96x96">
+                                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ player['PLAYER_ID'] }}.png" width="96px">
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4">{{ player['PLAYER'] }}</p>
+                                    <p class="subtitle is-6">#{{ player['NUM'] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item" href="{{ url_for('players_bp.player_summary', playerid=player['PLAYER_ID']) }}">
+                                Details
+                            </a>
+                        </footer>
                     </div>
-                </td>
-                <td>
-                    <a href="{{ url_for('players_bp.player_summary', playerid=row['PERSON_ID']) }}">
-                        {{ row['DISPLAY_FIRST_LAST'] }}
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 {% endblock %}
