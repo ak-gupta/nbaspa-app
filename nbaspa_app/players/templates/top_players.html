@@ -1,36 +1,44 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <div class="container">
-        <br>
-        <h4>Top 50 players by average impact</h4>
-        <table class="u-full-width">
-            <thead>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Average</td>
-                    <td>Total</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="#">Seasons</a></li>
+            <li><a href="#">{{ season }}</a></li>
+            <li class="is-active"><a href="#" aria-current="page">Top Players</a></li>
+        </ul>
+    </nav>
+    {% for row in data %}
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="media">
+                        <div class="media-left">
                             <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
                                 <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
-                            </a>
-                        </td>
-                        <td>
-                            {{ row['DISPLAY_FIRST_LAST'] }}
-                        </td>
-                        <td>{{ row['MEAN_IMPACT'] }}</td>
-                        <td>{{ row['TOTAL_IMPACT'] }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                            </a>                        
+                        </div>
+                        <div class="media-content">
+                            <p class="title is-4">{{ row['DISPLAY_FIRST_LAST'] }}</p>
+                            <p class="subtitle is-6"><strong>Rank</strong>: #{{ row['RANK'] }}</p>
+                            <nav class="level is-mobile">
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                        <p class="heading">Average Impact</p>
+                                        <p class="title">{{ row['MEAN_IMPACT'] }}</p>
+                                    </div>
+                                </div>
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                        <p class="heading">Total Impact</p>
+                                        <p class="title">{{ row['TOTAL_IMPACT'] }}</p>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

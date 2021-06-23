@@ -30,6 +30,7 @@ def top_players(season: str):
         return render_template(
             "top_players.html",
             title=f"{season} Top Players",
+            season=season,
             data=best,
         )
     except FileNotFoundError:

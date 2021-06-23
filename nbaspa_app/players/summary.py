@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 from flask import Flask
+import numpy as np
 import pandas as pd
 
 from nbaspa.data.endpoints import AllPlayers, PlayerInfo
@@ -43,6 +44,7 @@ def get_top_players(app: Flask, Season: str) -> List[Dict]:
     gameratings["DISPLAY_FIRST_LAST"] = playerindex["DISPLAY_FIRST_LAST"]
     gameratings.reset_index(inplace=True)
     gameratings.sort_values(by="MEAN_IMPACT", ascending=False, inplace=True)
+    gameratings["RANK"] = np.arange(1, gameratings.shape[0] + 1)
 
     return gameratings.to_dict(orient="records")[:50]
 
