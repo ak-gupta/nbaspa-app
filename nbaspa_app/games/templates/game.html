@@ -10,62 +10,82 @@
 {% endblock %}
 
 {% block content %}
-    <table class="u-full-width">
-        <tbody>
-            <tr>
-                <td style="text-align: left;">
-                    <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['visitor_id']) }}">
-                        <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['visitor_id'] }}/primary/L/logo.svg" width="100px">
-                    </a>
-                </td>
-                <td style="text-align: right;">{{ visitortbs.PTS }}</td>
-                <td style="text-align: left;">{{ hometbs.PTS }}</td>
-                <td style="text-align: right;">
-                    <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['home_id']) }}">
-                        <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['home_id'] }}/primary/L/logo.svg" width="100px">
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <nav class="level">
+        <p class="level-item has-text-centered">
+            <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['visitor_id']) }}">
+                <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['visitor_id'] }}/primary/L/logo.svg" width="100px">
+            </a>
+        </p>
+        <div class="level-item has-text-centered">
+            <p class="title">{{ visitortbs.PTS }}</p>
+        </div>
+        <div class="level-item has-text-centered">
+            <p class="title">{{ hometbs.PTS }}</p>
+        </div>
+        <p class="level-item has-text-centered">
+            <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['home_id']) }}">
+                <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['home_id'] }}/primary/L/logo.svg" width="100px">
+            </a>
+        </p>
+    </nav>
     <br>
-    <h4>Top performers</h4>
+    <h4 class="title">Top performers</h4>
     {% set tophome = homepbs[0] %}
     {% set topvisitor = visitorpbs[0] %}
     <br>
-    <table class="u-full-width">
-        <thead>
-            <tr>
-                <th></th>
-                <th>SPA</th>
-                <th>Points</th>
-                <th>Rebounds</th>
-                <th>Assists</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in [tophome, topvisitor] %}
-                <tr>
-                    <td style="text-align: left;">
-                        <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
-                            <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
-                        </a>
-                    </td>
-                    <td>{{ row['IMPACT'] }}</td>
-                    <td>{{ row['PTS']|int }}</td>
-                    <td>{{ row['REB']|int }}</td>
-                    <td>{{ row['AST']|int }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="columns">
+        {% for row in [topvisitor, tophome] %}
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
+                                    <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
+                                </a>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4">{{ row['PLAYER_NAME'] }}</p>
+                                <nav class="level is-mobile">
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">SPA</p>
+                                            <p class="title">{{ row['IMPACT'] }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">Points</p>
+                                            <p class="title">{{ row['PTS']|int }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">Assists</p>
+                                            <p class="title">{{ row['AST']|int }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">Rebounds</p>
+                                            <p class="title">{{ row['REB']|int }}</p>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
     <br>
-    <h4>Win probability over game time</h4>
+    <h4 class="title">Win probability over game time</h4>
     <div id="gameHover"></div>
     <div id="gameGraph"></div>
     <br>
-    <h4>Team boxscore</h4>
-    <table class="u-full-width">
+    <h4 class="title">Team boxscore</h4>
+    <table class="table">
         <thead>
             <tr>
                 <th></th>
@@ -98,11 +118,13 @@
         </tbody>
     </table>
     <br>
-    <h4>Player boxscore</h4>
+    <h4 class="title">Player boxscore</h4>
     <br>
-    <div class="tabs">
-        <button class="tablinks" id="defaultTab" onclick="openBox(event, 'homePlayerBox')">{{ gameinfo['home_abbrev'] }}</button>
-        <button class="tablinks" onclick="openBox(event, 'visitorPlayerBox')">{{ gameinfo['visitor_abbrev'] }}</button>
+    <div class="tabs is-centered is-large">
+        <ul>
+            <li class="tablinks" id="defaultTab" onclick="openBox(event, 'visitorPlayerBox')"><a>{{ gameinfo['visitor_abbrev'] }}</a></li>
+            <li class="tablinks" onclick="openBox(event, 'homePlayerBox')"><a>{{ gameinfo['home_abbrev'] }}</a></li>
+        </ul>
     </div>
 
     <div id="homePlayerBox" class="tabcontent">

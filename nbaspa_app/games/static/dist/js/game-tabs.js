@@ -16,10 +16,10 @@ function openBox(event, team) {
     // Remove active class
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].className = tablinks[i].className.replace(" is-active", "");
     }
 
     // Show the current tab, and add an "active" class
     document.getElementById(team).style.display = "block";
-    event.currentTarget.className += " active";
+    event.currentTarget.className += " is-active";
 }

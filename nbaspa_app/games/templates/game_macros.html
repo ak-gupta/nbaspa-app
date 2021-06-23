@@ -7,24 +7,28 @@ Parameters
 box : list
     The player boxscore data
 #}
-<table class="u-full-width">
+<table class="table is-hoverable">
     <thead>
         <tr>
             <th></th>
-            <th>Minutes</th>
-            <th>SPA</th>
-            <th>Points</th>
-            <th>Rebounds</th>
-            <th>Assists</th>
-            <th>Steals</th>
-            <th>Blocks</th>
-            <th>Turnovers</th>
-            <th>Field Goals</th>
+            <th><abbr title="Minutes played">Min</abbr></th>
+            <th><abbr title="Survival probability added">SPA</abbr></th>
+            <th><abbr title="Points">Pts</abbr></th>
+            <th><abbr title="Rebounds">Reb</abbr></th>
+            <th><abbr title="Assists">Ast</abbr></th>
+            <th><abbr title="Steals">Stl</abbr></th>
+            <th><abbr title="Blocks">Blk</abbr></th>
+            <th><abbr title="Turnovers">TO</abbr></th>
+            <th><abbr title="Field Goals">FG</abbr></th>
         </tr>
     </thead>
     <tbody>
         {% for row in box %}
-            <tr>
+            {% if loop.index == 1 %}
+                <tr class="is-selected">
+            {% else %}
+                <tr>
+            {% endif %}
                 <td>
                     <a href="{{ url_for('game_bp.detail', gameid=row['GAME_ID'], playerid=row['PLAYER_ID']) }}">
                         {{ row['PLAYER_NAME'] }}

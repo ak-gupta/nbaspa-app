@@ -13,3 +13,7 @@ div.tooltip {
 .tabcontent {
     display: none;
 }
+.table {
+    margin-left: auto;
+    margin-right: auto;
+}
