@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <br>
-    <h4 class="title">Games for {{ gamedate }}</h4>
+    <h4 class="title is-4">Games for {{ gamedate }}</h4>
     <form method="POST" action="{{ url_for('game_bp.schedule') }}">
-        <fieldset class="form-field">
-            {{ form.gamedate }}
+        <div class="field is-grouped">
+            <div class="field">
+                <input class="input" id="gamedate" name="gamedate" type="date" value="{{ year }}-{{ month }}-{{ day }}">
+            </div>
             {% if form.gamedate.errors %}
                 <ul class="errors">
                     {% for error in form.gamedate.errors %}
@@ -13,42 +14,48 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-        </fieldset>
-        {{ form.submit }}
-    </form>
-    <div class="container">
-        {% for seg in data %}
-            <div class="row">
-                {% for game in seg %}
-                    <div class="four columns">
-                        <table class="u-full-width">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <a href="{{ url_for('teams_bp.team_summary', teamid=game['home_id']) }}">
-                                            <img src="https://cdn.nba.com/logos/nba/{{ game['home_id'] }}/primary/L/logo.svg" width="50px">
-                                        </a>
-                                    </td>
-                                    <td>{{ game['home_abbrev'] }}</td>
-                                    <td>{{ game['home_pts'] }}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="{{ url_for('teams_bp.team_summary', teamid=game['visitor_id']) }}">
-                                            <img src="https://cdn.nba.com/logos/nba/{{ game['visitor_id'] }}/primary/L/logo.svg" width="50px">
-                                        </a>
-                                    </td>
-                                    <td>{{ game['visitor_abbrev'] }}</td>
-                                    <td>{{ game['visitor_pts'] }}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3"><a href="{{ url_for('game_bp.game', gameid=game['game_id'], day=day, month=month, year=year) }}">Game Summary</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                {% endfor %}
+            <div class="field">
+                <input class="button is-link" id="submit" name="submit" type="submit" value="Go">
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    </form>
+    {% for seg in data %}
+        <div class="columns">
+            {% for game in seg %}
+                <div class="column is-one-fourth">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <a href="{{ url_for('teams_bp.team_summary', teamid=game['home_id']) }}">
+                                        <img src="https://cdn.nba.com/logos/nba/{{ game['home_id'] }}/primary/L/logo.svg" width="50px">
+                                    </a>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4">{{ game['home_pts'] }}</p>
+                                    <p class="subtitle is-6">{{ game['home_abbrev'] }}</p>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <div class="media-left">
+                                    <a href="{{ url_for('teams_bp.team_summary', teamid=game['visitor_id']) }}">
+                                        <img src="https://cdn.nba.com/logos/nba/{{ game['visitor_id'] }}/primary/L/logo.svg" width="50px">
+                                    </a>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4">{{ game['visitor_pts'] }}</p>
+                                    <p class="subtitle is-6">{{ game['visitor_abbrev'] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a class="card-footer-item" href="{{ url_for('game_bp.game', gameid=game['game_id'], day=day, month=month, year=year) }}">
+                                Game Summary
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 {% endblock %}
