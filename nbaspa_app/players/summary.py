@@ -1,12 +1,13 @@
 """Get season summary data."""
 
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from flask import Flask
 import pandas as pd
 
-from nbaspa.data.endpoints import AllPlayers
+from nbaspa.data.endpoints import AllPlayers, PlayerInfo
 
 def get_top_players(app: Flask, Season: str) -> List[Dict]:
     """Get the top players for a given season.
@@ -44,3 +45,28 @@ def get_top_players(app: Flask, Season: str) -> List[Dict]:
     gameratings.sort_values(by="MEAN_IMPACT", ascending=False, inplace=True)
 
     return gameratings.to_dict(orient="records")[:50]
+
+
+def get_player_info(app: Flask, PlayerID: int) -> Dict:
+    """Get player information.
+
+    Parameters
+    ----------
+    app : Flask
+        The current application.
+    PlayerID : int
+        The player identifier.
+    
+    Returns
+    -------
+    Dict
+        The player info.
+    """
+    loader = PlayerInfo(PlayerID=PlayerID, output_dir=app.config["DATA_DIR"])
+    if not loader.exists():
+        raise FileNotFoundError("Cannot find the player information.")
+    loader.load()
+    info = loader.get_data("CommonPlayerInfo").to_dict(orient="records")[0]
+    info["BIRTHDATE"] = datetime.strptime(info["BIRTHDATE"], "%Y-%m-%dT%H:%M:%S")
+
+    return info

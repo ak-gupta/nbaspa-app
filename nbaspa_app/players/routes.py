@@ -6,7 +6,7 @@ from flask.helpers import make_response
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 
-from .summary import get_top_players
+from .summary import get_top_players, get_player_info
 
 players_bp = Blueprint(
     "players_bp",
@@ -44,9 +44,14 @@ def player_summary(playerid: int):
     playerid : int
         The player identifier.
     """
+    try:
+        info = get_player_info(app=app, PlayerID=playerid)
+    except FileNotFoundError:
+        return abort(404)
+
     return render_template(
         "player_summary.html",
-        title=f"{playerid} Summary",
+        title=f"{info['DISPLAY_FIRST_LAST']} Summary",
         playerid=playerid,
-        playername=playerid, # TODO: Get player meta
+        info=info
     )
