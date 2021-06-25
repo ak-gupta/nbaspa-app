@@ -55,8 +55,8 @@ function drawGameChart(lineData, dotData, tag) {
         bottom: 30,
         left: 40,
     }
-    const graphWidth = 1200 - margin.left - margin.right;
-    const graphHeight = 600 - margin.top - margin.bottom;
+    const graphWidth = 800 - margin.left - margin.right;
+    const graphHeight = 400 - margin.top - margin.bottom;
     // Create axes
     var x = d3.scaleLinear().range([0, graphWidth])
     x.domain(
@@ -99,7 +99,7 @@ function drawGameChart(lineData, dotData, tag) {
         .data([horiz])
         .attr("class", "line")
         .attr("d", winLine)
-        .style("stroke", "black")
+        .style("stroke", "hsl(0, 0%, 21%)")
         .style("stroke-width", 0.5)
         .style("stroke-dasharray", ("2, 2"))
         .style("fill", "none")
@@ -108,7 +108,7 @@ function drawGameChart(lineData, dotData, tag) {
         .data([lineData])
         .attr("class", "line")
         .attr("d", winLine)
-        .style("stroke", "black")
+        .style("stroke", "hsl(0, 0%, 21%)")
         .attr("stroke-width", 2)
         .style("fill", "none")
     // Add dots with mouseover

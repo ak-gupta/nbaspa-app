@@ -65,6 +65,8 @@ def table_data(app: Flask, GameID: str) -> Tuple:
             "FTA",
             "PTS",
             "REB",
+            "OREB",
+            "DREB",
             "AST",
             "STL",
             "BLK",
