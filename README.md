@@ -43,4 +43,4 @@ series. In particular, this repository uses
 * [Demystifying Flask's Application Factory](https://hackersandslackers.com/flask-application-factory/), and
 * [The Art of Routing in Flask](https://hackersandslackers.com/flask-routes/)
 
-Additionally, this project uses [Skeleton](https://github.com/dhg/Skeleton) to take care of the boilerplate.
+Additionally, this project leverages [bulma](https://bulma.io/) for the styling.

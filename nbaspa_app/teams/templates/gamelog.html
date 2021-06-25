@@ -3,30 +3,28 @@
 {% block subtitle %}{{ teamname }} {{ season }} Gamelog{% endblock %}
 
 {% block datacontent %}
-    <div class="container">
-        <table class="u-full-width">
-            <thead>
+    <table class="table is-hoverable has-background-light">
+        <thead>
+            <tr>
+                <td>Game Date</td>
+                <td>Matchup</td>
+                <td>Result</td>
+                <td>Win Percentage</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for _, row in data.iterrows() %}
                 <tr>
-                    <td>Game Date</td>
-                    <td>Matchup</td>
-                    <td>Result</td>
-                    <td>Win Percentage</td>
+                    <td>{{ row['GAME_DATE'].strftime('%B %d, %Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('game_bp.game', gameid=row['Game_ID'], day=row['GAME_DATE'].day, month=row['GAME_DATE'].month, year=row['GAME_DATE'].year) }}">
+                            {{ row['MATCHUP'] }}
+                        </a>
+                    </td>
+                    <td>{{ row['WL'] }}</td>
+                    <td>{{ row['W_PCT'] }}%</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for _, row in data.iterrows() %}
-                    <tr>
-                        <td>{{ row['GAME_DATE'].strftime('%B %d, %Y') }}</td>
-                        <td>
-                            <a href="{{ url_for('game_bp.game', gameid=row['Game_ID'], day=row['GAME_DATE'].day, month=row['GAME_DATE'].month, year=row['GAME_DATE'].year) }}">
-                                {{ row['MATCHUP'] }}
-                            </a>
-                        </td>
-                        <td>{{ row['WL'] }}</td>
-                        <td>{{ row['W_PCT'] }}%</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

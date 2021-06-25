@@ -2,17 +2,25 @@
 
 {% block content %}
     {% for row in teamlist %}
-        <div class="row">
+        <div class="columns">
+            <div class="column"></div>
             {% for team in row %}
-                <div class="two columns">
-                    <figure>
-                        <a href="{{ url_for('teams_bp.team_summary', teamid=team['teamid']) }}">
-                            <img src="https://cdn.nba.com/logos/nba/{{ team['teamid'] }}/primary/L/logo.svg" width="100px">
-                        </a>
-                        <figcaption>{{ team['teamname'] }}</figcaption>
-                    </figure>
+                <div class="column is-one-twelve">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image is-square">
+                                <a href="{{ url_for('teams_bp.team_summary', teamid=team['teamid']) }}">
+                                    <img src="https://cdn.nba.com/logos/nba/{{ team['teamid'] }}/primary/L/logo.svg">
+                                </a>
+                            </figure>
+                        </div>
+                        <div class="card-header">
+                            <div class="card-header-title">{{ team['teamname'] }}</div>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
+            <div class="column"></div>
         </div>
     {% endfor %}
 {% endblock %}

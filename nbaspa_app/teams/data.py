@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from flask import Flask
-from nbaspa.data.endpoints import AllPlayers, TeamGameLog, TeamStats
+from nbaspa.data.endpoints import AllPlayers, TeamGameLog, TeamStats, TeamRoster
 from nbaspa.data.endpoints.parameters import SEASONS
 import pandas as pd
 
@@ -103,7 +103,7 @@ def gen_gamelog(app: Flask, teamid: int, season: str) -> pd.DataFrame:
     return data
 
 
-def gen_roster(app: Flask, teamid: int, season: str) -> pd.DataFrame:
+def gen_roster(app: Flask, teamid: int, season: str) -> List[Dict]:
     """Get the roster for a given team in a season.
 
     Parameters
@@ -120,12 +120,11 @@ def gen_roster(app: Flask, teamid: int, season: str) -> pd.DataFrame:
     pd.DataFrame
         The data.
     """
-    loader = AllPlayers(
-        output_dir=Path(app.config["DATA_DIR"], season),
-        Season=season
+    loader = TeamRoster(
+        output_dir=Path(app.config["DATA_DIR"], season), TeamID=teamid, Season=season
     )
     loader.load()
 
-    data = loader.get_data()
+    data = loader.get_data("CommonTeamRoster")
     
-    return data[data["TEAM_ID"] == teamid].copy().reset_index(drop=True)
+    return data.to_dict(orient="records")

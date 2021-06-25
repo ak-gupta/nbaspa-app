@@ -10,26 +10,33 @@
  */
 function gameHover(wprob, margin, description, period, time, playerid) {
     return `
-        <table class="u-full-width">
-            <tbody>
-                <tr>
-                    <td rowspan="4">
-                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/${playerid}.png">
-                    </td>
-                    <td colspan="2" style="text-align: center;">${description}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: right;">Win Probability Change</td>
-                    <td style="text-align: left;">${wprob}</td>
-                </tr>
-                    <td style="text-align: right;">Margin</td>
-                    <td style="text-align: left;">${margin}</td>
-                <tr>
-                    <td style="text-align: right;">Time</td>
-                    <td style="text-align: left;">Q${period} ${time}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/${playerid}.png" width="75px">
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4">${description}</p>
+                        <p class="subtitle is-6">Q${period} ${time}</p>
+                        <nav class="level">
+                            <div class="level-item has-text-centered">
+                                <div>
+                                    <p class="heading">Win Probability Change</p>
+                                    <p class="title">${wprob}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                    <p class="heading">Margin</p>
+                                    <p class="title">${margin}</p>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
     `
 }
 
@@ -92,7 +99,7 @@ function drawGameChart(lineData, dotData, tag) {
         .data([horiz])
         .attr("class", "line")
         .attr("d", winLine)
-        .style("stroke", "black")
+        .style("stroke", "hsl(0, 0%, 21%)")
         .style("stroke-width", 0.5)
         .style("stroke-dasharray", ("2, 2"))
         .style("fill", "none")
@@ -101,7 +108,7 @@ function drawGameChart(lineData, dotData, tag) {
         .data([lineData])
         .attr("class", "line")
         .attr("d", winLine)
-        .style("stroke", "black")
+        .style("stroke", "hsl(0, 0%, 21%)")
         .attr("stroke-width", 2)
         .style("fill", "none")
     // Add dots with mouseover
@@ -140,16 +147,17 @@ function drawGameChart(lineData, dotData, tag) {
                     .duration("100")
                     .style("opacity", 1)
                 // Add data
-                div.html(
-                    gameHover(
-                        wprob=percentFormat(d.SURV_PROB_CHANGE),
-                        margin=d.SCOREMARGIN,
-                        description=d.DESCRIPTION,
-                        period=d.PERIOD,
-                        time=d.PCTIMESTRING,
-                        playerid=d.PLAYER1_ID
+                htmlhover = gameHover(
+                    wprob=percentFormat(d.SURV_PROB_CHANGE),
+                    margin=d.SCOREMARGIN,
+                    description=d.DESCRIPTION,
+                    period=d.PERIOD,
+                    time=d.PCTIMESTRING,
+                    playerid=d.PLAYER1_ID
                     )
-                )
+                div.html(htmlhover)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 15) + "px")
             }
         )
         .on(
