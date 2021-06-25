@@ -7,7 +7,7 @@ Parameters
 box : list
     The player boxscore data
 #}
-<table class="table is-hoverable">
+<table class="table is-hoverable has-background-light">
     <thead>
         <tr>
             <th></th>
@@ -24,11 +24,7 @@ box : list
     </thead>
     <tbody>
         {% for row in box %}
-            {% if loop.index == 1 %}
-                <tr class="is-selected">
-            {% else %}
-                <tr>
-            {% endif %}
+            <tr>
                 <td>
                     <a href="{{ url_for('game_bp.detail', gameid=row['GAME_ID'], playerid=row['PLAYER_ID']) }}">
                         {{ row['PLAYER_NAME'] }}

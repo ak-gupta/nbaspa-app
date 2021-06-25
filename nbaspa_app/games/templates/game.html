@@ -81,11 +81,10 @@
     </div>
     <br>
     <h4 class="title">Win probability over game time</h4>
-    <div id="gameHover"></div>
-    <div id="gameGraph"></div>
+    <div id="gameGraph" style="text-align: center;"></div>
     <br>
     <h4 class="title">Team boxscore</h4>
-    <table class="table">
+    <table class="table has-background-light">
         <thead>
             <tr>
                 <th></th>
@@ -100,7 +99,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in [hometbs, visitortbs] %}
+            {% for row in [visitortbs, hometbs] %}
                 <tr>
                     <td>
                         <img src="https://cdn.nba.com/logos/nba/{{ row['TEAM_ID'] }}/primary/L/logo.svg" width="50px">
