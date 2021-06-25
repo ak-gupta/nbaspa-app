@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="#">Seasons</a></li>
+            <li><a href="#">{{ season }}</a></li>
+            <li class="is-active"><a href="#" aria-current="page">Top Performances</a></li>
+        </ul>
+    </nav>
+    {% for row in data %}
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
+                                    <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
+                                </a>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4">{{ row['DISPLAY_FIRST_LAST'] }}</p>
+                                <p class="subtitle is-6"><strong>Rank</strong>: #{{ row['RANK'] }}</p>
+                                <nav class="level is-mobile">
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                            <p class="heading">SPA</p>
+                                            <p class="title">{{ row['IMPACT'] }}</p>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a class="card-footer-item" href="{{ url_for('game_bp.game', gameid=row['GAME_ID'], day=row['GAME_DATE'].day, month=row['GAME_DATE'].month, year=row['GAME_DATE'].year) }}">
+                            Game Info
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -6,7 +6,9 @@ from flask.helpers import make_response
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 
-from .summary import get_top_players, get_player_info
+from .summary import (
+    get_top_players, get_player_info, get_top_performances, get_all_players
+)
 
 players_bp = Blueprint(
     "players_bp",
@@ -14,6 +16,17 @@ players_bp = Blueprint(
     template_folder=app.config["TEMPLATES_FOLDER"],
     static_folder=app.config["STATIC_FOLDER"]
 )
+
+
+@players_bp.get("/players/directory")
+def player_directory():
+    """List all players in a given season."""
+    return render_template(
+        "player_directory.html",
+        title="Player directory",
+        data=get_all_players(app=app)
+    )
+
 
 @players_bp.get("/players/top", defaults={"season": CURRENT_SEASON})
 @players_bp.get("/players/top/<season>")
@@ -31,7 +44,7 @@ def top_players(season: str):
             "top_players.html",
             title=f"{season} Top Players",
             season=season,
-            data=best,
+            data=best[:50],
         )
     except FileNotFoundError:
         return abort(404)
@@ -56,3 +69,25 @@ def player_summary(playerid: int):
         playerid=playerid,
         info=info
     )
+
+
+@players_bp.get("/performances/top", defaults={"season": CURRENT_SEASON})
+@players_bp.get("/performances/top/<season>")
+def top_performances(season: str):
+    """Get the top performances in a given season.
+
+    Parameters
+    ----------
+    season : str
+        The season.
+    """
+    try:
+        best = get_top_performances(app=app, Season=season)
+        return render_template(
+            "top_performances.html",
+            title=f"{season} Top Performances",
+            season=season,
+            data=best[:50],
+        )
+    except FileNotFoundError:
+        return abort(404)

@@ -26,6 +26,14 @@
                     <a class="navbar-item" href="{{ url_for('home_bp.home') }}">Home</a>
                     <a class="navbar-item" href="{{ url_for('game_bp.schedule') }}">Games</a>
                     <a class="navbar-item" href="{{ url_for('teams_bp.teams_home') }}">Teams</a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Players</a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ url_for('players_bp.player_directory') }}">
+                                Directory
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
