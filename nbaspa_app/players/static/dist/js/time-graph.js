@@ -1,13 +1,65 @@
 /**
+ * Create a hover format
+ * @function timeHover
+ * @param {Object} data Row information
+ * @param {number} playerid The player ID
+*/
+ function timeHover(data, playerid) {
+    return `
+        <div class="card">
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/${playerid}.png" width="75px">
+                    </div>
+                    <div class="media-content">
+                        <nav class="level">
+                            <div class="level-item has-text-centered">
+                                <div>
+                                    <p class="heading">SPA+</p>
+                                    <p class="title">${data['IMPACT_ADJ']}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                    <p class="heading">Points</p>
+                                    <p class="title">${data['PTS']}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                    <p class="heading">Rebounds</p>
+                                    <p class="title">${data['REB']}</p>
+                                </div>
+                            </div>
+                            <div class="level-item has-text-centered">
+                                <div>
+                                    <p class="heading">Assists</p>
+                                    <p class="title">${data['AST']}</p>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a class="card-footer-item" href="${data['URL']}">Details</a>
+            </div>
+        </div>
+    `
+}
+
+/**
  * Creates a D3.js visualization for player impact time-series.
  * @function drawTimeChart
  * @param {Array} lineData The time-series impact data
  * @param {string} dateVar The name of the date variable for the time-series
  * @param {string} dateVarFormat The format of the datetime variable
  * @param {string} axisFormat The date-time format for the x-axis
+ * @param {number} playerID The player identifier
  * @param {string} tag The HTML div ID for the graph
  */
-function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
+function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, playerID, tag) {
     var margin = {
         top: 20,
         right: 20,
@@ -70,6 +122,18 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
         .attr("stroke-width", 2)
         .style("fill", "none")
     // Add dots
+    maxImpact = d3.max(
+        lineData,
+        function(d) {
+            return d.IMPACT_ADJ
+        }
+    )
+    minImpact = d3.min(
+        lineData,
+        function(d) {
+            return d.IMPACT_ADJ
+        }
+    )
     var div = d3.select(tag).append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
@@ -92,5 +156,33 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
         )
         .attr("stroke", "black")
         .attr("stroke-width", 1)
-        .attr("fill", "#FFFFFF")
+        .attr(
+            "fill",
+            function (d) {
+                if (d.IMPACT_ADJ == maxImpact) {
+                    return "hsl(141, 53%, 53%)"
+                } else if (d.IMPACT_ADJ == minImpact) {
+                    return "hsl(348, 100%, 61%)"
+                } else {
+                    return "hsl(0, 0%, 100%)"
+                }
+            }
+        )
+        .on(
+            "mouseover",
+            function (event, d) {
+                d3.select(this)
+                    .transition()
+                    .duration("100")
+                // Make the div appear
+                div.transition()
+                    .duration("100")
+                    .style("opacity", 1)
+                // Add data
+                htmlhover = timeHover(data=d, playerid=playerID)
+                div.html(htmlhover)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 15) + "px")
+            }
+        )
 }

@@ -2,13 +2,14 @@
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from flask import Flask
 import numpy as np
 import pandas as pd
 
-from nbaspa.data.endpoints import AllPlayers, PlayerInfo
+from nbaspa.data.endpoints import AllPlayers, PlayerInfo, PlayerGameLog
+from nbaspa.data.factory import NBADataFactory
 
 def get_top_players(app: Flask, Season: str) -> List[Dict]:
     """Get the top players for a given season.
@@ -76,7 +77,7 @@ def get_player_info(app: Flask, PlayerID: int) -> Dict:
 
     return info
 
-def get_player_time_series(app: Flask, PlayerID: int) -> List[Dict]:
+def get_player_time_series(app: Flask, PlayerID: int, Season: str = None) -> List[Dict]:
     """Get the player time-series.
     
     Parameters
@@ -85,7 +86,9 @@ def get_player_time_series(app: Flask, PlayerID: int) -> List[Dict]:
         The current application.
     PlayerID : int
         The player identifier.
-    
+    Season : str, optional (default None)
+        The season to search for.
+
     Returns
     -------
     Dict
@@ -94,7 +97,7 @@ def get_player_time_series(app: Flask, PlayerID: int) -> List[Dict]:
     performances = pd.concat(
         (
             pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
-            for fpath in Path(app.config["DATA_DIR"]).glob(f"*/impact-timeseries/data_{PlayerID}.csv")
+            for fpath in Path(app.config["DATA_DIR"]).glob(f"{Season or '*'}/impact-timeseries/data_{PlayerID}.csv")
         ),
         ignore_index=True
     )
@@ -108,9 +111,55 @@ def get_player_time_series(app: Flask, PlayerID: int) -> List[Dict]:
     performances["DAY"] = performances["GAME_DATE_PARSED"].dt.day
     performances["MONTH"] = performances["GAME_DATE_PARSED"].dt.month
     performances["YEAR"] = performances["GAME_DATE_PARSED"].dt.year
+    # Load game log, if appropriate
+    if Season is not None:
+        loader = PlayerGameLog(
+            output_dir=Path(app.config["DATA_DIR"], Season), PlayerID=PlayerID
+        )
+        if not loader.exists():
+            raise FileNotFoundError("Unable to get player gamelog.")
+        loader.load()
+        gamelog = loader.get_data()
+    else:
+        seasons = set(row["SEASON"] for _, row in performances.iterrows())
+        calls = []
+        for season in seasons:
+            calls.append(
+                (
+                    "PlayerGameLog",
+                    {
+                        "Season": season,
+                        "output_dir": Path(app.config["DATA_DIR"], season),
+                        "PlayerID": PlayerID
+                    }
+                )
+            )
+        factory = NBADataFactory(calls=calls)
+        factory.load()
+        gamelog = factory.get_data()
+    # Merge with performance data
+    performances = pd.merge(
+        performances,
+        gamelog[["Game_ID", "PTS", "REB", "AST"]],
+        left_on="GAME_ID",
+        right_on="Game_ID",
+        how="left"
+    )
 
     return performances[
-        ["IMPACT", "IMPACT_ADJ", "SEASON", "GAME_ID", "GAME_DATE", "DAY", "MONTH", "YEAR"]
+        [
+            "IMPACT",
+            "IMPACT_ADJ",
+            "SEASON",
+            "GAME_ID",
+            "GAME_DATE",
+            "DAY",
+            "MONTH",
+            "YEAR",
+            "PTS",
+            "REB",
+            "AST"
+        ]
     ].to_dict(orient="records")
 
 def get_player_impact_profile(data: List[Dict]) -> List[Dict]:
@@ -127,9 +176,13 @@ def get_player_impact_profile(data: List[Dict]) -> List[Dict]:
         A season-by-season average impact rating
     """
     df = pd.DataFrame(data)
-    agg = df.groupby("SEASON")["IMPACT_ADJ"].mean().to_frame().reset_index()
+    agg = df.groupby("SEASON")[["IMPACT_ADJ", "PTS", "REB", "AST"]].mean().reset_index()
     agg["YEAR"] = agg["SEASON"].str.split("-", expand=True)[0]
     agg["YEAR"] = agg["YEAR"].astype(int)
+    agg["IMPACT_ADJ"] = agg["IMPACT_ADJ"].round(3)
+    agg["PTS"] = agg["PTS"].round(1)
+    agg["REB"] = agg["REB"].round(1)
+    agg["AST"] = agg["AST"].round(1)
 
     return agg.to_dict(orient="records")
 

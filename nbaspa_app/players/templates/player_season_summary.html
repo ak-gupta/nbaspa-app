@@ -1,46 +1,31 @@
 {% extends 'player_layout.html' %}
 
+{% block header %}
+    <link
+        rel="stylesheet"
+        href="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/css/player.css') }}"
+        type='text/css'>
+{% endblock %}
+
 {% block datacontent %}
     <h4 class="title">{{ season }} SPA+ Summary</h4>
     <br>
     <div id="timeGraph" style="text-align: center;"></div>
     <br>
-    <table class="table is-hoverable is-scrollable has-background-light">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Impact</th>
-                <th>Impact+</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in impact %}
-                {% if row['SEASON'] == season %}
-                    <tr>
-                        <td>
-                            <a href="{{ url_for('game_bp.game', gameid=row['GAME_ID'], day=row['DAY'], month=row['MONTH'], year=row['YEAR']) }}">
-                                {{ row['GAME_DATE'].split("T")[0] }}
-                            </a>
-                        </td>
-                        <td>{{ row['IMPACT'] }}</td>
-                        <td>{{ row['IMPACT_ADJ'] }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
 {% endblock %}
 
 {% block jsScript %}
     <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/time-graph.js') }}"></script>
 
     <script>
+        var scriptRoot = {{ request.script_root|tojson }}
         var lineData = {{ impact|safe }}
-        drawTimeChart(
+        var seasonChart = drawTimeChart(
             lineData,
             dateVar="GAME_DATE",
             dateVarFormat="%Y-%m-%dT%H:%M:%S",
-            axisFormat="%b %Y",
+            axisFormat="%b",
+            playerID={{ playerid }},
             tag="#timeGraph"
         )
     </script>

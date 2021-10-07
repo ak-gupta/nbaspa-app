@@ -1,10 +1,10 @@
 """Player pages."""
 
-from flask import abort, Blueprint, render_template
+from flask import abort, Blueprint, render_template, url_for
 from flask import current_app as app
 from flask.helpers import make_response
 
-from nbaspa.data.endpoints.parameters import CURRENT_SEASON
+from nbaspa.data.endpoints.parameters import CURRENT_SEASON, SEASONS
 
 from .summary import (
     get_top_players,
@@ -67,6 +67,20 @@ def player_summary(playerid: int):
     try:
         info = get_player_info(app=app, PlayerID=playerid)
         impact = get_player_time_series(app=app, PlayerID=playerid)
+        profile = get_player_impact_profile(data=impact)
+        for row in profile:
+            row["URL"] = url_for(
+                "players_bp.player_season_summary",
+                playerid=playerid,
+                season=row["SEASON"]
+            )
+        # Get the available seasons
+        seasons = []
+        for idx in range(info["FROM_YEAR"], info["TO_YEAR"] + 1):
+            for key in SEASONS:
+                if idx == int(key.split("-")[0]):
+                    seasons.append(key)
+                    break
     except FileNotFoundError:
         return abort(404)
 
@@ -75,8 +89,8 @@ def player_summary(playerid: int):
         title=f"{info['DISPLAY_FIRST_LAST']} Summary",
         playerid=playerid,
         info=info,
-        impact=get_player_impact_profile(data=impact),
-        seasons=sorted(list(set(row["SEASON"] for row in impact)))
+        impact=profile,
+        seasons=sorted(seasons)
     )
 
 @players_bp.get("/players/<int:playerid>/<season>")
@@ -92,9 +106,23 @@ def player_season_summary(playerid: int, season: str):
     """
     try:
         info = get_player_info(app=app, PlayerID=playerid)
-        impact = get_player_time_series(app=app, PlayerID=playerid)
-        seasons = sorted(list(set(row["SEASON"] for row in impact)))
+        impact = get_player_time_series(app=app, PlayerID=playerid, Season=season)
+        # Get the available seasons
+        seasons = []
+        for idx in range(info["FROM_YEAR"], info["TO_YEAR"] + 1):
+            for key in SEASONS:
+                if idx == int(key.split("-")[0]):
+                    seasons.append(key)
+                    break
         impact = [row for row in impact if row["SEASON"] == season]
+        for row in impact:
+            row["URL"] = url_for(
+                "game_bp.game",
+                gameid=row["GAME_ID"],
+                day=row["DAY"],
+                month=row["MONTH"],
+                year=row["YEAR"],
+            )
     except FileNotFoundError:
         return abort(404)
 
