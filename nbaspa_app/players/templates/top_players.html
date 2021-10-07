@@ -24,14 +24,20 @@
                             <nav class="level is-mobile">
                                 <div class="level-item has-text-centered">
                                     <div>
-                                        <p class="heading">Average Impact</p>
-                                        <p class="title">{{ row['MEAN_IMPACT'] }}</p>
+                                        <p class="heading">Average Impact+</p>
+                                        <p class="title">{{ row['IMPACT+_mean'] }}</p>
                                     </div>
                                 </div>
                                 <div class="level-item has-text-centered">
                                     <div>
-                                        <p class="heading">Total Impact</p>
-                                        <p class="title">{{ row['TOTAL_IMPACT'] }}</p>
+                                        <p class="heading">Average Impact</p>
+                                        <p class="title">{{ row['IMPACT_mean'] }}</p>
+                                    </div>
+                                </div>
+                                <div class="level-item has-text-centered">
+                                    <div>
+                                        <p class="heading">Total Impact+</p>
+                                        <p class="title">{{ row['IMPACT+_sum'] }}</p>
                                     </div>
                                 </div>
                             </nav>
