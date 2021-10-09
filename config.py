@@ -2,6 +2,8 @@
 
 import os
 
+from nbaspa.data.endpoints.parameters import SEASONS
+
 class Config:
     """Set the configuration."""
 
@@ -11,6 +13,7 @@ class Config:
 
     # Data location
     DATA_DIR = os.environ.get("DATA_DIR")
+    SEASONS = SEASONS
 
 class DevelopmentConfig(Config):
     """Development configuration."""

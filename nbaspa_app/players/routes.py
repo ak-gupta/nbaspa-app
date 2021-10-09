@@ -157,3 +157,32 @@ def top_performances(season: str):
         )
     except FileNotFoundError:
         return abort(404)
+
+@players_bp.get("/season/<season>")
+def season_home(season: str):
+    """Get the season summary page.
+    
+    Parameters
+    ----------
+    season : str
+        The season.
+    """
+    try:
+        top = get_top_players(app=app, Season=season)
+        players = get_player_time_series(app=app, Season=season)
+        player_ids = list(set(row["PLAYER_ID"] for row in players))
+        display_info = []
+        for player in player_ids:
+            info = get_player_info(app=app, PlayerID=player)
+            display_info.append((player, info["DISPLAY_FIRST_LAST"]))
+    except FileNotFoundError:
+        return abort(404)
+
+    return render_template(
+        "season_home.html",
+        title=f"{season} Summary",
+        season=season,
+        players=players,
+        default=[row["PLAYER_ID"] for row in top[:5]],
+        display_info=sorted(display_info, key=lambda x: x[1])
+    )

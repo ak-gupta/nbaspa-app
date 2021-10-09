@@ -77,14 +77,14 @@ def get_player_info(app: Flask, PlayerID: int) -> Dict:
 
     return info
 
-def get_player_time_series(app: Flask, PlayerID: int, Season: str = None) -> List[Dict]:
+def get_player_time_series(app: Flask, PlayerID: int = None, Season: str = None) -> List[Dict]:
     """Get the player time-series.
     
     Parameters
     ----------
     app : Flask
         The current application.
-    PlayerID : int
+    PlayerID : int, optional (default None)
         The player identifier.
     Season : str, optional (default None)
         The season to search for.
@@ -97,7 +97,7 @@ def get_player_time_series(app: Flask, PlayerID: int, Season: str = None) -> Lis
     performances = pd.concat(
         (
             pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
-            for fpath in Path(app.config["DATA_DIR"]).glob(f"{Season or '*'}/impact-timeseries/data_{PlayerID}.csv")
+            for fpath in Path(app.config["DATA_DIR"]).glob(f"{Season or '*'}/impact-timeseries/data_{PlayerID or '*'}.csv")
         ),
         ignore_index=True
     )
@@ -112,55 +112,58 @@ def get_player_time_series(app: Flask, PlayerID: int, Season: str = None) -> Lis
     performances["MONTH"] = performances["GAME_DATE_PARSED"].dt.month
     performances["YEAR"] = performances["GAME_DATE_PARSED"].dt.year
     # Load game log, if appropriate
-    if Season is not None:
-        loader = PlayerGameLog(
-            output_dir=Path(app.config["DATA_DIR"], Season), PlayerID=PlayerID
-        )
-        if not loader.exists():
-            raise FileNotFoundError("Unable to get player gamelog.")
-        loader.load()
-        gamelog = loader.get_data()
-    else:
-        seasons = set(row["SEASON"] for _, row in performances.iterrows())
-        calls = []
-        for season in seasons:
-            calls.append(
-                (
-                    "PlayerGameLog",
-                    {
-                        "Season": season,
-                        "output_dir": Path(app.config["DATA_DIR"], season),
-                        "PlayerID": PlayerID
-                    }
-                )
+    columns = [
+        "PLAYER_ID",
+        "IMPACT",
+        "IMPACT_ADJ",
+        "SEASON",
+        "GAME_ID",
+        "GAME_DATE",
+        "DAY",
+        "MONTH",
+        "YEAR",
+    ]
+    if PlayerID is not None:
+        columns += ["PTS", "REB", "AST"]
+        if Season is not None:
+            loader = PlayerGameLog(
+                output_dir=Path(app.config["DATA_DIR"], Season), PlayerID=PlayerID
             )
-        factory = NBADataFactory(calls=calls)
-        factory.load()
-        gamelog = factory.get_data()
-    # Merge with performance data
-    performances = pd.merge(
-        performances,
-        gamelog[["Game_ID", "PTS", "REB", "AST"]],
-        left_on="GAME_ID",
-        right_on="Game_ID",
-        how="left"
-    )
+            if not loader.exists():
+                raise FileNotFoundError("Unable to get player gamelog.")
+            loader.load()
+            gamelog = loader.get_data()
+        else:
+            seasons = set(row["SEASON"] for _, row in performances.iterrows())
+            calls = []
+            for season in seasons:
+                calls.append(
+                    (
+                        "PlayerGameLog",
+                        {
+                            "Season": season,
+                            "output_dir": Path(app.config["DATA_DIR"], season),
+                            "PlayerID": PlayerID
+                        }
+                    )
+                )
+            factory = NBADataFactory(calls=calls)
+            factory.load()
+            gamelog = factory.get_data()
+        # Merge with performance data
+        performances = pd.merge(
+            performances,
+            gamelog[["Game_ID", "PTS", "REB", "AST"]],
+            left_on="GAME_ID",
+            right_on="Game_ID",
+            how="left"
+        )
+    else:
+        gamecount = performances.groupby("PLAYER_ID")["GAME_DATE"].count()
+        valid = gamecount.index[gamecount >= 50].values
+        performances = performances[performances["PLAYER_ID"].isin(valid)]
 
-    return performances[
-        [
-            "IMPACT",
-            "IMPACT_ADJ",
-            "SEASON",
-            "GAME_ID",
-            "GAME_DATE",
-            "DAY",
-            "MONTH",
-            "YEAR",
-            "PTS",
-            "REB",
-            "AST"
-        ]
-    ].to_dict(orient="records")
+    return performances[columns].to_dict(orient="records")
 
 def get_player_impact_profile(data: List[Dict]) -> List[Dict]:
     """Get the player impact profile.
@@ -258,9 +261,9 @@ def get_top_performances(app: Flask, Season: str) -> List[Dict]:
     performances.set_index("PLAYER_ID", inplace=True)
     performances["DISPLAY_FIRST_LAST"] = playerindex["DISPLAY_FIRST_LAST"]
     performances.reset_index(inplace=True)
-    performances.sort_values(by="IMPACT", ascending=False, inplace=True)
+    performances.sort_values(by="IMPACT+", ascending=False, inplace=True)
     performances["RANK"] = np.arange(1, performances.shape[0] + 1)
-    performances["IMPACT"] = performances["IMPACT"].round(3)
+    performances["IMPACT+"] = performances["IMPACT+"].round(3)
     performances["GAME_DATE"] = pd.to_datetime(performances["GAME_DATE"])
 
     return performances.to_dict(orient="records")

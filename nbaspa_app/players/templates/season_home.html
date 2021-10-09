@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <br>
+    <h4 class="title">{{ season }} Summary</h4>
+    <p class="subtitle">The following graph can plot the SPA+ performance of any player that played 50+ games in {{ season }}.</p>
+    <br>
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <div class="select is-multiple">
+                    <select multiple id="playerFilter" size="10">
+                        {% for row in display_info %}
+                            <option value="{{ row[0] }}">{{ row[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <button class="button is-link" id="submit">Graph</button>
+            </div>
+        </div>
+        <div class="column is-10">
+            <div id="compareGraph" style="text-align: center"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsScript %}
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/compare-graph.js') }}"></script>
+    
+    <script>
+        var graphData = {{ players|safe }}
+        var defaultSelect = {{ default|safe }}
+
+        let defaultFiltered = graphData.filter(obs => defaultSelect.includes(obs.PLAYER_ID))
+
+        compareChart(lineData=defaultFiltered, players=defaultSelect, tag="#compareGraph")
+
+        document.getElementById('submit').onclick = function() {
+            var selected = [];
+            for (var option of document.getElementById('playerFilter').options) {
+                if (option.selected) {
+                    selected.push(parseInt(option.value));
+                }
+            }
+            d3.select("#compareGraph").selectAll("svg").remove()
+            let newFiltered = graphData.filter(obs => selected.includes(obs.PLAYER_ID))
+            compareChart(lineData=newFiltered, players=selected, tag="#compareGraph")
+        }
+    </script>
+{% endblock %}
