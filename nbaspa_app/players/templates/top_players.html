@@ -3,8 +3,8 @@
 {% block content %}
     <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
-            <li><a href="#">Seasons</a></li>
-            <li><a href="#">{{ season }}</a></li>
+            <li><a>Seasons</a></li>
+            <li><a href="{{ url_for('players_bp.season_home', season=season) }}">{{ season }}</a></li>
             <li class="is-active"><a href="#" aria-current="page">Top Players</a></li>
         </ul>
     </nav>

@@ -174,7 +174,13 @@ def season_home(season: str):
         display_info = []
         for player in player_ids:
             info = get_player_info(app=app, PlayerID=player)
-            display_info.append((player, info["DISPLAY_FIRST_LAST"]))
+            display_info.append(
+                [
+                    player,
+                    info["DISPLAY_FIRST_LAST"],
+                    url_for("players_bp.player_season_summary", playerid=player, season=season)
+                ]
+            )
     except FileNotFoundError:
         return abort(404)
 
