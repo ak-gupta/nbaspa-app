@@ -32,17 +32,10 @@ def player_directory():
         data=get_all_players(app=app)
     )
 
-
+"""
 @players_bp.get("/players/top", defaults={"season": CURRENT_SEASON})
 @players_bp.get("/players/top/<season>")
 def top_players(season: str):
-    """Get the top players in a given season.
-
-    Parameters
-    ----------
-    season : str
-        The season.
-    """
     try:
         best = get_top_players(app=app, Season=season)
         return render_template(
@@ -53,6 +46,7 @@ def top_players(season: str):
         )
     except FileNotFoundError:
         return abort(404)
+"""
 
 @players_bp.get("/players/<int:playerid>")
 def player_summary(playerid: int):
@@ -166,28 +160,11 @@ def season_home(season: str):
     season : str
         The season.
     """
-    try:
-        top = get_top_players(app=app, Season=season)
-        players = get_player_time_series(app=app, Season=season)
-        player_ids = list(set(row["PLAYER_ID"] for row in players))
-        display_info = []
-        for player in player_ids:
-            info = get_player_info(app=app, PlayerID=player)
-            display_info.append(
-                [
-                    player,
-                    info["DISPLAY_FIRST_LAST"],
-                    url_for("players_bp.player_season_summary", playerid=player, season=season)
-                ]
-            )
-    except FileNotFoundError:
-        return abort(404)
+    top = get_top_players(app=app, Season=season)
 
     return render_template(
         "season_home.html",
         title=f"{season} Summary",
         season=season,
-        players=players,
         default=[row["PLAYER_ID"] for row in top[:5]],
-        display_info=sorted(display_info, key=lambda x: x[1])
     )

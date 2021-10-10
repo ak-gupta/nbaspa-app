@@ -83,7 +83,7 @@ function compareChart(playerData, info, tag) {
                 .attr("stroke", "hsl(0, 0%, 21%)")
             // Create a hover div
             const eventData = d3.select(this).data()[0]
-            const displayName = info.filter(obs => obs[0] == eventData[0].PLAYER_ID)[0][1]
+            const displayName = info.filter(obs => obs.PERSON_ID == eventData[0].PLAYER_ID)[0].DISPLAY_FIRST_LAST
             div.selectAll("div").remove()
             div.transition()
                 .duration("100")

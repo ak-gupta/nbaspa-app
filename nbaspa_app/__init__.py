@@ -35,14 +35,14 @@ def create_app(config: str = "development"):
         # Include the routes
         from .games.routes import game_bp
         from .home.routes import home_bp
-        from .io.routes import io_bp
+        from .io.players import io_players
         from .players.routes import players_bp
         from .teams.routes import teams_bp
 
         app.register_error_handler(404, not_found)
         app.register_blueprint(game_bp)
         app.register_blueprint(home_bp)
-        app.register_blueprint(io_bp)
+        app.register_blueprint(io_players)
         app.register_blueprint(players_bp)
         app.register_blueprint(teams_bp)
 
