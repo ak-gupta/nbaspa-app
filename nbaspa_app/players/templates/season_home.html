@@ -38,17 +38,23 @@
 {% endblock %}
 
 {% block jsScript %}
-    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/compare-graph.js') }}"></script>
-    
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/compare/graph.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/io.js') }}"></script>
+
     <script>
-        var graphData = {{ players|safe }};
         var defaultSelect = {{ default|safe }};
         var displayInfo = {{ display_info|safe }};
 
-        let defaultFiltered = graphData.filter(obs => defaultSelect.includes(obs.PLAYER_ID));
+        let defaultFiltered = loadCompareData(
+            playerList=defaultSelect,
+            Season="{{ season }}"
+        );
 
-        compareChart(lineData=defaultFiltered, info=displayInfo, tag="#compareGraph");
-        playerDivs(tag="#playerList", players=defaultFiltered, info=displayInfo)
+        compareChart(
+            playerData=defaultFiltered,
+            info=displayInfo,
+            tag="#compareGraph"
+        )
 
         document.getElementById('submit').onclick = function() {
             var selected = [];
@@ -59,10 +65,11 @@
             }
             d3.select("#compareGraph").selectAll("svg").remove();
             d3.select("#compareGraph").selectAll("div").remove();
-            d3.select("#playerList").selectAll("div").remove();
-            let newFiltered = graphData.filter(obs => selected.includes(obs.PLAYER_ID));
-            compareChart(lineData=newFiltered, info=displayInfo, tag="#compareGraph");
-            playerDivs(tag="#playerList", players=newFiltered, info=displayInfo)
+            var newFiltered = loadCompareData(
+                playerList=selected,
+                Season="{{ season }}"
+            )
+            compareChart(playerData=newFiltered, info=displayinfo, tag="#compareGraph")
         }
     </script>
 {% endblock %}

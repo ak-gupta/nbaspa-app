@@ -18,6 +18,8 @@
         
         <!-- D3.js for data visualization -->
         <script src="https://d3js.org/d3.v7.min.js"></script>
+        <!-- Load jQuery for AJAX -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     </head>
     <body class="has-background-light">
         <nav class="navbar is-transparent has-background-light" role="navigation" arial-label="main navigation">
@@ -45,6 +47,9 @@
             {% block content %}{% endblock %}
         </div>
         <br>
+        <script>
+            $SCRIPT_ROOT = {{ request.script_root|tojson }};
+        </script>
         {% block jsScript %}{% endblock %}
     </body>
     <footer class="footer">

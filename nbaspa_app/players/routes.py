@@ -2,7 +2,6 @@
 
 from flask import abort, Blueprint, render_template, url_for
 from flask import current_app as app
-from flask.helpers import make_response
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON, SEASONS
 
