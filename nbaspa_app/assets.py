@@ -12,6 +12,8 @@ def compile_assets(assets):
         filters="rjsmin",
         output="dist/js/players.min.js",
     )
+    # Register bundles
     assets.register("player_js", player_js_bundle)
+    # Build
     if app.config["FLASK_ENV"] == "development":
         player_js_bundle.build()

@@ -1,7 +1,14 @@
+/**
+ * @module The javascript code for running the season summary page
+ */
+
+// Set null variables for AJAX results
 let topPlayers = null;
 let defaultSelect = null;
 let defaultFiltered = null;
 let displayInfo = null;
+
+// Load the index of all players in the season
 loadPlayerIndex(
     Season=$SEASON,
     function (result) {
@@ -16,6 +23,7 @@ loadPlayerIndex(
             .text(d => d.DISPLAY_FIRST_LAST)
     }
 );
+// Load the players by average SPA+
 loadTopPlayers(
     Season=$SEASON,
     function (result) {
@@ -27,7 +35,7 @@ loadTopPlayers(
     }
 )
 
-
+// Set functionality for player comparison graphing
 document.getElementById('submit').onclick = function() {
     var selected = [];
     for (var option of document.getElementById('playerFilter').options) {
