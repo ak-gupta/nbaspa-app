@@ -1,5 +1,6 @@
 """File I/O paths."""
 
+from datetime import datetime
 import json
 from pathlib import Path
 
@@ -8,7 +9,7 @@ from flask import current_app as app
 import numpy as np
 import pandas as pd
 
-from nbaspa.data.endpoints import AllPlayers
+from nbaspa.data.endpoints import AllPlayers, PlayerInfo
 
 io_players = Blueprint("io_bp", __name__)
 
@@ -53,9 +54,9 @@ def player_time_series():
     return json.dumps(performances[columns].to_dict(orient="records"))
 
 
-@io_players.get("/players/info")
-def player_info():
-    """Retrieve player information."""
+@io_players.get("/players/index")
+def player_index():
+    """Retrieve player index."""
     loader = AllPlayers(
         output_dir=Path(app.config["DATA_DIR"], request.args["Season"]), Season=request.args["Season"]
     )
@@ -75,6 +76,19 @@ def player_info():
     playerinfo.sort_values(by="DISPLAY_FIRST_LAST", ascending=True, inplace=True)
 
     return json.dumps(playerinfo.to_dict(orient="records"))
+
+@io_players.get("/players/info")
+def player_info():
+    """Retrieve player information."""
+    loader = PlayerInfo(PlayerID=request.args["PlayerID"], output_dir=app.config["DATA_DIR"])
+    if not loader.exists():
+        raise FileNotFoundError("Cannot find the player information.")
+    loader.load()
+
+    info = loader.get_data("CommonPlayerInfo").to_dict(orient="records")[0]
+    info["BIRTHDATE"] = datetime.strptime(info["BIRTHDATE"], "%Y-%m-%dT%H:%M:%S")
+
+    return json.dumps(info)
 
 @io_players.get("/players/top")
 def top_players():

@@ -32,22 +32,6 @@ def player_directory():
         data=get_all_players(app=app)
     )
 
-"""
-@players_bp.get("/players/top", defaults={"season": CURRENT_SEASON})
-@players_bp.get("/players/top/<season>")
-def top_players(season: str):
-    try:
-        best = get_top_players(app=app, Season=season)
-        return render_template(
-            "top_players.html",
-            title=f"{season} Top Players",
-            season=season,
-            data=best[:50],
-        )
-    except FileNotFoundError:
-        return abort(404)
-"""
-
 @players_bp.get("/players/<int:playerid>")
 def player_summary(playerid: int):
     """Player summary page.
@@ -160,11 +144,6 @@ def season_home(season: str):
     season : str
         The season.
     """
-    top = get_top_players(app=app, Season=season)
-
     return render_template(
-        "season_home.html",
-        title=f"{season} Summary",
-        season=season,
-        default=[row["PLAYER_ID"] for row in top[:5]],
+        "season_home.html", title=f"{season} Summary", season=season,
     )

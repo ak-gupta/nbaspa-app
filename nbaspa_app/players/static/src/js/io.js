@@ -31,8 +31,30 @@ function loadPlayerIndex(Season, callback) {
             method: "GET",
             async: false,
             dataType: "json",
+            url: $SCRIPT_ROOT + "/players/index",
+            data: {
+                "Season": Season
+            },
+            success: callback
+        }
+    )
+}
+
+/**
+ * @function loadPlayerInfo The player information
+ * @param {number} PlayerID The player identifier
+ * @param {string} Season The season of data to load
+ * @returns {Array} The player time-series
+ */
+function loadPlayerInfo(PlayerID, Season, callback) {
+    $.ajax(
+        {
+            method: "GET",
+            async: false,
+            dataType: "json",
             url: $SCRIPT_ROOT + "/players/info",
             data: {
+                "PlayerID": PlayerID,
                 "Season": Season
             },
             success: callback

@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block jsScript %}
-    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/time-graph.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='src/js/time-graph.js') }}"></script>
 
     <script>
         var lineData = {{ impact|safe }}
