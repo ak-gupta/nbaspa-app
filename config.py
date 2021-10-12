@@ -6,9 +6,6 @@ from nbaspa.data.endpoints.parameters import SEASONS
 
 ASSETS_DEBUG = False
 ASSETS_AUTO_BUILD = True
-CLOSURE_EXTRA_ARGS = [
-    "--reqrite_polyfills", "false"
-]
 
 class Config:
     """Set the configuration."""
