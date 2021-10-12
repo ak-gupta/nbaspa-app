@@ -31,7 +31,9 @@
 {% endblock %}
 
 {% block jsScript %}
-    <script>$SEASON = "{{ season }}"</script>
+    <script>
+        var Season = "{{ season }}"
+    </script>
 
     {% assets "player_js" -%}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>

@@ -10,7 +10,7 @@ let displayInfo = null;
 
 // Load the index of all players in the season
 loadPlayerIndex(
-    Season=$SEASON,
+    Season=Season,
     function (result) {
         // Set the displayInfo result
         displayInfo = result
@@ -25,11 +25,11 @@ loadPlayerIndex(
 );
 // Load the players by average SPA+
 loadTopPlayers(
-    Season=$SEASON,
+    Season=Season,
     function (result) {
         topPlayers = result
         defaultSelect = result.map(obs => obs.PLAYER_ID).slice(0, 5);
-        defaultFiltered = loadCompareData(playerList=defaultSelect, Season=$SEASON)
+        defaultFiltered = loadCompareData(playerList=defaultSelect, Season=Season)
         compareChart(playerData=defaultFiltered, info=displayInfo, tag="#compareGraph")
         playerDivs(playerList=defaultFiltered, info=displayInfo, tag="#playerList")
     }
@@ -48,7 +48,7 @@ document.getElementById('submit').onclick = function() {
     d3.select("#playerList").selectAll("div").remove();
     var newFiltered = loadCompareData(
         playerList=selected,
-        Season=$SEASON
+        Season=Season
     )
     playerDivs(playerList=newFiltered, info=displayInfo, tag="#playerList")
     compareChart(playerData=newFiltered, info=displayInfo, tag="#compareGraph")

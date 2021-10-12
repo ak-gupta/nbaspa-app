@@ -2,37 +2,7 @@
 
 {% block content %}
     {% block imagehead %}
-        <div class="card">
-            <div class="media">
-                <div class="media-left">
-                    <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ playerid }}.png" height="100px">
-                </div>
-                <div class="media-content">
-                    <p class="title is-2">{{ info['DISPLAY_FIRST_LAST'] }}</p>
-                    <p class="subtitle is-4">{{ info['POSITION'] }} | #{{ info['JERSEY'] }}</p>
-                    <nav class="level is-mobile">
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p class="heading">Country</p>
-                                <p class="title">{{ info['COUNTRY'] }}</p>
-                            </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p class="heading">School</p>
-                                <p class="title">{{ info['SCHOOL'] }}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p class="heading">Birthdate</p>
-                                <p class="title">{{ info['BIRTHDATE'].strftime("%b %d, %Y") }}</p>
-                            </div>
-                        </div>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        <div id="playerHeader"></div>
         <br>
         <div class="tabs">
             <ul>

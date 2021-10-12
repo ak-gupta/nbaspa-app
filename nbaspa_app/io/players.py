@@ -84,9 +84,7 @@ def player_info():
     if not loader.exists():
         raise FileNotFoundError("Cannot find the player information.")
     loader.load()
-
     info = loader.get_data("CommonPlayerInfo").to_dict(orient="records")[0]
-    info["BIRTHDATE"] = datetime.strptime(info["BIRTHDATE"], "%Y-%m-%dT%H:%M:%S")
 
     return json.dumps(info)
 
