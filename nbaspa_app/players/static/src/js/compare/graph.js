@@ -95,7 +95,9 @@ function compareChart(playerData, info, tag) {
             cardContent.insert("div")
                 .classed("media-left", true)
                 .insert("img")
-                .attr("src", `https://cdn.nba.com/headshots/nba/latest/260x190/${eventData[0].PLAYER_ID}.png`)
+                .attr(
+                    "src", `https://cdn.nba.com/headshots/nba/latest/260x190/${eventData[0].PLAYER_ID}.png`
+                )
                 .attr("width", "75px")
             cardContent.insert("div")
                 .classed("media-content", true)

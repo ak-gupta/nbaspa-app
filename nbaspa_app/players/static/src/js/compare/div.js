@@ -1,13 +1,16 @@
-/**
- * Create a list of players in the current plot
- * @param {string} tag 
- * @param {Array} players The player data
- * @param {Array} info The display information
- */
-function playerDivs(tag, players, info) {
-    // group the data and get the average impact
-    var grouped = d3.rollup(players, v => d3.mean(v, d => d.IMPACT_ADJ), e => e.PLAYER_ID)
-    var sorted = new Map([...grouped.entries()].sort((a, b) => a[1] < b[1]))
+
+function playerDivs(playerList, info, tag) {
+    // Get average SPA+
+    var grouped = playerList.map(
+        obs =>  {
+            return {
+                PLAYER_ID: obs[0].PLAYER_ID,
+                SEASON: obs[0].SEASON,
+                IMPACT_ADJ: d3.mean(obs, d => d.IMPACT_ADJ),
+            }
+        }
+    )
+    var sorted = grouped.sort((a, b) => a.IMPACT_ADJ < b.IMPACT_ADJ)
     var divs = d3.select(tag).selectAll("div").data(sorted).enter();
 
     var card = divs.append("div")
@@ -18,23 +21,23 @@ function playerDivs(tag, players, info) {
         .classed("card", true)
         .insert("div")
         .classed("media", true)
-    
+
     card.insert("div")
         .classed("media-left", true)
         .insert("a")
-        .attr("href", d => info.filter(obs => obs[0] == d[0])[0][2])
+        .attr("href", d => $SCRIPT_ROOT + `/players/${d.PLAYER_ID}/${d.SEASON}`)
         .insert("img")
         .attr(
-            "src", d => `https://cdn.nba.com/headshots/nba/latest/260x190/${d[0]}.png`
+            "src", d => `https://cdn.nba.com/headshots/nba/latest/260x190/${d.PLAYER_ID}.png`
         )
         .attr("width", "100px")
-    
+
     var divContent = card.insert("div")
         .classed("media-content", true)
     divContent.insert("p")
         .classed("title", true)
         .classed("is-4", true)
-        .text(d => info.filter(obs => obs[0] == d[0])[0][1])
+        .text(d => info.filter(obs => obs.PERSON_ID == d.PLAYER_ID)[0].DISPLAY_FIRST_LAST)
     var navContent = divContent.insert("nav")
         .classed("level", true)
         .classed("is-mobile", true)
@@ -46,5 +49,5 @@ function playerDivs(tag, players, info) {
         .text("Average SPA+")
     navContent.insert("p")
         .classed("title", true)
-        .text(d => d[1].toFixed(3))
+        .text(d => d.IMPACT_ADJ.toFixed(3))
 }
