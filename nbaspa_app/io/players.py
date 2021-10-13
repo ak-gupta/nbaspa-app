@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from nbaspa.data.endpoints import AllPlayers, PlayerInfo, PlayerGameLog
+from nbaspa.data.factory import NBADataFactory
 
 io_players = Blueprint("io_bp", __name__)
 
@@ -53,6 +54,62 @@ def player_time_series():
 
     return json.dumps(performances[columns].to_dict(orient="records"))
 
+@io_players.get("/players/impact-profile")
+def player_impact_profile():
+    """Retrieve a player impact profile."""
+    performances = pd.concat(
+        (
+            pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
+            for fpath in Path(app.config["DATA_DIR"]).glob(f"*/impact-timeseries/data_{request.args['PlayerID']}.csv")
+        ),
+        ignore_index=True
+    )
+    performances.rename(columns={"IMPACT+": "IMPACT_ADJ"}, inplace=True)
+    performances = performances[(performances["IMPACT"] != 0) & (performances["IMPACT_ADJ"] != 0)].copy()
+    performances.dropna(inplace=True)
+    performances["IMPACT"] = performances["IMPACT"].round(3)
+    performances["IMPACT_ADJ"] = performances["IMPACT_ADJ"].round(3)
+    # Date parsing
+    performances["GAME_DATE_PARSED"] = pd.to_datetime(performances["GAME_DATE"])
+    performances["DAY"] = performances["GAME_DATE_PARSED"].dt.day
+    performances["MONTH"] = performances["GAME_DATE_PARSED"].dt.month
+    performances["YEAR"] = performances["GAME_DATE_PARSED"].dt.year
+    # Get every season gamelog
+    seasons = set(row["SEASON"] for _, row in performances.iterrows())
+    calls = []
+    for season in seasons:
+        calls.append(
+            (
+                "PlayerGameLog",
+                {
+                    "Season": season,
+                    "output_dir": Path(app.config["DATA_DIR"], season),
+                    "PlayerID": request.args["PlayerID"]
+                }
+            )
+        )
+    factory = NBADataFactory(calls=calls)
+    factory.load()
+    gamelog = factory.get_data()
+    # Merge with the performance data
+    performances = pd.merge(
+        performances,
+        gamelog[["Game_ID", "PTS", "REB", "AST"]],
+        left_on="GAME_ID",
+        right_on="Game_ID",
+        how="left"
+    )
+    # Aggregate to the season
+    agg = performances.groupby("SEASON")[["IMPACT_ADJ", "PTS", "REB", "AST"]].mean().reset_index()
+    agg["YEAR"] = agg["SEASON"].str.split("-", expand=True)[0]
+    agg["YEAR"] = agg["YEAR"].astype(int)
+    agg["IMPACT_ADJ"] = agg["IMPACT_ADJ"].round(3)
+    agg["PTS"] = agg["PTS"].round(1)
+    agg["REB"] = agg["REB"].round(1)
+    agg["AST"] = agg["AST"].round(1)
+    agg["PLAYER_ID"] = request.args["PlayerID"]
+
+    return json.dumps(agg.to_dict(orient="records"))
 
 @io_players.get("/players/index")
 def player_index():

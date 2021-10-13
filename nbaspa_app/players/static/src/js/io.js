@@ -106,6 +106,27 @@ function loadPlayerGamelog(PlayerID, Season, callback) {
 }
 
 /**
+ * Load the player career impact profile
+ * @function loadImpactProfile
+ * @param {number} PlayerID The player identifier
+ * @param {*} callback 
+ */
+function loadImpactProfile(PlayerID, callback) {
+    $.ajax(
+        {
+            method: "GET",
+            async: false,
+            dataType: "json",
+            url: $SCRIPT_ROOT + "/players/impact-profile",
+            data: {
+                "PlayerID": PlayerID
+            },
+            success: callback
+        }
+    )
+}
+
+/**
  * @function loadCompareData
  * @param {Array} playerList A list of player ID values
  * @param {string} Season The season of data to load

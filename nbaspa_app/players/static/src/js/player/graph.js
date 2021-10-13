@@ -193,14 +193,25 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
                     .text(d.AST)
                 
                 // Add the footer
-                cardContent.insert("div")
-                    .classed("card-footer", true)
-                    .insert("a")
-                    .classed("card-footer-item", true)
-                    .attr(
-                        "href", $SCRIPT_ROOT + `/games/${d.DAY}/${d.MONTH}/${d.YEAR}/${d.GAME_ID}`
-                    )
-                    .text("Details")
+                if ("GAME_ID" in d) {
+                    cardContent.insert("div")
+                        .classed("card-footer", true)
+                        .insert("a")
+                        .classed("card-footer-item", true)
+                        .attr(
+                            "href", $SCRIPT_ROOT + `/games/${d.DAY}/${d.MONTH}/${d.YEAR}/${d.GAME_ID}`
+                        )
+                        .text("Details")
+                } else {
+                    cardContent.insert("div")
+                        .classed("card-footer", true)
+                        .insert("a")
+                        .classed("card-footer-item", true)
+                        .attr(
+                            "href", $SCRIPT_ROOT + `/players/${d.PLAYER_ID}/${d.SEASON}`
+                        )
+                        .text("Details")
+                }
 
 
                 div.style("left", (event.pageX + 10) + "px")

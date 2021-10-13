@@ -22,18 +22,5 @@
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
     <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/base.js') }}"></script>
-    
-    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='src/js/time-graph.js') }}"></script>
-
-    <script>
-        var lineData = {{ impact|safe }}
-        drawTimeChart(
-            lineData,
-            dateVar="YEAR",
-            dateVarFormat="%Y",
-            axisFormat="%Y",
-            playerID={{ playerid }},
-            tag="#timeGraph"
-        )
-    </script>
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/overview.js') }}"></script>
 {% endblock %}
