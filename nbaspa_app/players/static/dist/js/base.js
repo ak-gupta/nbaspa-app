@@ -4,9 +4,9 @@
 
 let basicInfo = null;
 
+// Load the player info -- Birthdate, School, etc.
 loadPlayerInfo(
     PlayerID=PlayerID,
-    Season=Season,
     result => {
         basicInfo = result
         headerDiv(info=basicInfo, tag="#playerHeader")

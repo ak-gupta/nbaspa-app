@@ -43,20 +43,16 @@ function loadPlayerIndex(Season, callback) {
 /**
  * @function loadPlayerInfo The player information
  * @param {number} PlayerID The player identifier
- * @param {string} Season The season of data to load
  * @returns {Array} The player time-series
  */
-function loadPlayerInfo(PlayerID, Season, callback) {
+function loadPlayerInfo(PlayerID, callback) {
     $.ajax(
         {
             method: "GET",
             async: false,
             dataType: "json",
             url: $SCRIPT_ROOT + "/players/info",
-            data: {
-                "PlayerID": PlayerID,
-                "Season": Season
-            },
+            data: {"PlayerID": PlayerID},
             success: callback
         }
     )
@@ -76,6 +72,30 @@ function loadPlayerTS(PlayerID, Season, callback) {
             async: false,
             dataType: "json",
             url: $SCRIPT_ROOT + "/players/time-series",
+            data: {
+                "PlayerID": PlayerID,
+                "Season": Season
+            },
+            success: callback,
+        }
+    )
+}
+
+/**
+ * Load player gamelog from the I/O endpoints
+ * @function loadPlayerGamelog
+ * @param {number} PlayerID The player identifier
+ * @param {*} Season The season of data to load
+ * @param {*} callback 
+ * @returns {Array} The player gamelog
+ */
+function loadPlayerGamelog(PlayerID, Season, callback) {
+    $.ajax(
+        {
+            method: "GET",
+            async: false,
+            dataType: "json",
+            url: $SCRIPT_ROOT + "/players/gamelog",
             data: {
                 "PlayerID": PlayerID,
                 "Season": Season

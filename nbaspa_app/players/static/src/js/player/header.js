@@ -9,6 +9,7 @@
  * @param {string} tag The HTML tag to create the div in
  */
 function headerDiv(info, tag) {
+    // Create a card inside a specific div
     var div = d3.select(tag).selectAll("div").data([info]).enter()
     var card = div.append("div")
         .classed("columns", true)
@@ -18,6 +19,7 @@ function headerDiv(info, tag) {
         .classed("card", true)
         .insert("div")
         .classed("media", true)
+    // Add a player image
     card.insert("div")
         .classed("media-left", true)
         .insert("img")
@@ -25,6 +27,7 @@ function headerDiv(info, tag) {
             "src", d => `https://cdn.nba.com/headshots/nba/latest/260x190/${d.PERSON_ID}.png`
         )
         .attr("height", "100px")
+    // Create the div content section
     var divContent = card.insert("div")
         .classed("media-content", true)
     divContent.insert("p")
@@ -38,6 +41,7 @@ function headerDiv(info, tag) {
     var navContent = divContent.insert("nav")
         .classed("level", true)
         .classed("is-mobile", true)
+    // Add country
     var country = navContent.insert("div")
         .classed("level-item", true)
         .classed("has-text-centered", true)
@@ -48,6 +52,7 @@ function headerDiv(info, tag) {
     country.insert("p")
         .classed("title", true)
         .text(d => d.COUNTRY)
+    // Add school
     var school = navContent.insert("div")
         .classed("level-item", true)
         .classed("has-text-centered", true)
@@ -62,10 +67,17 @@ function headerDiv(info, tag) {
         .classed("level-item", true)
         .classed("has-text-centered", true)
         .insert("div")
+    // Add and format birthday
+    var parseDate = d3.timeParse("%Y-%m-%dT%H:%M:%S")
+    var dateFormat = d3.timeFormat("%b %d, %Y")
     birthday.insert("p")
         .classed("heading", true)
         .text("Birthdate")
     birthday.insert("p")
         .classed("title", true)
-        .text(d => d.BIRTHDATE)
+        .text(d => {
+                var tmp = parseDate(d.BIRTHDATE)
+                return dateFormat(tmp)
+            }
+        )
 }

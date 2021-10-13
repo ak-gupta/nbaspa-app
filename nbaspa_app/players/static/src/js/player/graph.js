@@ -1,65 +1,13 @@
 /**
- * Create a hover format
- * @function timeHover
- * @param {Object} data Row information
- * @param {number} playerid The player ID
-*/
- function timeHover(data, playerid) {
-    return `
-        <div class="card">
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-left">
-                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/${playerid}.png" width="75px">
-                    </div>
-                    <div class="media-content">
-                        <nav class="level">
-                            <div class="level-item has-text-centered">
-                                <div>
-                                    <p class="heading">SPA+</p>
-                                    <p class="title">${data['IMPACT_ADJ']}</p>
-                                </div>
-                            </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                    <p class="heading">Points</p>
-                                    <p class="title">${data['PTS']}</p>
-                                </div>
-                            </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                    <p class="heading">Rebounds</p>
-                                    <p class="title">${data['REB']}</p>
-                                </div>
-                            </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                    <p class="heading">Assists</p>
-                                    <p class="title">${data['AST']}</p>
-                                </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <a class="card-footer-item" href="${data['URL']}">Details</a>
-            </div>
-        </div>
-    `
-}
-
-/**
  * Creates a D3.js visualization for player impact time-series.
  * @function drawTimeChart
  * @param {Array} lineData The time-series impact data
  * @param {string} dateVar The name of the date variable for the time-series
  * @param {string} dateVarFormat The format of the datetime variable
  * @param {string} axisFormat The date-time format for the x-axis
- * @param {number} playerID The player identifier
  * @param {string} tag The HTML div ID for the graph
  */
-function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, playerID, tag) {
+function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
     var margin = {
         top: 20,
         right: 20,
@@ -175,13 +123,87 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, playerID, t
                     .transition()
                     .duration("100")
                 // Make the div appear
+                div.selectAll("div").remove()
                 div.transition()
                     .duration("100")
                     .style("opacity", 1)
-                // Add data
-                htmlhover = timeHover(data=d, playerid=playerID)
-                div.html(htmlhover)
-                    .style("left", (event.pageX + 10) + "px")
+                // Add hover -- define a card
+                var cardContent = div.insert("div")
+                    .classed("card", true)
+                // Add the image
+                var mediaContent = cardContent.insert("div")
+                    .classed("card-content", true)
+                    .insert("div")
+                    .classed("media", true)
+                mediaContent.insert("div")
+                    .classed("media-left", true)
+                    .insert("img")
+                    .attr(
+                        "src", `https://cdn.nba.com/headshots/nba/latest/260x190/${d.PLAYER_ID}.png`
+                    )
+                    .attr("width", "75px")
+                // Add SPA+
+                var divContent = mediaContent.insert("div")
+                    .classed("media-content", true)
+                    .insert("nav")
+                    .classed("level", true)
+                    .classed("is-mobile", true)
+                var spa = divContent.insert("div")
+                    .classed("level-item", true)
+                    .classed("has-text-centered", true)
+                    .insert("div")
+                spa.insert("p")
+                    .classed("heading", true)
+                    .text("SPA+")
+                spa.insert("p")
+                    .classed("title", true)
+                    .text(d.IMPACT_ADJ)
+                // Add PTS
+                pts = divContent.insert("div")
+                    .classed("level-item", true)
+                    .classed("has-text-centered", true)
+                    .insert("div")
+                pts.insert("p")
+                    .classed("heading", true)
+                    .text("PTS")
+                pts.insert("p")
+                    .classed("title", true)
+                    .text(d.PTS)
+                // Add REB
+                reb = divContent.insert("div")
+                    .classed("level-item", true)
+                    .classed("has-text-centered", true)
+                    .insert("div")
+                reb.insert("p")
+                    .classed("heading", true)
+                    .text("REB")
+                reb.insert("p")
+                    .classed("title", true)
+                    .text(d.REB)
+                // Add AST
+                ast = divContent.insert("div")
+                    .classed("level-item", true)
+                    .classed("has-text-centered", true)
+                    .insert("div")
+                ast.insert("p")
+                    .classed("heading", true)
+                    .text("AST")
+                ast.insert("p")
+                    .classed("title", true)
+                    .text(d.AST)
+                
+                // Add the footer
+                cardContent.insert("div")
+                    .classed("card-footer", true)
+                    .insert("a")
+                    .classed("card-footer-item", true)
+                    .attr(
+                        "href", $SCRIPT_ROOT + `/games/${d.DAY}/${d.MONTH}/${d.YEAR}/${d.GAME_ID}`
+                    )
+                    .text("Details")
+
+
+                div.style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 15) + "px")
             }
         )

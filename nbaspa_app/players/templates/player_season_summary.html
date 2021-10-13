@@ -24,20 +24,5 @@
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
     <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/base.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='src/js/time-graph.js') }}"></script>
-
-    <script>
-        // TODO: Recreate header player Div as a d3 Javascript function
-        // TODO: Capture I/O for player info and graphing data using AJAX calls
-        // TODO: Re-do graphing function to use d3 for div creation instead of long HTML strings
-        var lineData = {{ impact|safe }}
-        var seasonChart = drawTimeChart(
-            lineData,
-            dateVar="GAME_DATE",
-            dateVarFormat="%Y-%m-%dT%H:%M:%S",
-            axisFormat="%b",
-            playerID={{ playerid }},
-            tag="#timeGraph"
-        )
-    </script>
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/season.js') }}"></script>
 {% endblock %}

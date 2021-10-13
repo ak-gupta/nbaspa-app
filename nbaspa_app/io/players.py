@@ -9,7 +9,7 @@ from flask import current_app as app
 import numpy as np
 import pandas as pd
 
-from nbaspa.data.endpoints import AllPlayers, PlayerInfo
+from nbaspa.data.endpoints import AllPlayers, PlayerInfo, PlayerGameLog
 
 io_players = Blueprint("io_bp", __name__)
 
@@ -105,3 +105,17 @@ def top_players():
     gameratings["RANK"] = np.arange(1, gameratings.shape[0] + 1)
 
     return json.dumps(gameratings.to_dict(orient="records"))
+
+@io_players.get("/players/gamelog")
+def player_gamelog():
+    """Retrieve the player gamelog for a given season."""
+    loader = PlayerGameLog(
+        output_dir=Path(app.config["DATA_DIR"], request.args["Season"]),
+        PlayerID=request.args["PlayerID"]
+    )
+    if not loader.exists():
+        raise FileNotFoundError("Unable to get player gamelog.")
+    loader.load()
+    gamelog = loader.get_data()
+
+    return json.dumps(gamelog.to_dict(orient="records"))

@@ -83,7 +83,6 @@ def player_season_summary(playerid: int, season: str):
     """
     try:
         info = get_player_info(app=app, PlayerID=playerid)
-        impact = get_player_time_series(app=app, PlayerID=playerid, Season=season)
         # Get the available seasons
         seasons = []
         for idx in range(info["FROM_YEAR"], info["TO_YEAR"] + 1):
@@ -91,15 +90,6 @@ def player_season_summary(playerid: int, season: str):
                 if idx == int(key.split("-")[0]):
                     seasons.append(key)
                     break
-        impact = [row for row in impact if row["SEASON"] == season]
-        for row in impact:
-            row["URL"] = url_for(
-                "game_bp.game",
-                gameid=row["GAME_ID"],
-                day=row["DAY"],
-                month=row["MONTH"],
-                year=row["YEAR"],
-            )
     except FileNotFoundError:
         return abort(404)
 
@@ -107,8 +97,6 @@ def player_season_summary(playerid: int, season: str):
         "player_season_summary.html",
         title=f"{info['DISPLAY_FIRST_LAST']} Summary",
         playerid=playerid,
-        info=info,
-        impact=impact,
         season=season,
         seasons=seasons
     )

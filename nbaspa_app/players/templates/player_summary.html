@@ -14,6 +14,15 @@
 {% endblock %}
 
 {% block jsScript %}
+    <script>
+        var PlayerID = {{ playerid }};
+    </script>
+
+    {% assets "player_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/base.js') }}"></script>
+    
     <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='src/js/time-graph.js') }}"></script>
 
     <script>
