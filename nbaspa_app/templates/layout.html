@@ -2,24 +2,24 @@
 <html>
     <head>
         <title>{{ title }}</title>
-        {% block header %}{% endblock %}
         <!-- FONT -->
         <link href='//fonts.googleapis.com/css?family=Roboto:400,300,600' rel='stylesheet' type='text/css'>
-
+        
         <!-- Mobile specific notes -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        
         <!-- CSS -->
         <link
-            rel="stylesheet"
-            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/custom.css') }}"
-            type='text/css'>
+        rel="stylesheet"
+        href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/custom.css') }}"
+        type='text/css'>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
         
         <!-- D3.js for data visualization -->
         <script src="https://d3js.org/d3.v7.min.js"></script>
-        <!-- Load jQuery for AJAX -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- Load axios -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        {% block header %}{% endblock %}
     </head>
     <body class="has-background-light">
         <nav class="navbar is-transparent has-background-light" role="navigation" arial-label="main navigation">

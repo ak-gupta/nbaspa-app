@@ -29,7 +29,23 @@ def player_time_series():
         index_col=0,
         dtype={"GAME_ID": str}
     )
-    performances.rename(columns={"IMPACT+": "IMPACT_ADJ"}, inplace=True)
+    adjusted = pd.read_csv(
+        Path(
+            app.config["DATA_DIR"],
+            request.args["Season"],
+            "impact-plus-timeseries",
+            f"data_{request.args['PlayerID']}.csv"
+        ),
+        sep="|",
+        index_col=0,
+        dtype={"GAME_ID": str}
+    )
+    adjusted.rename(columns={"IMPACT": "IMPACT_ADJ"}, inplace=True)
+    performances.set_index(["GAME_ID", "TEAM_ID", "PLAYER_ID"], inplace=True)
+    adjusted.set_index(["GAME_ID", "TEAM_ID", "PLAYER_ID"], inplace=True)
+    performances["IMPACT_ADJ"] = adjusted["IMPACT_ADJ"]
+    performances.reset_index(inplace=True)
+    # Remove 0 impact agmes
     performances = performances[(performances["IMPACT"] != 0) & (performances["IMPACT_ADJ"] != 0)].copy()
     performances.dropna(inplace=True)
     performances["IMPACT"] = performances["IMPACT"].round(3)
@@ -39,6 +55,7 @@ def player_time_series():
     performances["DAY"] = performances["GAME_DATE_PARSED"].dt.day
     performances["MONTH"] = performances["GAME_DATE_PARSED"].dt.month
     performances["YEAR"] = performances["GAME_DATE_PARSED"].dt.year
+    performances.sort_values(by="GAME_DATE_PARSED", ascending=True, inplace=True)
 
     columns = [
         "PLAYER_ID",
@@ -64,7 +81,19 @@ def player_impact_profile():
         ),
         ignore_index=True
     )
-    performances.rename(columns={"IMPACT+": "IMPACT_ADJ"}, inplace=True)
+    adjusted = pd.concat(
+        (
+            pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
+            for fpath in Path(app.config["DATA_DIR"]).glob(f"*/impact-plus-timeseries/data_{request.args['PlayerID']}.csv")
+        ),
+        ignore_index=True
+    )
+    adjusted.rename(columns={"IMPACT": "IMPACT_ADJ"}, inplace=True)
+    performances.set_index(["GAME_ID", "TEAM_ID", "PLAYER_ID"], inplace=True)
+    adjusted.set_index(["GAME_ID", "TEAM_ID", "PLAYER_ID"], inplace=True)
+    performances["IMPACT_ADJ"] = adjusted["IMPACT_ADJ"]
+    performances.reset_index(inplace=True)
+    # Remove 0 impact games
     performances = performances[(performances["IMPACT"] != 0) & (performances["IMPACT_ADJ"] != 0)].copy()
     performances.dropna(inplace=True)
     performances["IMPACT"] = performances["IMPACT"].round(3)
@@ -154,6 +183,18 @@ def top_players():
         sep="|",
         index_col=0
     )
+    game_adj = pd.read_csv(
+        Path(app.config["DATA_DIR"], request.args["Season"], "impact-plus-summary.csv"),
+        sep="|",
+        index_col=0
+    )
+    game_adj.rename(columns={"IMPACT_sum": "IMPACT+_sum", "IMPACT_mean": "IMPACT+_mean"}, inplace=True)
+    gameratings.set_index("PLAYER_ID", inplace=True)
+    game_adj.set_index("PLAYER_ID", inplace=True)
+    gameratings["IMPACT+_sum"] = game_adj["IMPACT+_sum"]
+    gameratings["IMPACT+_mean"] = game_adj["IMPACT+_mean"]
+    gameratings.reset_index(inplace=True)
+    # Round
     gameratings["IMPACT_sum"] = gameratings["IMPACT_sum"].round(3)
     gameratings["IMPACT_mean"] = gameratings["IMPACT_mean"].round(3)
     gameratings["IMPACT+_sum"] = gameratings["IMPACT+_sum"].round(3)

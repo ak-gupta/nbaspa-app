@@ -43,14 +43,6 @@ def player_summary(playerid: int):
     """
     try:
         info = get_player_info(app=app, PlayerID=playerid)
-        impact = get_player_time_series(app=app, PlayerID=playerid)
-        profile = get_player_impact_profile(data=impact)
-        for row in profile:
-            row["URL"] = url_for(
-                "players_bp.player_season_summary",
-                playerid=playerid,
-                season=row["SEASON"]
-            )
         # Get the available seasons
         seasons = []
         for idx in range(info["FROM_YEAR"], info["TO_YEAR"] + 1):
@@ -66,7 +58,6 @@ def player_summary(playerid: int):
         title=f"{info['DISPLAY_FIRST_LAST']} Summary",
         playerid=playerid,
         info=info,
-        impact=profile,
         seasons=sorted(seasons)
     )
 
