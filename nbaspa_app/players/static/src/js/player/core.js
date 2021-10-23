@@ -6,7 +6,7 @@
  * @function populateSeasonGraph Load season impact data and graph it with boxscore information
  */
 async function populateSeasonGraph() {
-    timeData = await axios.get($SCRIPT_ROOT + "/players/time-series", {
+    timeData = await axios.get($SCRIPT_ROOT + "/api/players/time-series", {
         params: {
             "PlayerID": PlayerID,
             "Season": Season,
@@ -14,7 +14,7 @@ async function populateSeasonGraph() {
         }
     })
     timeData = timeData.data
-    gameLog = await axios.get($SCRIPT_ROOT + "/players/gamelog", {
+    gameLog = await axios.get($SCRIPT_ROOT + "/api/players/gamelog", {
         params: {
             "PlayerID": PlayerID,
             "Season": Season
@@ -37,7 +37,7 @@ async function populateSeasonGraph() {
 }
 
 async function populateCareerGraph() {
-    result = await axios.get($SCRIPT_ROOT + "/players/impact-profile", {
+    result = await axios.get($SCRIPT_ROOT + "/api/players/impact-profile", {
         params: {
             "PlayerID": PlayerID,
             "mode": "survival-plus"

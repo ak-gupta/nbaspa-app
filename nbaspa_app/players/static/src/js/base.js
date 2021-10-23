@@ -3,7 +3,7 @@
  */
 
 async function populatePlayerHeader() {
-    basicInfo = await axios.get($SCRIPT_ROOT + "/players/info", {
+    basicInfo = await axios.get($SCRIPT_ROOT + "/api/players/info", {
         params: {
             "PlayerID": PlayerID
         }

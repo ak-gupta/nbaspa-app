@@ -15,7 +15,7 @@ class PlayerQueryArgSchema(Schema):
     mode = SURV_MODE
 
 class IndexQueryArgSchema(Schema):
-    Season = fields.String(default=CURRENT_SEASON)
+    Season = fields.String()
 
 class SummaryQueryArgsSchema(Schema):
     Season = SEASON_FIELD

@@ -7,12 +7,12 @@
  */
 async function populateCompare() {
     const [index, top] = await Promise.all([
-        axios.get($SCRIPT_ROOT + "/players/index", {
+        axios.get($SCRIPT_ROOT + "/api/players/index", {
             params: {
                 "Season": Season
             }
         }),
-        axios.get($SCRIPT_ROOT + "/players/top", {
+        axios.get($SCRIPT_ROOT + "/api/players/top", {
             params: {
                 "Season": Season,
                 "mode": "survival-plus",
@@ -38,7 +38,7 @@ async function populateCompare() {
     defaultSelect = topPlayers.map(obs => obs.PLAYER_ID).slice(0, 5);
     defaultFiltered = await Promise.all(
         defaultSelect.map(
-            player => axios.get($SCRIPT_ROOT + "/players/time-series", {
+            player => axios.get($SCRIPT_ROOT + "/api/players/time-series", {
                 params: {
                     "PlayerID": player,
                     "Season": Season,
@@ -64,7 +64,7 @@ async function updateCompareChart() {
     d3.select("#playerList").selectAll("div").remove();
     var newFiltered = await Promise.all(
         selected.map(
-            player => axios.get($SCRIPT_ROOT + "/players/time-series", {
+            player => axios.get($SCRIPT_ROOT + "/api/players/time-series", {
                 params: {
                     "PlayerID": player,
                     "Season": Season,

@@ -82,6 +82,9 @@ function headerDiv(info, tag) {
         )
     
     fromYear = parseInt(info.FROM_YEAR)
+    if (fromYear < 2006) {
+        fromYear = 2006
+    }
     toYear = parseInt(info.TO_YEAR)
     tabData = [{"value": "Overview", "url": $SCRIPT_ROOT + "/players/" + info.PERSON_ID}]
     while (fromYear <= toYear) {

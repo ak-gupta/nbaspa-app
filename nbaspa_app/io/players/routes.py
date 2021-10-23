@@ -14,7 +14,7 @@ from nbaspa.data.factory import NBADataFactory
 from . import schemas as sc
 
 io_players = Blueprint(
-    "io_bp", __name__, url_prefix="/players", description="Load player data"
+    "io_bp", __name__, url_prefix="/api/players", description="Load player data"
 )
 io_players.DEFAULT_PAGINATION_PARAMETERS["max_page_size"] = 250
 
@@ -146,12 +146,16 @@ class PlayerIndex(MethodView):
         # Parse
         playerinfo = loader.get_data()
         playerinfo.drop_duplicates(subset="PERSON_ID", keep="first", inplace=True)
-        seasonyear = int(args["Season"].split("-")[0])
         playerinfo["TO_YEAR"] = playerinfo["TO_YEAR"].astype(int)
         playerinfo["FROM_YEAR"] = playerinfo["FROM_YEAR"].astype(int)
-        playerinfo = playerinfo[
-            (playerinfo["TO_YEAR"] >= seasonyear) & (playerinfo["FROM_YEAR"] <= seasonyear)
-        ].copy()
+        if "Season" in args:
+            seasonyear = int(args["Season"].split("-")[0])
+            playerinfo = playerinfo[
+                (playerinfo["TO_YEAR"] >= seasonyear) & (playerinfo["FROM_YEAR"] <= seasonyear)
+            ].copy()
+        else:
+            playerinfo = playerinfo[playerinfo["TO_YEAR"] >= 2005].copy()
+
         playerinfo.sort_values(by="DISPLAY_FIRST_LAST", ascending=True, inplace=True)
 
         return playerinfo.to_dict(orient="records")

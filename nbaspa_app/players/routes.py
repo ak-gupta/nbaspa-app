@@ -5,10 +5,7 @@ from flask import current_app as app
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 
-from .summary import (
-    get_top_performances,
-    get_all_players
-)
+from .summary import get_all_players
 
 players_bp = Blueprint(
     "players_bp",
@@ -56,27 +53,6 @@ def player_season_summary(playerid: int, season: str):
         season=season,
     )
 
-
-@players_bp.get("/performances/top", defaults={"season": CURRENT_SEASON})
-@players_bp.get("/performances/top/<season>")
-def top_performances(season: str):
-    """Get the top performances in a given season.
-
-    Parameters
-    ----------
-    season : str
-        The season.
-    """
-    try:
-        best = get_top_performances(app=app, Season=season)
-        return render_template(
-            "top_performances.html",
-            title=f"{season} Top Performances",
-            season=season,
-            data=best[:50],
-        )
-    except FileNotFoundError:
-        return abort(404)
 
 @players_bp.get("/season/<season>")
 def season_home(season: str):
