@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from nbaspa.data.endpoints import AllPlayers, PlayerInfo, PlayerGameLog
+from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 from nbaspa.data.factory import NBADataFactory
 
 from . import schemas as sc
@@ -138,7 +139,8 @@ class PlayerIndex(MethodView):
     def get(self, args):
         """Load the player index for a given season."""
         loader = AllPlayers(
-            output_dir=Path(app.config["DATA_DIR"], args["Season"]), Season=args["Season"]
+            output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
+            Season=args.get("Season", CURRENT_SEASON)
         )
         if not loader.exists():
             abort(404, message="Unable to find roster information.")

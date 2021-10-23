@@ -22,7 +22,6 @@ def player_directory():
     return render_template(
         "player_directory.html",
         title="Player directory",
-        data=get_all_players(app=app)
     )
 
 @players_bp.get("/players/<int:playerid>")
