@@ -45,7 +45,7 @@ def create_app(config: str = "development"):
         # Include the routes
         from .games.routes import game_bp
         from .home.routes import home_bp
-        from .io.players import io_players
+        from .io.players.routes import io_players
         from .players.routes import players_bp
         from .teams.routes import teams_bp
 

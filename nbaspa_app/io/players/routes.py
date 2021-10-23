@@ -5,142 +5,25 @@ from pathlib import Path
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from marshmallow import Schema, fields, validate
 import numpy as np
 import pandas as pd
 
 from nbaspa.data.endpoints import AllPlayers, PlayerInfo, PlayerGameLog
-from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 from nbaspa.data.factory import NBADataFactory
+
+from . import schemas as sc
 
 io_players = Blueprint(
     "io_bp", __name__, url_prefix="/players", description="Load player data"
 )
 
-class PlayerQueryArgSchema(Schema):
-    PlayerID = fields.Int(required=True)
-    Season = fields.String(default=CURRENT_SEASON)
-    mode = fields.String(validate=validate.OneOf(["survival", "survival-plus"]), default="survival-plus")
-
-class IndexQueryArgSchema(Schema):
-    Season = fields.String(default=CURRENT_SEASON)
-
-class SummaryQueryArgsSchema(Schema):
-    Season = fields.String(default=CURRENT_SEASON)
-    mode = fields.String(validate=validate.OneOf(["survival", "survival-plus"]), default="survival-plus")
-
-class TimeSeriesOutput(Schema):
-    PLAYER_ID = fields.Int()
-    IMPACT = fields.Float()
-    SEASON = fields.String()
-    GAME_ID = fields.String()
-    GAME_DATE = fields.String()
-    DAY = fields.Int()
-    MONTH = fields.Int()
-    YEAR = fields.Int()
-
-class CareerProfileOutput(Schema):
-    PLAYER_ID = fields.Int()
-    YEAR = fields.Int()
-    IMPACT = fields.Float()
-    PTS = fields.Float()
-    REB = fields.Float()
-    AST = fields.Float()
-    SEASON = fields.String()
-
-class PlayerIndexOutput(Schema):
-    PERSON_ID = fields.Int()
-    DISPLAY_LAST_COMMA_FIRST = fields.String()
-    DISPLAY_FIRST_LAST = fields.String()
-    ROSTERSTATUS = fields.Int()
-    FROM_YEAR = fields.String()
-    TO_YEAR = fields.String()
-    PLAYERCODE = fields.String()
-    PLAYER_SLUG = fields.String()
-    TEAM_ID = fields.Int()
-    TEAM_CITY = fields.String()
-    TEAM_NAME = fields.String()
-    TEAM_ABBREVIATION = fields.String()
-    TEAM_CODE = fields.String()
-    TEAM_SLUG = fields.String()
-    GAMES_PLAYED_FLAG = fields.String()
-    OTHERLEAGUE_EXPERIENCE_C = fields.String()
-
-class PlayerInfoOutput(Schema):
-    PERSON_ID = fields.Int()
-    FIRST_NAME = fields.String()
-    LAST_NAME = fields.String()
-    DISPLAY_FIRST_LAST = fields.String()
-    DISPLAY_LAST_COMMA_FIRST = fields.String()
-    DISPLAY_FI_LAST = fields.String()
-    PLAYER_SLUG = fields.String()
-    BIRTHDATE = fields.String()
-    SCHOOL = fields.String()
-    COUNTRY = fields.String()
-    LAST_AFFILIATION = fields.String()
-    HEIGHT = fields.String()
-    WEIGHT = fields.String()
-    SEASON_EXP = fields.Int()
-    JERSEY = fields.String()
-    POSITION = fields.String()
-    ROSTERSTATUS = fields.String()
-    GAMES_PLAYED_CURRENT_SEASON_FLAG = fields.String()
-    TEAM_ID = fields.Int()
-    TEAM_NAME = fields.String()
-    TEAM_ABBREVIATION = fields.String()
-    TEAM_CODE = fields.String()
-    TEAM_CITY = fields.String()
-    PLAYERCODE = fields.String()
-    FROM_YEAR = fields.Int()
-    TO_YEAR = fields.Int()
-    DLEAGUE_FLAG = fields.String()
-    NBA_FLAG = fields.String()
-    GAMES_PLAYED_FLAG = fields.String()
-    DRAFT_YEAR = fields.String()
-    DRAFT_ROUND = fields.String()
-    DRAFT_NUMBER = fields.String()
-
-class TopPlayersOutput(Schema):
-    PLAYER_ID = fields.Int()
-    IMPACT_mean = fields.Float()
-    IMPACT_sum = fields.Float()
-    RANK = fields.Int()
-
-class GamelogOutputSchema(Schema):
-    SEASON_ID = fields.String()
-    Player_ID = fields.Int()
-    Game_ID = fields.String()
-    GAME_DATE = fields.String()
-    MATCHUP = fields.String()
-    WL = fields.String()
-    MIN = fields.Int()
-    FGM = fields.Int()
-    FGA = fields.Int()
-    FG_PCT = fields.Float()
-    FG3M = fields.Int()
-    FG3A = fields.Int()
-    FG3_PCT = fields.Float()
-    FTM = fields.Int()
-    FTA = fields.Int()
-    FT_PCT = fields.Float()
-    OREB = fields.Int()
-    DREB = fields.Int()
-    REB = fields.Int()
-    AST = fields.Int()
-    STL = fields.Int()
-    BLK = fields.Int()
-    TOV = fields.Int()
-    PF = fields.Int()
-    PTS = fields.Int()
-    PLUS_MINUS = fields.Int()
-    VIDEO_AVAILABLE = fields.Int()
 
 @io_players.route("/time-series")
 class TimeSeries(MethodView):
     """Load a season time-series for a given player."""
 
-    @io_players.arguments(PlayerQueryArgSchema, location="query")
-    @io_players.response(200, TimeSeriesOutput(many=True))
+    @io_players.arguments(sc.PlayerQueryArgSchema, location="query")
+    @io_players.response(200, sc.TimeSeriesOutput(many=True))
     def get(self, args):
         """Retrieve the season time-series."""
         if args["mode"] == "survival":
@@ -186,8 +69,8 @@ class TimeSeries(MethodView):
 class CareerProfile(MethodView):
     """Load a player impact profile."""
 
-    @io_players.arguments(PlayerQueryArgSchema, location="query")
-    @io_players.response(200, CareerProfileOutput(many=True))
+    @io_players.arguments(sc.PlayerQueryArgSchema, location="query")
+    @io_players.response(200, sc.CareerProfileOutput(many=True))
     def get(self, args):
         """Load the player impact profile."""
         if args["mode"] == "survival":
@@ -249,8 +132,8 @@ class CareerProfile(MethodView):
 class PlayerIndex(MethodView):
     """Load the player index."""
 
-    @io_players.arguments(IndexQueryArgSchema, location="query")
-    @io_players.response(200, PlayerIndexOutput(many=True))
+    @io_players.arguments(sc.IndexQueryArgSchema, location="query")
+    @io_players.response(200, sc.PlayerIndexOutput(many=True))
     def get(self, args):
         """Load the player index for a given season."""
         loader = AllPlayers(
@@ -276,8 +159,8 @@ class PlayerIndex(MethodView):
 class CommonPlayerInfo(MethodView):
     """Load common player information."""
 
-    @io_players.arguments(PlayerQueryArgSchema, location="query")
-    @io_players.response(200, PlayerInfoOutput())
+    @io_players.arguments(sc.PlayerQueryArgSchema, location="query")
+    @io_players.response(200, sc.PlayerInfoOutput())
     def get(self, args):
         """Load common player information."""
         loader = PlayerInfo(PlayerID=args["PlayerID"], output_dir=app.config["DATA_DIR"])
@@ -291,8 +174,8 @@ class CommonPlayerInfo(MethodView):
 class TopPlayers(MethodView):
     """Get the top players for a given season."""
 
-    @io_players.arguments(SummaryQueryArgsSchema, location="query")
-    @io_players.response(200, TopPlayersOutput(many=True))
+    @io_players.arguments(sc.SummaryQueryArgsSchema, location="query")
+    @io_players.response(200, sc.TopPlayersOutput(many=True))
     def get(self, args):
         """Get the top players for a given season."""
         if args["mode"] == "survival":
@@ -317,8 +200,8 @@ class TopPlayers(MethodView):
 class Gamelog(MethodView):
     """Load the player gamelog."""
 
-    @io_players.arguments(PlayerQueryArgSchema, location="query")
-    @io_players.response(200, GamelogOutputSchema(many=True))
+    @io_players.arguments(sc.PlayerQueryArgSchema, location="query")
+    @io_players.response(200, sc.GamelogOutputSchema(many=True))
     def get(self, args):
         """Load the player gamelog."""
         loader = PlayerGameLog(
