@@ -14,7 +14,8 @@ async function populateCompare() {
         }),
         axios.get($SCRIPT_ROOT + "/players/top", {
             params: {
-                "Season": Season
+                "Season": Season,
+                "mode": "survival-plus"
             }
         })
     ])
@@ -34,7 +35,8 @@ async function populateCompare() {
             player => axios.get($SCRIPT_ROOT + "/players/time-series", {
                 params: {
                     "PlayerID": player,
-                    "Season": Season
+                    "Season": Season,
+                    "mode": "survival-plus"
                 }
             })
         )
@@ -59,7 +61,8 @@ async function updateCompareChart() {
             player => axios.get($SCRIPT_ROOT + "/players/time-series", {
                 params: {
                     "PlayerID": player,
-                    "Season": Season
+                    "Season": Season,
+                    "mode": "survival-plus"
                 }
             })
         )

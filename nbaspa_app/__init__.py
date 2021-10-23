@@ -2,10 +2,12 @@
 
 from flask import Flask, render_template
 from flask_assets import Environment
+from flask_smorest import Api
 
 from .assets import compile_assets
 
 assets = Environment()
+api = Api()
 
 def not_found(e):
     """Not found error page."""
@@ -36,6 +38,7 @@ def create_app(config: str = "development"):
         raise ValueError("Please provide a valid value for ``config``")
     
     assets.init_app(app)
+    api.init_app(app)
 
 
     with app.app_context():

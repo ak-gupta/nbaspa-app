@@ -6,11 +6,11 @@ function playerDivs(playerList, info, tag) {
             return {
                 PLAYER_ID: obs[0].PLAYER_ID,
                 SEASON: obs[0].SEASON,
-                IMPACT_ADJ: d3.mean(obs, d => d.IMPACT_ADJ),
+                IMPACT: d3.mean(obs, d => d.IMPACT),
             }
         }
     )
-    var sorted = grouped.sort((a, b) => a.IMPACT_ADJ < b.IMPACT_ADJ)
+    var sorted = grouped.sort((a, b) => a.IMPACT < b.IMPACT)
     var divs = d3.select(tag).selectAll("div").data(sorted).enter();
 
     var card = divs.append("div")
@@ -50,5 +50,5 @@ function playerDivs(playerList, info, tag) {
         .text("Average SPA+")
     navContent.insert("p")
         .classed("title", true)
-        .text(d => d.IMPACT_ADJ.toFixed(3))
+        .text(d => d.IMPACT.toFixed(3))
 }

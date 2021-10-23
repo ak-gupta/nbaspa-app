@@ -35,9 +35,9 @@ function compareChart(playerData, info, tag) {
         .domain(
             [
                 d3.least(
-                    [0, d3.min(playerData, series => d3.min(series, obs => obs.IMPACT_ADJ))]
+                    [0, d3.min(playerData, series => d3.min(series, obs => obs.IMPACT))]
                 ),
-                d3.max(playerData, series => d3.max(series, obs => obs.IMPACT_ADJ))
+                d3.max(playerData, series => d3.max(series, obs => obs.IMPACT))
             ]
         )
         .range([graphHeight, 0])
@@ -45,7 +45,7 @@ function compareChart(playerData, info, tag) {
     // Create the line
     var timeLine = d3.line()
         .x(obs => x(obs.PARSED_DATE))
-        .y(obs => y(obs.IMPACT_ADJ))
+        .y(obs => y(obs.IMPACT))
     
     // Create the SVG
     const svg = d3.select(tag).append("svg")

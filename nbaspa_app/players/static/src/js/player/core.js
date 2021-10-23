@@ -9,7 +9,8 @@ async function populateSeasonGraph() {
     timeData = await axios.get($SCRIPT_ROOT + "/players/time-series", {
         params: {
             "PlayerID": PlayerID,
-            "Season": Season
+            "Season": Season,
+            "mode": "survival-plus"
         }
     })
     timeData = timeData.data
@@ -38,7 +39,8 @@ async function populateSeasonGraph() {
 async function populateCareerGraph() {
     result = await axios.get($SCRIPT_ROOT + "/players/impact-profile", {
         params: {
-            "PlayerID": PlayerID
+            "PlayerID": PlayerID,
+            "mode": "survival-plus"
         }
     })
     drawTimeChart(

@@ -36,7 +36,7 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
     var y = d3.scaleLinear().domain(
         [
             0,
-            d3.max(lineData, function(d) { return d.IMPACT_ADJ })
+            d3.max(lineData, function(d) { return d.IMPACT })
         ]
     ).range([graphHeight, 0])
     const dateFormat = d3.timeFormat(axisFormat)
@@ -48,7 +48,7 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
         }
     ).y(
         function (d) {
-            return y(d.IMPACT_ADJ)
+            return y(d.IMPACT)
         }
     )
     // Create the SVG
@@ -73,13 +73,13 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
     maxImpact = d3.max(
         lineData,
         function(d) {
-            return d.IMPACT_ADJ
+            return d.IMPACT
         }
     )
     minImpact = d3.min(
         lineData,
         function(d) {
-            return d.IMPACT_ADJ
+            return d.IMPACT
         }
     )
     var div = d3.select(tag).append("div")
@@ -99,7 +99,7 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
         .attr(
             "cy",
             function (d) {
-                return y(d.IMPACT_ADJ)
+                return y(d.IMPACT)
             }
         )
         .attr("stroke", "black")
@@ -107,9 +107,9 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
         .attr(
             "fill",
             function (d) {
-                if (d.IMPACT_ADJ == maxImpact) {
+                if (d.IMPACT == maxImpact) {
                     return "hsl(141, 53%, 53%)"
-                } else if (d.IMPACT_ADJ == minImpact) {
+                } else if (d.IMPACT == minImpact) {
                     return "hsl(348, 100%, 61%)"
                 } else {
                     return "hsl(0, 0%, 100%)"
@@ -157,7 +157,7 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
                     .text("SPA+")
                 spa.insert("p")
                     .classed("title", true)
-                    .text(d.IMPACT_ADJ)
+                    .text(d.IMPACT)
                 // Add PTS
                 pts = divContent.insert("div")
                     .classed("level-item", true)

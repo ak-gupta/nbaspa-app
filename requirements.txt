@@ -6,6 +6,8 @@
 #
 alive-progress==1.6.2
     # via nbaspa
+apispec[marshmallow]==5.1.1
+    # via flask-smorest
 astor==0.8.1
     # via formulaic
 autograd==1.3
@@ -16,7 +18,7 @@ autograd-gamma==0.5.0
     # via lifelines
 backcall==0.2.0
     # via ipython
-certifi==2021.5.30
+certifi==2021.10.8
     # via requests
 chardet==4.0.0
     # via requests
@@ -27,7 +29,7 @@ click==7.1.2
     #   flask
     #   nbaspa
     #   prefect
-cloudpickle==1.6.0
+cloudpickle==2.0.0
     # via
     #   dask
     #   distributed
@@ -38,28 +40,29 @@ croniter==0.3.37
     # via prefect
 cycler==0.10.0
     # via matplotlib
-dask==2021.6.0
+dask==2021.10.0
     # via
     #   distributed
     #   prefect
-decorator==4.4.2
-    # via
-    #   ipython
-    #   networkx
-distributed==2021.6.0
+decorator==5.1.0
+    # via ipython
+distributed==2021.10.0
     # via prefect
-docker==5.0.0
+docker==5.0.3
     # via prefect
 flask==2.0.1
     # via
     #   -r requirements.in
     #   flask-assets
+    #   flask-smorest
     #   flask-wtf
 flask-assets==2.0
     # via -r requirements.in
+flask-smorest==0.35.0
+    # via -r requirements.in
 flask-wtf==0.15.1
     # via -r requirements.in
-formulaic==0.2.3
+formulaic==0.2.4
     # via lifelines
 fsspec==0.8.5
     # via
@@ -75,14 +78,12 @@ hyperopt==0.2.5
     # via nbaspa
 idna==2.10
     # via requests
-importlib-resources==5.1.4
+importlib-resources==5.3.0
     # via prefect
-interface-meta==1.2.3
+interface-meta==1.2.4
     # via formulaic
-ipython==7.24.1
+ipython==7.28.0
     # via shap
-ipython-genutils==0.2.0
-    # via traitlets
 itsdangerous==2.0.1
     # via
     #   flask
@@ -92,16 +93,17 @@ jedi==0.18.0
 jinja2==3.0.1
     # via
     #   -r requirements.in
+    #   distributed
     #   flask
-joblib==1.0.1
+joblib==1.1.0
     # via scikit-learn
-kiwisolver==1.3.1
+kiwisolver==1.3.2
     # via matplotlib
 lifelines==0.25.9
     # via nbaspa
 lightgbm==3.1.1
     # via nbaspa
-llvmlite==0.36.0
+llvmlite==0.37.0
     # via numba
 locket==0.2.1
     # via partd
@@ -109,11 +111,14 @@ markupsafe==2.0.1
     # via
     #   jinja2
     #   wtforms
-marshmallow==3.12.1
+marshmallow==3.14.0
     # via
+    #   apispec
+    #   flask-smorest
     #   marshmallow-oneofschema
     #   prefect
-marshmallow-oneofschema==2.1.0
+    #   webargs
+marshmallow-oneofschema==3.0.1
     # via prefect
 matplotlib==3.3.4
     # via
@@ -121,7 +126,7 @@ matplotlib==3.3.4
     #   nbaspa
     #   seaborn
     #   shap
-matplotlib-inline==0.1.2
+matplotlib-inline==0.1.3
     # via ipython
 msgpack==1.0.2
     # via
@@ -133,9 +138,9 @@ natsort==7.1.1
     # via croniter
 nbaspa @ git+https://github.com/ak-gupta/nbaspa
     # via -r requirements.in
-networkx==2.5.1
+networkx==2.6.3
     # via hyperopt
-numba==0.53.1
+numba==0.54.1
     # via shap
 numpy==1.20.3
     # via
@@ -152,6 +157,8 @@ numpy==1.20.3
     #   seaborn
     #   shap
     #   xgboost
+packaging==21.0
+    # via dask
 pandas==1.2.1
     # via
     #   formulaic
@@ -169,23 +176,25 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==8.2.0
+pillow==8.4.0
     # via matplotlib
 prefect==0.14.5
     # via nbaspa
-prompt-toolkit==3.0.18
+prompt-toolkit==3.0.21
     # via ipython
 psutil==5.8.0
     # via distributed
 ptyprocess==0.7.0
     # via pexpect
-pygments==2.9.0
+pygments==2.10.0
     # via ipython
 pyparsing==2.4.7
-    # via matplotlib
-python-box==5.3.0
+    # via
+    #   matplotlib
+    #   packaging
+python-box==5.4.1
     # via prefect
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via
     #   croniter
     #   matplotlib
@@ -194,13 +203,13 @@ python-dateutil==2.8.1
     #   prefect
 python-slugify==5.0.2
     # via prefect
-pytz==2021.1
+pytz==2021.3
     # via
     #   pandas
     #   prefect
 pytzdata==2020.1
     # via pendulum
-pyyaml==5.4.1
+pyyaml==6.0
     # via
     #   dask
     #   distributed
@@ -217,7 +226,7 @@ scikit-learn==0.24.1
     #   lightgbm
     #   nbaspa
     #   shap
-scipy==1.6.3
+scipy==1.7.1
     # via
     #   autograd-gamma
     #   formulaic
@@ -247,7 +256,7 @@ tblib==1.7.0
     # via distributed
 text-unidecode==1.3
     # via python-slugify
-threadpoolctl==2.1.0
+threadpoolctl==3.0.0
     # via scikit-learn
 toml==0.10.2
     # via prefect
@@ -258,29 +267,33 @@ toolz==0.11.1
     #   partd
 tornado==6.1
     # via distributed
-tqdm==4.61.0
+tqdm==4.62.3
     # via
     #   hyperopt
     #   shap
-traitlets==5.0.5
+traitlets==5.1.0
     # via
     #   ipython
     #   matplotlib-inline
-urllib3==1.26.5
+urllib3==1.26.7
     # via
     #   prefect
     #   requests
 wcwidth==0.2.5
     # via prompt-toolkit
+webargs==8.0.1
+    # via flask-smorest
 webassets==2.0
     # via flask-assets
-websocket-client==1.1.0
+websocket-client==1.2.1
     # via docker
-werkzeug==2.0.1
-    # via flask
-wheel==0.36.2
+werkzeug==2.0.2
+    # via
+    #   flask
+    #   flask-smorest
+wheel==0.37.0
     # via lightgbm
-wrapt==1.12.1
+wrapt==1.13.2
     # via formulaic
 wtforms==2.3.3
     # via flask-wtf
@@ -288,7 +301,7 @@ xgboost==1.3.3
     # via nbaspa
 zict==2.0.0
     # via distributed
-zipp==3.4.1
+zipp==3.6.0
     # via importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
