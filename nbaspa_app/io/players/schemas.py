@@ -20,6 +20,9 @@ class IndexQueryArgSchema(Schema):
 class SummaryQueryArgsSchema(Schema):
     Season = SEASON_FIELD
     mode = SURV_MODE
+    sortBy = fields.String(
+        validate=validate.OneOf(["sum", "mean"])
+    )
 
 class TimeSeriesOutput(Schema):
     PLAYER_ID = fields.Int()

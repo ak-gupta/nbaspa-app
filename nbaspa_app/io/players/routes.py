@@ -16,6 +16,7 @@ from . import schemas as sc
 io_players = Blueprint(
     "io_bp", __name__, url_prefix="/players", description="Load player data"
 )
+io_players.DEFAULT_PAGINATION_PARAMETERS["max_page_size"] = 250
 
 
 @io_players.route("/time-series")
@@ -176,7 +177,8 @@ class TopPlayers(MethodView):
 
     @io_players.arguments(sc.SummaryQueryArgsSchema, location="query")
     @io_players.response(200, sc.TopPlayersOutput(many=True))
-    def get(self, args):
+    @io_players.paginate()
+    def get(self, args, pagination_parameters):
         """Get the top players for a given season."""
         if args["mode"] == "survival":
             fpath = Path(
@@ -191,10 +193,18 @@ class TopPlayers(MethodView):
         gameratings["IMPACT_sum"] = gameratings["IMPACT_sum"].round(3)
         gameratings["IMPACT_mean"] = gameratings["IMPACT_mean"].round(3)
 
-        gameratings.sort_values(by="IMPACT_mean", ascending=False, inplace=True)
+        if args["sortBy"] == "mean":
+            gameratings.sort_values(by="IMPACT_mean", ascending=False, inplace=True)
+        elif args["sortBy"] == "sum":
+            gameratings.sort_values(by="IMPACT_sum", ascending=False, inplace=True)
         gameratings["RANK"] = np.arange(1, gameratings.shape[0] + 1)
 
-        return gameratings.to_dict(orient="records")
+        output = gameratings.to_dict(orient="records")
+        pagination_parameters.item_count = len(output)
+        
+        return output[
+            pagination_parameters.first_item:pagination_parameters.last_item
+        ]
 
 @io_players.route("/gamelog")
 class Gamelog(MethodView):

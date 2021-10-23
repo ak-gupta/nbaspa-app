@@ -54,7 +54,6 @@ def player_summary(playerid: int):
         "player_summary.html",
         title=f"{info['DISPLAY_FIRST_LAST']} Summary",
         playerid=playerid,
-        info=info,
         seasons=sorted(seasons)
     )
 

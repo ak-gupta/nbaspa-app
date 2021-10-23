@@ -15,11 +15,18 @@ async function populateCompare() {
         axios.get($SCRIPT_ROOT + "/players/top", {
             params: {
                 "Season": Season,
-                "mode": "survival-plus"
+                "mode": "survival-plus",
+                "sortBy": "mean",
+                "page_size": 250
             }
         })
     ])
     displayInfo = index.data
+    topPlayers = top.data
+    // Reduce the displayInfo to the players we can graph
+    allGraphable = topPlayers.map(obs => obs.PLAYER_ID)
+    displayInfo = displayInfo.filter(obs => allGraphable.includes(obs.PERSON_ID))
+    // Create the playerfilter select list
     d3.select("#playerFilter")
         .selectAll("select")
         .data(displayInfo)
@@ -28,7 +35,6 @@ async function populateCompare() {
         .attr("value", d => d.PERSON_ID)
         .text(d => d.DISPLAY_FIRST_LAST)
     // Create the default comparison
-    topPlayers = top.data
     defaultSelect = topPlayers.map(obs => obs.PLAYER_ID).slice(0, 5);
     defaultFiltered = await Promise.all(
         defaultSelect.map(
