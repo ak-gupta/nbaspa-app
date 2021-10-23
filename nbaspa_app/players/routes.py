@@ -1,12 +1,11 @@
 """Player pages."""
 
-from flask import abort, Blueprint, render_template, url_for
+from flask import abort, Blueprint, render_template
 from flask import current_app as app
 
-from nbaspa.data.endpoints.parameters import CURRENT_SEASON, SEASONS
+from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 
 from .summary import (
-    get_player_info,
     get_top_performances,
     get_all_players
 )
@@ -38,24 +37,7 @@ def player_summary(playerid: int):
     playerid : int
         The player identifier.
     """
-    try:
-        info = get_player_info(app=app, PlayerID=playerid)
-        # Get the available seasons
-        seasons = []
-        for idx in range(info["FROM_YEAR"], info["TO_YEAR"] + 1):
-            for key in SEASONS:
-                if idx == int(key.split("-")[0]):
-                    seasons.append(key)
-                    break
-    except FileNotFoundError:
-        return abort(404)
-
-    return render_template(
-        "player_summary.html",
-        title=f"{info['DISPLAY_FIRST_LAST']} Summary",
-        playerid=playerid,
-        seasons=sorted(seasons)
-    )
+    return render_template("player_summary.html", playerid=playerid)
 
 @players_bp.get("/players/<int:playerid>/<season>")
 def player_season_summary(playerid: int, season: str):
@@ -68,24 +50,10 @@ def player_season_summary(playerid: int, season: str):
     season : str
         The season.
     """
-    try:
-        info = get_player_info(app=app, PlayerID=playerid)
-        # Get the available seasons
-        seasons = []
-        for idx in range(info["FROM_YEAR"], info["TO_YEAR"] + 1):
-            for key in SEASONS:
-                if idx == int(key.split("-")[0]):
-                    seasons.append(key)
-                    break
-    except FileNotFoundError:
-        return abort(404)
-
     return render_template(
         "player_season_summary.html",
-        title=f"{info['DISPLAY_FIRST_LAST']} Summary",
         playerid=playerid,
         season=season,
-        seasons=seasons
     )
 
 

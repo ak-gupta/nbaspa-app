@@ -80,4 +80,41 @@ function headerDiv(info, tag) {
                 return dateFormat(tmp)
             }
         )
+    
+    fromYear = parseInt(info.FROM_YEAR)
+    toYear = parseInt(info.TO_YEAR)
+    tabData = [{"value": "Overview", "url": $SCRIPT_ROOT + "/players/" + info.PERSON_ID}]
+    while (fromYear <= toYear) {
+        seasonFromYear = String(fromYear) + "-" + String(fromYear + 1).slice(-2)
+        tabData.push(
+            {
+                "value": seasonFromYear,
+                "url": $SCRIPT_ROOT + "/players/" + info.PERSON_ID + "/" + seasonFromYear
+            }
+        )
+        fromYear++
+    }
+    var tabs = d3.select(tag + "-tabs").selectAll("ul").data(tabData).enter()
+    tabs.insert("li")
+        .classed(
+            "is-active",
+            obs => {
+                if (typeof Season !== "undefined") {
+                    if (obs.value == Season) {
+                        return true
+                    } else {
+                        return null
+                    }
+                } else if (obs.value == "Overview") {
+                    return true
+                } else {
+                    return null
+                }
+            }
+        )
+        .insert("a")
+        .attr("href", d => d.url)
+        .text(d => d.value)
+    
+        d3.selectAll("title").text(info.DISPLAY_FIRST_LAST + " Summary")
 }

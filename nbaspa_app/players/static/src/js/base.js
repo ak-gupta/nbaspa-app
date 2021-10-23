@@ -8,5 +8,5 @@ async function populatePlayerHeader() {
             "PlayerID": PlayerID
         }
     })
-    headerDiv(info=basicInfo.data, tag="#playerHeader")    
+    headerDiv(info=basicInfo.data, tag="#playerHeader")
 }

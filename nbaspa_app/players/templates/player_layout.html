@@ -5,28 +5,7 @@
         <div id="playerHeader"></div>
         <br>
         <div class="tabs">
-            <ul>
-                {% if season is defined %}
-                    <li>
-                {% else %}
-                    <li class="is-active">
-                {% endif %}
-                    <a href="{{ url_for('players_bp.player_summary', playerid=playerid) }}">
-                        Overview
-                    </a>
-                </li>
-                {% for year in seasons %}
-                    {% if year == season %}
-                        <li class="is-active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="{{ url_for('players_bp.player_season_summary', playerid=playerid, season=year) }}">
-                            {{ year }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
+            <ul id="playerHeader-tabs"></ul>
         </div>
     {% endblock %}
     {% block datacontent %}{% endblock %}
