@@ -16,6 +16,14 @@ players_bp = Blueprint(
 )
 
 
+@players_bp.get("/players/top", defaults={"season": CURRENT_SEASON, "page": 1})
+@players_bp.get("/players/top/<season>/<int:page>")
+def top_players(season: str, page: int):
+    """Produce an ordered list of players based on page."""
+    return render_template(
+        "top_players.html", season=season, page=page
+    )
+
 @players_bp.get("/players/directory")
 def player_directory():
     """List all players in a given season."""

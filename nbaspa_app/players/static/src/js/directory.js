@@ -43,7 +43,7 @@ async function searchDirectory() {
             .text(obs => obs.DISPLAY_FIRST_LAST)
         divContent.insert("p")
             .classed("subtitle", true)
-            .classed("is-4", true)
+            .classed("is-6", true)
             .text(d => `${d.FROM_YEAR} - ${d.TO_YEAR}`)
         // Add the link to the player summary
         card.insert("div")

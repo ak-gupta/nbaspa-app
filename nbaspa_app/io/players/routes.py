@@ -44,7 +44,7 @@ class TimeSeries(MethodView):
             )
         
         performances = pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
-        # TODO: Drop 0s and NAs
+        # TODO: Don't drop 0s! Should drop these when generating the CSV
         performances = performances[performances["IMPACT"] != 0.0].copy()
         performances["IMPACT"] = performances["IMPACT"].round(3)
         # Parse game date
@@ -196,6 +196,7 @@ class TopPlayers(MethodView):
             )
         
         gameratings = pd.read_csv(fpath, sep="|", index_col=0)
+        gameratings.dropna(inplace=True)
         gameratings["IMPACT_sum"] = gameratings["IMPACT_sum"].round(3)
         gameratings["IMPACT_mean"] = gameratings["IMPACT_mean"].round(3)
 
