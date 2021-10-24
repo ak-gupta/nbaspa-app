@@ -22,22 +22,21 @@ async function searchDirectory() {
             .classed("column", true)
             .insert("div")
             .classed("card", true)
-            .insert("div")
+        mediaContent = card.insert("div")
+            .classed("card-content", true)
             .classed("media", true)
 
-        card.insert("div")
+        mediaContent.insert("div")
             .classed("media-left", true)
             .insert("a")
-            .attr("href", d => $SCRIPT_ROOT + `/players/${d.PERSON_ID}`)
             .insert("img")
             .attr(
                 "src", d => `https://cdn.nba.com/headshots/nba/latest/260x190/${d.PERSON_ID}.png`
             )
             .attr("width", "100px")
-        var divContent = card.insert("div")
+        var divContent = mediaContent.insert("div")
             .classed("media-content", true)
         divContent.insert("a")
-            .attr("href", d => $SCRIPT_ROOT + `/players/${d.PERSON_ID}`)
             .insert("p")
             .classed("title", true)
             .classed("is-4", true)
@@ -46,5 +45,12 @@ async function searchDirectory() {
             .classed("subtitle", true)
             .classed("is-4", true)
             .text(d => `${d.FROM_YEAR} - ${d.TO_YEAR}`)
+        // Add the link to the player summary
+        card.insert("div")
+            .classed("card-footer", true)
+            .insert("a")
+            .classed("card-footer-item", true)
+            .attr("href", d => $SCRIPT_ROOT + `/players/${d.PERSON_ID}`)
+            .text("Career Overview")
     }
 }
