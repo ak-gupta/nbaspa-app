@@ -6,7 +6,11 @@ class MVPList {
     #topRequest;
     #indexRequest;
 
-    constructor() {}
+    constructor(Season, mode, sortBy) {
+        this.Season = Season;
+        this.mode = mode;
+        this.sortBy = sortBy;
+    }
 
     set top(value) {
         this.#topRequest = value
@@ -26,18 +30,15 @@ class MVPList {
 
     /**
      * @function loadData Load the data from the API
-     * @param {string} Season What season to retrieve
-     * @param {string} mode Whether to retrieve the context-aware or context-unaware metrics
-     * @param {string} sortBy Whether to sort by mean or sum
      * @param {number} page The page number to load
      */
-    async loadData(Season, mode="survival-plus", sortBy="mean", page=1) {
+    async loadData(page=1) {
         this.index = axios.get($SCRIPT_ROOT + "/api/players/index")
         this.top = axios.get($SCRIPT_ROOT + "/api/players/top", {
             params: {
-                "Season": Season,
-                "mode": mode,
-                "sortBy": sortBy,
+                "Season": this.Season,
+                "mode": this.mode,
+                "sortBy": this.sortBy,
                 "page": page
             }
         })
@@ -116,16 +117,17 @@ class MVPList {
         // Get the top request data so we know the number of pages
         const topRequest = await this.top
         const headers = JSON.parse(topRequest.headers["x-pagination"])
-        console.log(headers)
         // Remove existing navigation
         d3.select("#pagination").selectAll("ul").remove()
         d3.select("#pagination").selectAll("a").remove()
         var nav = d3.select("#pagination").selectAll("nav")
+        var queryParams = "?mode=" + this.mode + "&sortBy=" + this.sortBy
         if ("previous_page" in headers) {
             nav.insert("a")
                 .classed("pagination-previous", true)
                 .attr(
-                    "href", $SCRIPT_ROOT + "/players/top/" + Season +  "/" + headers["previous_page"]
+                    "href",
+                    $SCRIPT_ROOT + "/players/top/" + this.Season +  "/" + headers["previous_page"] + queryParams
                 )
                 .text("Previous")
         }
@@ -133,7 +135,7 @@ class MVPList {
             nav.insert("a")
                 .classed("pagination-next", true)
                 .attr(
-                    "href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"]
+                    "href", $SCRIPT_ROOT + "/players/top/" + this.Season + "/" + headers["next_page"] + queryParams
                 )
                 .text("Next")
             var pageList = nav.insert("ul")
@@ -141,18 +143,18 @@ class MVPList {
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/1")
+                .attr("href", $SCRIPT_ROOT + "/players/top/" + this.Season + "/1" + queryParams)
                 .text(1)
             if (!("previous_page" in headers) || (headers["page"] <= 3)) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/2")
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/2" + queryParams)
                     .text(2)
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/3")
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/3" + queryParams)
                     .text(3)
             } else {
                 pageList.insert("li")
@@ -164,29 +166,29 @@ class MVPList {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["previous_page"])
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["previous_page"] + queryParams)
                     .text(headers["previous_page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"])
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"])
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])
             }
             if (headers["page"] == headers["total_pages"] - 1) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"])
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"])
+                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])                
             } else {
                 pageList.insert("li")
@@ -197,7 +199,7 @@ class MVPList {
                     .insert("a")
                     .classed("pagination-link", true)
                     .attr(
-                        "href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["total_pages"]
+                        "href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["total_pages"] + queryParams
                     )
                     .text(headers["total_pages"])
             }
@@ -207,7 +209,7 @@ class MVPList {
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/1")
+                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/1" + queryParams)
                 .text(1)
             pageList.insert("li")
                 .insert("span")
@@ -216,12 +218,12 @@ class MVPList {
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["previous_page"])
+                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["previous_page"] + queryParams)
                 .text(headers["previous_page"])
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"])
+                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"] + queryParams)
                 .text(headers["page"])
         }
     }

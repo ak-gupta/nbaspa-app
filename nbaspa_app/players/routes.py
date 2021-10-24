@@ -1,6 +1,6 @@
 """Player pages."""
 
-from flask import abort, Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask import current_app as app
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON
@@ -19,7 +19,12 @@ players_bp = Blueprint(
 def top_players(season: str, page: int):
     """Produce an ordered list of players based on page."""
     return render_template(
-        "top_players.html", title=f"{season} MVP Tracker", season=season, page=page
+        "top_players.html",
+        title=f"{season} MVP Tracker",
+        season=season,
+        page=page,
+        mode=request.args.get("mode", "survival-plus"),
+        sortBy=request.args.get("sortBy", "mean")
     )
 
 @players_bp.get("/players/directory")

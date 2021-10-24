@@ -2,8 +2,8 @@
  * @module mvp_list A module dedicated to updating the MVP List
  */
 
-const mvp = new MVPList()
-mvp.loadData(Season=Season, mode="survival-plus", sortBy="mean", page=page)
+const mvp = new MVPList(Season, mode, sortBy)
+mvp.loadData(page)
 mvp.updateList()
 mvp.createPagination()
 
@@ -14,16 +14,16 @@ formElement.onsubmit = (e) => {
     params = new FormData(formElement)
     // Parse the data
     if (params.get("mode") !== null) {
-        var survMode = "survival"
+        mvp.mode = "survival"
     } else {
-        var survMode = "survival-plus"
+        mvp.mode = "survival-plus"
     }
     if (params.get("sortBy") == "Average") {
-        var sortMethod = "mean"
+        mvp.sortBy = "mean"
     } else {
-        var sortMethod = "sum"
+        mvp.sortBy = "sum"
     }
-    mvp.loadData(Season=Season, mode=survMode, sortBy=sortMethod, page=page)
+    mvp.loadData(page)
     mvp.updateList()
     mvp.createPagination()
 }

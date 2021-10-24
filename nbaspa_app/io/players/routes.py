@@ -44,8 +44,6 @@ class TimeSeries(MethodView):
             )
         
         performances = pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
-        # TODO: Don't drop 0s! Should drop these when generating the CSV
-        performances = performances[performances["IMPACT"] != 0.0].copy()
         performances["IMPACT"] = performances["IMPACT"].round(3)
         # Parse game date
         performances["GAME_DATE_PARSED"] = pd.to_datetime(performances["GAME_DATE"])
@@ -210,7 +208,7 @@ class TopPlayers(MethodView):
         pagination_parameters.item_count = len(output)
         
         return output[
-            pagination_parameters.first_item:pagination_parameters.last_item
+            pagination_parameters.first_item:(pagination_parameters.last_item + 1)
         ]
 
 @io_players.route("/gamelog")
