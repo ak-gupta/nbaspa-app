@@ -23,5 +23,5 @@ formElement.onsubmit = (e) => {
     } else {
         sortBy = "sum"
     }
-    window.location = $SCRIPT_ROOT + `/players/top/${Season}/${page}?mode=${mode}&sortBy=${sortBy}`
+    window.location = $SCRIPT_ROOT + `/players/top/${Season}/1?mode=${mode}&sortBy=${sortBy}`
 }
