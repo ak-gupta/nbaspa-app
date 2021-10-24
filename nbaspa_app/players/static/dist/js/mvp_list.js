@@ -14,16 +14,14 @@ formElement.onsubmit = (e) => {
     params = new FormData(formElement)
     // Parse the data
     if (params.get("mode") !== null) {
-        mvp.mode = "survival"
+        mode = "survival"
     } else {
-        mvp.mode = "survival-plus"
+        mode = "survival-plus"
     }
     if (params.get("sortBy") == "Average") {
-        mvp.sortBy = "mean"
+        sortBy = "mean"
     } else {
-        mvp.sortBy = "sum"
+        sortBy = "sum"
     }
-    mvp.loadData(page)
-    mvp.updateList()
-    mvp.createPagination()
+    window.location = $SCRIPT_ROOT + `/players/top/${Season}/${page}?mode=${mode}&sortBy=${sortBy}`
 }
