@@ -5,8 +5,6 @@ from flask import current_app as app
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 
-from .summary import get_all_players
-
 players_bp = Blueprint(
     "players_bp",
     __name__,
@@ -21,7 +19,7 @@ players_bp = Blueprint(
 def top_players(season: str, page: int):
     """Produce an ordered list of players based on page."""
     return render_template(
-        "top_players.html", season=season, page=page
+        "top_players.html", title=f"{season} MVP Tracker", season=season, page=page
     )
 
 @players_bp.get("/players/directory")
