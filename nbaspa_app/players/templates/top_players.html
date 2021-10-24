@@ -5,12 +5,12 @@
 <br>
 <div class="columns">
     <div class="column is-2">
-        <form>
+        <form id="sortForm">
             <div class="field">
                 <label class="label">Sort by</label>
                 <div class="control">
                     <div class="select">
-                        <select>
+                        <select name="sortBy">
                             <option>Average</option>
                             <option>Total</option>
                         </select>
@@ -20,7 +20,7 @@
             <div class="field">
                 <label class="label">Impact type</label>
                 <label class="checkbox">
-                    <input type="checkbox">
+                    <input type="checkbox" name="mode">
                     Include team quality and schedule context
                 </label>
             </div>

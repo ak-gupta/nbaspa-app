@@ -52,6 +52,8 @@ class MVPList {
         var topPlayers = topRequest.data
         const playerInfo = await this.index
         var displayInfo = playerInfo.data
+        // Remove any existing data
+        d3.select("#playerList").selectAll("div").remove()
         // Create the new list
         var divs = d3.select("#playerList").selectAll("div").data(topPlayers).enter()
 
@@ -115,6 +117,9 @@ class MVPList {
         const topRequest = await this.top
         const headers = JSON.parse(topRequest.headers["x-pagination"])
         console.log(headers)
+        // Remove existing navigation
+        d3.select("#pagination").selectAll("ul").remove()
+        d3.select("#pagination").selectAll("a").remove()
         var nav = d3.select("#pagination").selectAll("nav")
         if ("previous_page" in headers) {
             nav.insert("a")
