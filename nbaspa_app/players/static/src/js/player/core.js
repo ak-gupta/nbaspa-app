@@ -74,11 +74,15 @@ class PlayerSeasonSummary {
         var rawData = this.data
         rawData = rawData.filter(obs => obs.IMPACT !== 0.0)
         // Get the headlines
+        var percentFormat = d3.format("~%")
         const info = [
             {"field": "Impact", "value": d3.mean(rawData, obs => obs.IMPACT).toFixed(3)},
             {"field": "Points", "value": d3.mean(rawData, obs => obs.PTS).toFixed(1)},
             {"field": "Assists", "value": d3.mean(rawData, obs => obs.AST).toFixed(1)},
-            {"field": "Rebounds", "value": d3.mean(rawData, obs => obs.REB).toFixed(1)}
+            {"field": "Rebounds", "value": d3.mean(rawData, obs => obs.REB).toFixed(1)},
+            {"field": "Field Goal Percentage", "value": percentFormat(d3.mean(rawData, obs => obs.FG_PCT).toFixed(3))},
+            {"field": "3PT Field Goal Percentage", "value": percentFormat(d3.mean(rawData, obs => obs.FG3_PCT).toFixed(3))},
+            {"field": "Free Throw Percentage", "value": percentFormat(d3.mean(rawData, obs => obs.FT_PCT).toFixed(3))}
         ]
         var divs = d3.select(divTag).selectAll("div").data(info).enter()
         var card = divs.append("div")
