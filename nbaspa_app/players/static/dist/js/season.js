@@ -2,8 +2,8 @@
  * @module Create a season summary plot for a player season
  */
 
-let timeData = null;
-let gameLog = null;
-let graphData = null;
-
-populateSeasonGraph()
+let summaryData = new PlayerSeasonSummary();
+summaryData.loadData(PlayerID, Season)
+summaryData.parseData()
+summaryData.draw("#timeGraph")
+summaryData.headlineStats("#headline")

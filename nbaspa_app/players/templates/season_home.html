@@ -8,13 +8,26 @@
 {% endblock %}
 
 {% block content %}
+    <h1 class="title">{{ season }} Summary</h1>
     <br>
-    <h4 class="title">{{ season }} Player Comparison</h4>
-    <p class="subtitle">Use the search box to find and add players to the comparison chart.</p>
-    <p>
-        See <a href="{{ url_for('players_bp.top_players', season=season, page=1) }}">here</a> for a complete list of ratings
-    </p>
-    <br>
+    <div class="columns">
+        <div class="column is-2">
+            <aside class="menu">
+                <p class="menu-label">
+                    Award Tracker
+                </p>
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ url_for('players_bp.top_players', season=season, page=1) }}">
+                            MVP
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+    <h2 class="title is-4">Player Comparison</h4>
+    <p class="subtitle is-6">Use the search box to find and add players to the comparison chart.</p>
     <div class="columns">
         <div class="column is-2">
             <div class="field">

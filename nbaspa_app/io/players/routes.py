@@ -86,6 +86,7 @@ class CareerProfile(MethodView):
             (pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str}) for fpath in fglob),
             ignore_index=True
         )
+        performances = performances[performances["IMPACT"] != 0.0].copy()
         # Date parsing
         performances["GAME_DATE_PARSED"] = pd.to_datetime(performances["GAME_DATE"])
         performances["DAY"] = performances["GAME_DATE_PARSED"].dt.day

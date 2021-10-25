@@ -18,6 +18,7 @@ function drawTimeChart(lineData, dateVar, dateVarFormat, axisFormat, tag) {
     const graphHeight = 400 - margin.top - margin.bottom;
     // Parse the date format
     var parseDate = d3.timeParse(dateVarFormat)
+    lineData = lineData.filter(obs => obs.IMPACT !== 0.0)
     lineData.forEach(
         function(d) {
             d[dateVar] = parseDate(d[dateVar])

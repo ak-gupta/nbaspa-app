@@ -22,7 +22,7 @@
         {% block header %}{% endblock %}
     </head>
     <body class="has-background-light">
-        <nav class="navbar is-transparent has-background-light" role="navigation" arial-label="main navigation">
+        <nav class="navbar is-dark" role="navigation" arial-label="main navigation">
             <div class="navbar-menu">
                 <div class="navbar-start">
                     <a class="navbar-item" href="{{ url_for('home_bp.home') }}">Home</a>
@@ -46,6 +46,7 @@
                 </div>
             </div>
         </nav>
+        <br>
         <div class="container is-fluid">
             {% block content %}{% endblock %}
         </div>

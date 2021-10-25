@@ -8,9 +8,14 @@
 {% endblock %}
 
 {% block datacontent %}
-    <h4 class="title">{{ season }} SPA+ Summary</h4>
+    <h4 class="title">{{ season }} Impact Summary</h4>
     <br>
-    <div id="timeGraph" style="text-align: center;"></div>
+    <div class="columns">
+        <div id="headline" class="column is-2"></div>
+        <div class="column is-10">
+            <div id="timeGraph" style="text-align: center;"></div>
+        </div>
+    </div>
     <br>
 {% endblock %}
 
