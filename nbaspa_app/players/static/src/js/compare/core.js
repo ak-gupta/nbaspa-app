@@ -11,6 +11,14 @@ class CompareSearch extends PlayerDirectory {
         this.listDiv = listDiv;
     }
 
+    async loadData() {
+        this.index = axios.get($SCRIPT_ROOT + "/api/players/index", {
+            params: {
+                "Season": this.Season
+            }
+        })
+    }
+
     addCards(divData) {
         var divs = d3.select(this.divTag).selectAll("div").data(divData).enter()
         var card = divs.append("div")
