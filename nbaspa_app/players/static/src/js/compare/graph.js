@@ -14,17 +14,30 @@ function compareChart(playerData, info, tag) {
     }
     const graphWidth = 800 - margin.left - margin.right;
     const graphHeight = 400 - margin.top - margin.bottom;
-    // Parse the date format
-    var parseDate = d3.timeParse("%Y-%m-%dT%H:%M:%S")
-    playerData.forEach(
-        series => series.forEach(obs => obs.PARSED_DATE = parseDate(obs.GAME_DATE))
-    )
+    // Collapse the data and parse the format
+    var parseDate = d3.timeParse("%m-%Y")
+    aggData = []
+    for (const series of playerData) {
+        rawList = []
+        rolled = d3.rollups(series, v => d3.mean(v, d => d.IMPACT), e => e.MONTH, f => f.YEAR)
+        for (const x of rolled) {
+            rawList.push(
+                {
+                    "MONTH": x[0],
+                    "PARSED_DATE": parseDate(`${x[0]}-${x[1][0][0]}`),
+                    "IMPACT": x[1][0][1],
+                    "PLAYER_ID": series[0].PLAYER_ID
+                }
+            )
+        }
+        aggData.push(rawList)
+    }
     // Create axes
     var x = d3.scaleTime()
         .domain(
             [
-                d3.min(playerData, series => d3.min(series, obs => obs.PARSED_DATE)),
-                d3.max(playerData, series => d3.max(series, obs => obs.PARSED_DATE))
+                d3.min(aggData, series => d3.min(series, obs => obs.PARSED_DATE)),
+                d3.max(aggData, series => d3.max(series, obs => obs.PARSED_DATE))
             ]
         )
         .range([0, graphWidth])
@@ -35,9 +48,9 @@ function compareChart(playerData, info, tag) {
         .domain(
             [
                 d3.least(
-                    [0, d3.min(playerData, series => d3.min(series, obs => obs.IMPACT))]
+                    [0, d3.min(aggData, series => d3.min(series, obs => obs.IMPACT))]
                 ),
-                d3.max(playerData, series => d3.max(series, obs => obs.IMPACT))
+                d3.max(aggData, series => d3.max(series, obs => obs.IMPACT))
             ]
         )
         .range([graphHeight, 0])
@@ -69,7 +82,7 @@ function compareChart(playerData, info, tag) {
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
         .selectAll("path")
-        .data(playerData)
+        .data(aggData)
         .join("path")
         .style("mix-blend-mode", "multiply")
         .attr("d", timeLine)
