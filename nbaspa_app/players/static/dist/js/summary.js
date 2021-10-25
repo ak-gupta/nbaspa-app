@@ -2,11 +2,7 @@
  * @module The javascript code for running the season summary page
  */
 
-// Set null variables for AJAX results
-let topPlayers = null;
-let defaultSelect = null;
-let defaultFiltered = null;
-let displayInfo = null;
+let searchList = []
 
-// Populate the initial graph
-populateCompare()
+let newSearch = new CompareSearch("compareSearch", "#searchResults", Season, "#compareGraph", "#playerList")
+newSearch.loadData()

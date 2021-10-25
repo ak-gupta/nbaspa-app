@@ -6,7 +6,7 @@ function playerDivs(playerList, info, tag) {
             return {
                 PLAYER_ID: obs[0].PLAYER_ID,
                 SEASON: obs[0].SEASON,
-                IMPACT: d3.mean(obs, d => d.IMPACT),
+                IMPACT: d3.mean(obs.filter(e => e.IMPACT !== 0.0), d => d.IMPACT),
             }
         }
     )

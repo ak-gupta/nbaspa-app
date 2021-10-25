@@ -16,13 +16,20 @@
     <div class="columns">
         <div class="column is-2">
             <div class="field">
-                <div class="select is-multiple">
-                    <select multiple id="playerFilter" size="10"></select>
+                <div class="control">
+                    <input class="input" type="text" id="compareSearch" onkeyup="newSearch.search()" placeholder="Find a player...">
                 </div>
             </div>
-            <div class="field">
-                <button class="button is-link" id="submit" onclick="updateCompareChart()">Graph</button>
+            <div id="searchResults"></div>
+            <div class="field is-grouped">
+                <p class="control">
+                    <a class="button is-primary" onclick="newSearch.updateCompareChart()">Graph</a>
+                </p>
+                <p class="control">
+                    <a class="button is-light" onclick="clearCompare()">Clear</a>
+                </p>
             </div>
+            <div id="currentCompare"></div>
         </div>
         <div class="column is-6">
             <div id="compareGraph" style="text-align: center"></div>
