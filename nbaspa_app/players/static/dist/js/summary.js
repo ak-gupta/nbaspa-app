@@ -7,9 +7,11 @@
     d3.select(divTag).selectAll("div").remove()
     document.getElementById(inputTag).value = null
     // Add the player to the compare list
-    searchList.push(
-        {"DISPLAY_FIRST_LAST": playerName, "PERSON_ID": playerID}
-    )
+    if(!(searchList.map(obs => obs.PERSON_ID).includes(playerID))) {
+        searchList.push(
+            {"DISPLAY_FIRST_LAST": playerName, "PERSON_ID": playerID}
+        )
+    }
     d3.select("#currentCompare").selectAll("div").remove()
     var div = d3.select("#currentCompare").selectAll("div").data(searchList).enter()
     div.append("div")
