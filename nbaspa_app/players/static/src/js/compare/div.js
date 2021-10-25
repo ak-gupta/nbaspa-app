@@ -47,7 +47,7 @@ function playerDivs(playerList, info, tag) {
         .insert("div")
     navContent.insert("p")
         .classed("heading", true)
-        .text("Average SPA+")
+        .text("Average Impact")
     navContent.insert("p")
         .classed("title", true)
         .text(d => d.IMPACT.toFixed(3))
