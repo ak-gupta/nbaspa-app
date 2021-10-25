@@ -47,7 +47,7 @@ class CompareSearch extends PlayerDirectory {
             .text("Add to compare")
     }
 
-    async updateCompareChart() {
+    async updateCompareChart(mode) {
         d3.select(this.graphDiv).selectAll("svg").remove();
         d3.select(this.graphDiv).selectAll("div").remove();
         d3.select(this.listDiv).selectAll("div").remove();
@@ -57,7 +57,7 @@ class CompareSearch extends PlayerDirectory {
                     params: {
                         "PlayerID": player.PERSON_ID,
                         "Season": Season,
-                        "mode": "survival-plus"
+                        "mode": mode
                     }
                 })
             )

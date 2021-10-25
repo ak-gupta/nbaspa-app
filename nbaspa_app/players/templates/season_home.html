@@ -9,9 +9,11 @@
 
 {% block content %}
     <br>
-    <h4 class="title">{{ season }} Summary</h4>
-    <p class="subtitle">Use the list to select and compare the SPA+ rating of any players.</p>
-    <p>See <a href="{{ url_for('players_bp.top_players', season=season, page=1) }}">here</a> for a complete list of ratings</p>
+    <h4 class="title">{{ season }} Player Comparison</h4>
+    <p class="subtitle">Use the search box to find and add players to the comparison chart.</p>
+    <p>
+        See <a href="{{ url_for('players_bp.top_players', season=season, page=1) }}">here</a> for a complete list of ratings
+    </p>
     <br>
     <div class="columns">
         <div class="column is-2">
@@ -21,14 +23,22 @@
                 </div>
             </div>
             <div id="searchResults"></div>
-            <div class="field is-grouped">
-                <p class="control">
-                    <a class="button is-primary" onclick="newSearch.updateCompareChart()">Graph</a>
-                </p>
-                <p class="control">
-                    <a class="button is-light" onclick="clearCompare()">Clear</a>
-                </p>
-            </div>
+            <form id="graphForm">
+                <div class="field">
+                    <label class="label">Impact type</label>
+                    <input type="checkbox" name="mode">
+                    Include team quality and schedule context
+                </div>
+                <div class="field is-grouped">
+                    <p class="control">
+                        <button type="submit" class="button is-primary">Graph</button>
+                    </p>
+                    <p class="control">
+                        <a class="button is-light" onclick="clearCompare()">Clear</a>
+                    </p>
+                </div>
+            </form>
+            <br>
             <div id="currentCompare"></div>
         </div>
         <div class="column is-6">

@@ -37,3 +37,16 @@ let searchList = []
 
 let newSearch = new CompareSearch("compareSearch", "#searchResults", Season, "#compareGraph", "#playerList")
 newSearch.loadData()
+
+formElement = document.getElementById("graphForm")
+formElement.onsubmit = (e) => {
+    e.preventDefault()
+    params = new FormData(formElement)
+    // Parse the data
+    if (params.get("mode") !== null) {
+        mode = "survival"
+    } else {
+        mode = "survival-plus"
+    }
+    newSearch.updateCompareChart(mode)
+}
