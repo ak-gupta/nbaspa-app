@@ -17,13 +17,6 @@ class PlayerQueryArgSchema(Schema):
 class IndexQueryArgSchema(Schema):
     Season = fields.String()
 
-class SummaryQueryArgsSchema(Schema):
-    Season = SEASON_FIELD
-    mode = SURV_MODE
-    sortBy = fields.String(
-        validate=validate.OneOf(["sum", "mean"])
-    )
-
 class TimeSeriesOutput(Schema):
     PLAYER_ID = fields.Int()
     IMPACT = fields.Float()
@@ -94,12 +87,6 @@ class PlayerInfoOutput(Schema):
     DRAFT_YEAR = fields.String()
     DRAFT_ROUND = fields.String()
     DRAFT_NUMBER = fields.String()
-
-class TopPlayersOutput(Schema):
-    PLAYER_ID = fields.Int()
-    IMPACT_mean = fields.Float()
-    IMPACT_sum = fields.Float()
-    RANK = fields.Int()
 
 class GamelogOutputSchema(Schema):
     SEASON_ID = fields.String()

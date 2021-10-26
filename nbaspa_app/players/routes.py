@@ -14,12 +14,12 @@ players_bp = Blueprint(
 )
 
 
-@players_bp.get("/players/top", defaults={"season": CURRENT_SEASON, "page": 1})
-@players_bp.get("/players/top/<season>/<int:page>")
-def top_players(season: str, page: int):
+@players_bp.get("/season/mvp", defaults={"season": CURRENT_SEASON, "page": 1})
+@players_bp.get("/season/mvp/<season>/<int:page>")
+def mvp(season: str, page: int):
     """Produce an ordered list of players based on page."""
     return render_template(
-        "top_players.html",
+        "mvp.html",
         title=f"{season} MVP Tracker",
         season=season,
         page=page,

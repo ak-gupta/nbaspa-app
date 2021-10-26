@@ -34,7 +34,7 @@ class MVPList {
      */
     async loadData(page=1) {
         this.index = axios.get($SCRIPT_ROOT + "/api/players/index")
-        this.top = axios.get($SCRIPT_ROOT + "/api/players/top", {
+        this.top = axios.get($SCRIPT_ROOT + "/api/league/mvp", {
             params: {
                 "Season": this.Season,
                 "mode": this.mode,
@@ -127,7 +127,7 @@ class MVPList {
                 .classed("pagination-previous", true)
                 .attr(
                     "href",
-                    $SCRIPT_ROOT + "/players/top/" + this.Season +  "/" + headers["previous_page"] + queryParams
+                    $SCRIPT_ROOT + "/season/mvp/" + this.Season +  "/" + headers["previous_page"] + queryParams
                 )
                 .text("Previous")
         }
@@ -135,7 +135,7 @@ class MVPList {
             nav.insert("a")
                 .classed("pagination-next", true)
                 .attr(
-                    "href", $SCRIPT_ROOT + "/players/top/" + this.Season + "/" + headers["next_page"] + queryParams
+                    "href", $SCRIPT_ROOT + "/season/mvp/" + this.Season + "/" + headers["next_page"] + queryParams
                 )
                 .text("Next")
             var pageList = nav.insert("ul")
@@ -143,18 +143,18 @@ class MVPList {
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + this.Season + "/1" + queryParams)
+                .attr("href", $SCRIPT_ROOT + "/season/mvp/" + this.Season + "/1" + queryParams)
                 .text(1)
             if (!("previous_page" in headers) || (headers["page"] <= 3)) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/2" + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/2" + queryParams)
                     .text(2)
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/3" + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/3" + queryParams)
                     .text(3)
             } else {
                 pageList.insert("li")
@@ -166,29 +166,29 @@ class MVPList {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["previous_page"] + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["previous_page"] + queryParams)
                     .text(headers["previous_page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"] + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"] + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])
             }
             if (headers["page"] == headers["total_pages"] - 1) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"] + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["next_page"] + queryParams)
+                    .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])                
             } else {
                 pageList.insert("li")
@@ -199,7 +199,7 @@ class MVPList {
                     .insert("a")
                     .classed("pagination-link", true)
                     .attr(
-                        "href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["total_pages"] + queryParams
+                        "href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["total_pages"] + queryParams
                     )
                     .text(headers["total_pages"])
             }
@@ -209,7 +209,7 @@ class MVPList {
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/1" + queryParams)
+                .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/1" + queryParams)
                 .text(1)
             pageList.insert("li")
                 .insert("span")
@@ -218,12 +218,12 @@ class MVPList {
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["previous_page"] + queryParams)
+                .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["previous_page"] + queryParams)
                 .text(headers["previous_page"])
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/players/top/" + Season + "/" + headers["page"] + queryParams)
+                .attr("href", $SCRIPT_ROOT + "/season/mvp/" + Season + "/" + headers["page"] + queryParams)
                 .text(headers["page"])
         }
     }
