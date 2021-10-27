@@ -9,6 +9,7 @@ def compile_assets(assets):
     player_js_bundle = Bundle(
         "players_bp/src/js/base.js",
         "players_bp/src/js/directory.js",
+        "players_bp/src/js/mip_list.js",
         "players_bp/src/js/mvp_list.js",
         "players_bp/src/js/compare/*.js",
         "players_bp/src/js/player/*.js",

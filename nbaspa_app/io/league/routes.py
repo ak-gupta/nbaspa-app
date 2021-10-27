@@ -9,8 +9,8 @@ from flask_smorest import Blueprint, abort
 import numpy as np
 import pandas as pd
 
-from nbaspa.data.endpoints import Scoreboard
-from nbaspa.data.endpoints.parameters import CURRENT_SEASON, SEASONS
+from nbaspa.data.endpoints import Scoreboard, AllPlayers
+from nbaspa.data.endpoints.parameters import CURRENT_SEASON, SEASONS, Season
 
 
 from . import schemas as sc
@@ -80,6 +80,82 @@ class TopPlayers(MethodView):
         gameratings["RANK"] = np.arange(1, gameratings.shape[0] + 1)
 
         output = gameratings.to_dict(orient="records")
+        pagination_parameters.item_count = len(output)
+        
+        return output[
+            pagination_parameters.first_item:(pagination_parameters.last_item + 1)
+        ]
+
+@io_league.route("/mip")
+class MostImprovedPlayers(MethodView):
+    """Get the most improved players for a given season."""
+
+    @io_league.arguments(sc.SummaryQueryArgsSchema, location="query")
+    @io_league.response(200, sc.AwardOutputSchema(many=True))
+    @io_league.paginate()
+    def get(self, args, pagination_parameters):
+        """Get the most improved players for a given season.
+        
+        We will exclude all second year players from the list.
+        """
+        # Get the player index to filter out players that started last season
+        loader = AllPlayers(
+            output_dir=Path(app.config["DATA_DIR"], args["Season"]),
+            Season=args["Season"]
+        )
+        if not loader.exists():
+            abort(404, message="Unable to find roster information.")
+        loader.load()
+        # Parse
+        playerinfo = loader.get_data()
+        playerinfo.drop_duplicates(subset="PERSON_ID", keep="first", inplace=True)
+        playerinfo["TO_YEAR"] = playerinfo["TO_YEAR"].astype(int)
+        playerinfo["FROM_YEAR"] = playerinfo["FROM_YEAR"].astype(int)
+        seasonyear = Season(year=int(args["Season"].split("-")[0]))
+        # Exclude second-year players
+        playerinfo = playerinfo[
+            (playerinfo["TO_YEAR"] >= seasonyear.year) & (playerinfo["FROM_YEAR"] < (seasonyear - 1).year)
+        ].copy()
+
+        # Load the current season impact ratings
+        if args["mode"] == "survival":
+            fpath = Path(
+                app.config["DATA_DIR"], args["Season"], "impact-summary.csv"
+            )
+        elif args["mode"] == "survival-plus":
+            fpath = Path(
+                app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
+            )
+        
+        current = pd.read_csv(fpath, sep="|", index_col=0)
+        current.dropna(inplace=True)
+        # Filter out second-year players
+        current = current[current["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)].copy()
+        current.set_index("PLAYER_ID", inplace=True)
+        # Load previous season impact ratings
+        previousyear = seasonyear - 1
+        if args["mode"] == "survival":
+            fpath = Path(
+                app.config["DATA_DIR"], str(previousyear), "impact-summary.csv"
+            )
+        elif args["mode"] == "survival-plus":
+            fpath = Path(
+                app.config["DATA_DIR"], str(previousyear), "impact-plus-summary.csv"
+            )
+        previous = pd.read_csv(fpath, sep="|", index_col=0)
+        previous.dropna(inplace=True)
+        previous.set_index("PLAYER_ID", inplace=True)
+        # Join and get the impact difference
+        current["IMPACT_mean"] -= previous["IMPACT_mean"]
+        current["IMPACT_sum"] -= previous["IMPACT_sum"]
+
+        if args["sortBy"] == "mean":
+            current.sort_values(by="IMPACT_mean", ascending=False, inplace=True)
+        elif args["sortBy"] == "sum":
+            current.sort_values(by="IMPACT_sum", ascending=False, inplace=True)
+        current["RANK"] = np.arange(1, current.shape[0] + 1)
+
+        output = current.reset_index().to_dict(orient="records")
         pagination_parameters.item_count = len(output)
         
         return output[
