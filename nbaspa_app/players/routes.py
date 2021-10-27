@@ -40,6 +40,19 @@ def mip(season: str, page: int):
         sortBy=request.args.get("sortBy", "mean")
     )
 
+@players_bp.get("/season/roty", defaults={"season": CURRENT_SEASON, "page": 1})
+@players_bp.get("/season/roty/<season>/<int:page>")
+def roty(season: str, page: int):
+    """Produce an ordered list of players based on page."""
+    return render_template(
+        "roty.html",
+        title=f"{season} ROtY Tracker",
+        season=season,
+        page=page,
+        mode=request.args.get("mode", "survival-plus"),
+        sortBy=request.args.get("sortBy", "mean")
+    )
+
 @players_bp.get("/players/directory")
 def player_directory():
     """List all players in a given season."""

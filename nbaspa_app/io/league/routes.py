@@ -161,3 +161,57 @@ class MostImprovedPlayers(MethodView):
         return output[
             pagination_parameters.first_item:(pagination_parameters.last_item + 1)
         ]
+
+
+@io_league.route("/roty")
+class RookiePlayers(MethodView):
+    """Get the top performing rookies"""
+
+    @io_league.arguments(sc.SummaryQueryArgsSchema, location="query")
+    @io_league.response(200, sc.AwardOutputSchema(many=True))
+    @io_league.paginate()
+    def get(self, args, pagination_parameters):
+        """Get the best performing rookies."""
+        # Load the player index
+        loader = AllPlayers(
+            output_dir=Path(app.config["DATA_DIR"], args["Season"]),
+            Season=args["Season"]
+        )
+        if not loader.exists():
+            abort(404, message="Unable to find roster information.")
+        loader.load()
+        # Parse
+        playerinfo = loader.get_data()
+        playerinfo.drop_duplicates(subset="PERSON_ID", keep="first", inplace=True)
+        playerinfo["TO_YEAR"] = playerinfo["TO_YEAR"].astype(int)
+        playerinfo["FROM_YEAR"] = playerinfo["FROM_YEAR"].astype(int)
+        seasonyear = Season(year=int(args["Season"].split("-")[0]))
+        # Only include players that started this year
+        playerinfo = playerinfo[playerinfo["FROM_YEAR"] == seasonyear.year].copy()
+
+        # Load impact ratings
+        if args["mode"] == "survival":
+            fpath = Path(
+                app.config["DATA_DIR"], args["Season"], "impact-summary.csv"
+            )
+        elif args["mode"] == "survival-plus":
+            fpath = Path(
+                app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
+            )
+
+        ratings = pd.read_csv(fpath, sep="|", index_col=0)
+        ratings.dropna(inplace=True)
+        ratings = ratings[ratings["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)].copy()
+
+        if args["sortBy"] == "mean":
+            ratings.sort_values(by="IMPACT_mean", ascending=False, inplace=True)
+        elif args["sortBy"] == "sum":
+            ratings.sort_values(by="IMPACT_sum", ascending=False, inplace=True)
+        ratings["RANK"] = np.arange(1, ratings.shape[0] + 1)
+
+        output = ratings.to_dict(orient="records")
+        pagination_parameters.item_count = len(output)
+        
+        return output[
+            pagination_parameters.first_item:(pagination_parameters.last_item + 1)
+        ]

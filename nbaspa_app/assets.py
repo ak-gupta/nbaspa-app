@@ -11,6 +11,7 @@ def compile_assets(assets):
         "players_bp/src/js/directory.js",
         "players_bp/src/js/mip_list.js",
         "players_bp/src/js/mvp_list.js",
+        "players_bp/src/js/roty_list.js",
         "players_bp/src/js/compare/*.js",
         "players_bp/src/js/player/*.js",
         filters="rjsmin",

@@ -19,12 +19,17 @@
                 <ul class="menu-list">
                     <li>
                         <a href="{{ url_for('players_bp.mvp', season=season, page=1) }}">
-                            MVP
+                            Most Valuable Player
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('players_bp.mip', season=season, page=1) }}">
-                            MIP
+                            Most Improved Player
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('players_bp.roty', season=season, page=1) }}">
+                            Rookie of the Year
                         </a>
                     </li>
                 </ul>

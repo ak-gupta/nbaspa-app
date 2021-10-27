@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h4 class="title">{{ season }} Most Valuable Player Tracker</h4>
+<h4 class="title">{{ season }} Rookie of the Year Tracker</h4>
 <br>
 <div class="columns">
     <div class="column is-2">
@@ -52,5 +52,5 @@
     {% assets "player_js" -%}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
-    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/mvp_list.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/roty_list.js') }}"></script>
 {% endblock %}
