@@ -2,7 +2,7 @@
  * @module mvp_list A module dedicated to updating the MVP List
  */
 
-const mvp = new MVPList(Season, mode, sortBy)
+const mvp = new AwardList(Season, "/api/league/mvp", mode, sortBy)
 mvp.loadData(page)
 mvp.updateList()
 mvp.createPagination()

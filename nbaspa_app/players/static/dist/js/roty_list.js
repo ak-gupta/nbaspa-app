@@ -2,7 +2,7 @@
  * @module roty_list A module dedicated to updating the ROtY List
  */
 
-const roty = new ROtYList(Season, mode, sortBy)
+const roty = new AwardList(Season, "/api/league/roty", mode, sortBy)
 roty.loadData(page)
 roty.updateList()
 roty.createPagination()

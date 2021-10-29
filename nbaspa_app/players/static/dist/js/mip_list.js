@@ -2,9 +2,9 @@
  * @module mip_list A module dedicated to updating the MIP List
  */
 
- const mip = new MIPList(Season, mode, sortBy)
+ const mip = new AwardList(Season, "/api/league/mip", mode, sortBy)
  mip.loadData(page)
- mip.updateList()
+ mip.updateList(averageHeader="Impact lift per game", totalHeader="Total impact lift")
  mip.createPagination()
  
  // Take in the form input and re-load data, update list

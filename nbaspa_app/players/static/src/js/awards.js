@@ -1,13 +1,14 @@
 /**
- * @module mip Code for generating a paginated list of the most improved players in a given season.
+ * @module awards Code for generating an awards list
  */
 
- class MIPList {
+ class AwardList {
     #topRequest;
     #indexRequest;
 
-    constructor(Season, mode, sortBy) {
+    constructor(Season, endpoint, mode, sortBy) {
         this.Season = Season;
+        this.endpoint = $SCRIPT_ROOT + endpoint;
         this.mode = mode;
         this.sortBy = sortBy;
     }
@@ -34,7 +35,7 @@
      */
     async loadData(page=1) {
         this.index = axios.get($SCRIPT_ROOT + "/api/players/index")
-        this.top = axios.get($SCRIPT_ROOT + "/api/league/mip", {
+        this.top = axios.get(this.endpoint, {
             params: {
                 "Season": this.Season,
                 "mode": this.mode,
@@ -44,10 +45,7 @@
         })
     }
 
-    /**
-     * @function updateList Update page
-     */
-    async updateList() {
+    async updateList(averageHeader="Average Impact", totalHeader="Total Impact") {
         // Wait for the data
         const topRequest = await this.top
         var topPlayers = topRequest.data
@@ -94,7 +92,7 @@
             .insert("div")
         avgContent.insert("p")
             .classed("heading", true)
-            .text("Average Impact")
+            .text(averageHeader)
         avgContent.insert("p")
             .classed("title", true)
             .text(d => d.IMPACT_mean.toFixed(3))
@@ -104,7 +102,7 @@
             .insert("div")
         sumContent.insert("p")
             .classed("heading", true)
-            .text("Total Impact")
+            .text(totalHeader)
         sumContent.insert("p")
             .classed("title", true)
             .text(d => d.IMPACT_sum.toFixed(3))
@@ -127,7 +125,7 @@
                 .classed("pagination-previous", true)
                 .attr(
                     "href",
-                    $SCRIPT_ROOT + "/season/mip/" + this.Season +  "/" + headers["previous_page"] + queryParams
+                    this.endpoint + this.Season +  "/" + headers["previous_page"] + queryParams
                 )
                 .text("Previous")
         }
@@ -135,7 +133,7 @@
             nav.insert("a")
                 .classed("pagination-next", true)
                 .attr(
-                    "href", $SCRIPT_ROOT + "/season/mip/" + this.Season + "/" + headers["next_page"] + queryParams
+                    "href", this.endpoint + this.Season + "/" + headers["next_page"] + queryParams
                 )
                 .text("Next")
             var pageList = nav.insert("ul")
@@ -143,18 +141,18 @@
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/season/mip/" + this.Season + "/1" + queryParams)
+                .attr("href", this.endpoint + this.Season + "/1" + queryParams)
                 .text(1)
             if (!("previous_page" in headers) || (headers["page"] <= 3)) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/2" + queryParams)
+                    .attr("href", this.endpoint + Season + "/2" + queryParams)
                     .text(2)
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/3" + queryParams)
+                    .attr("href", this.endpoint + Season + "/3" + queryParams)
                     .text(3)
             } else {
                 pageList.insert("li")
@@ -166,29 +164,29 @@
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["previous_page"] + queryParams)
+                    .attr("href", this.endpoint + Season + "/" + headers["previous_page"] + queryParams)
                     .text(headers["previous_page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["page"] + queryParams)
+                    .attr("href", this.endpoint + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["next_page"] + queryParams)
+                    .attr("href", this.endpoint + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])
             }
             if (headers["page"] == headers["total_pages"] - 1) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["page"] + queryParams)
+                    .attr("href", this.endpoint + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["next_page"] + queryParams)
+                    .attr("href", this.endpoint + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])                
             } else {
                 pageList.insert("li")
@@ -199,7 +197,7 @@
                     .insert("a")
                     .classed("pagination-link", true)
                     .attr(
-                        "href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["total_pages"] + queryParams
+                        "href", this.endpoint + Season + "/" + headers["total_pages"] + queryParams
                     )
                     .text(headers["total_pages"])
             }
@@ -209,7 +207,7 @@
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/1" + queryParams)
+                .attr("href", this.endpoint + Season + "/1" + queryParams)
                 .text(1)
             pageList.insert("li")
                 .insert("span")
@@ -218,12 +216,12 @@
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["previous_page"] + queryParams)
+                .attr("href", this.endpoint + Season + "/" + headers["previous_page"] + queryParams)
                 .text(headers["previous_page"])
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", $SCRIPT_ROOT + "/season/mip/" + Season + "/" + headers["page"] + queryParams)
+                .attr("href", this.endpoint + Season + "/" + headers["page"] + queryParams)
                 .text(headers["page"])
         }
     }
