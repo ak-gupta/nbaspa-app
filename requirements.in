@@ -4,4 +4,4 @@ Flask-Assets==2.0
 flask-wtf==0.15.1
 flask-smorest==0.35.0
 Jinja2==3.0.1
-nbaspa@git+https://github.com/ak-gupta/nbaspa
+nbaspa@git+https://github.com/ak-gupta/nbaspa.git@v0.1.0
