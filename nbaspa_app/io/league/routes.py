@@ -34,6 +34,7 @@ class Standings(MethodView):
         
         loader = Scoreboard(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
+            filesystem=app.config["FILESYSTEM"],
             Season=args["Season"],
             GameDate=gdate
         )
@@ -101,6 +102,7 @@ class MostImprovedPlayers(MethodView):
         # Get the player index to filter out players that started last season
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
+            filesystem=app.config["FILESYSTEM"],
             Season=args["Season"]
         )
         if not loader.exists():
@@ -175,6 +177,7 @@ class RookiePlayers(MethodView):
         # Load the player index
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
+            filesystem=app.config["FILESYSTEM"],
             Season=args["Season"]
         )
         if not loader.exists():

@@ -27,6 +27,7 @@ class DevelopmentConfig(Config):
     FLASK_ENV = "development"
     DEBUG = True
     TESTING = True
+    FILESYSTEM = "file"
 
 class ProductionConfig(Config):
     """Production configuration."""
@@ -34,3 +35,4 @@ class ProductionConfig(Config):
     FLASK_ENV = "production"
     DEBUG = False
     TESTING = False
+    FILESYSTEM = "gcs"

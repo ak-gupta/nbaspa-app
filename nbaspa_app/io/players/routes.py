@@ -105,7 +105,7 @@ class CareerProfile(MethodView):
                     }
                 )
             )
-        factory = NBADataFactory(calls=calls)
+        factory = NBADataFactory(calls=calls, filesystem=app.config["FILESYSTEM"])
         factory.load()
         gamelog = factory.get_data()
         # Merge with the performance data
@@ -138,6 +138,7 @@ class PlayerIndex(MethodView):
         """Load the player index for a given season."""
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
+            filesystem=app.config["FILESYSTEM"],
             Season=args.get("Season", CURRENT_SEASON)
         )
         if not loader.exists():
@@ -168,7 +169,11 @@ class CommonPlayerInfo(MethodView):
     @io_players.response(200, sc.PlayerInfoOutput())
     def get(self, args):
         """Load common player information."""
-        loader = PlayerInfo(PlayerID=args["PlayerID"], output_dir=app.config["DATA_DIR"])
+        loader = PlayerInfo(
+            PlayerID=args["PlayerID"],
+            output_dir=app.config["DATA_DIR"],
+            filesystem=app.config["FILESYSTEM"]
+        )
         if not loader.exists():
             abort(404, message="Unable to find player information.")
         loader.load()
@@ -185,6 +190,7 @@ class Gamelog(MethodView):
         """Load the player gamelog."""
         loader = PlayerGameLog(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
+            filesystem=app.config["FILESYSTEM"],
             PlayerID=args["PlayerID"]
         )
         if not loader.exists():
