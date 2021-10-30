@@ -2,9 +2,9 @@
  * @module core The code for combining I/O, graph, and div for the compare page
  */
 
-class CompareSearch extends PlayerDirectory {
+class CompareSearch extends PlayerSearch {
     constructor(inputTag, divTag, Season, graphDiv, listDiv) {
-        super(inputTag, divTag);
+        super(inputTag, divTag, "75px");
 
         this.Season = Season;
         this.graphDiv = graphDiv;
@@ -19,34 +19,7 @@ class CompareSearch extends PlayerDirectory {
         })
     }
 
-    addCards(divData) {
-        var divs = d3.select(this.divTag).selectAll("div").data(divData).enter()
-        var card = divs.append("div")
-            .classed("columns", true)
-            .insert("div")
-            .classed("column", true)
-            .insert("div")
-            .classed("card", true)
-        var mediaContent = card.insert("div")
-            .classed("card-content", true)
-            .classed("media", true)
-    
-        mediaContent.insert("div")
-            .classed("media-left", true)
-            .insert("a")
-            .insert("img")
-            .attr(
-                "src", d => `https://cdn.nba.com/headshots/nba/latest/260x190/${d.PERSON_ID}.png`
-            )
-            .attr("width", "75px")
-        var divContent = mediaContent.insert("div")
-            .classed("media-content", true)
-        divContent.insert("a")
-            .insert("p")
-            .classed("title", true)
-            .classed("is-4", true)
-            .text(obs => obs.DISPLAY_FIRST_LAST)
-        // Add the link to the player summary
+    addFooter(card) {
         card.insert("div")
             .classed("card-footer", true)
             .insert("a")
