@@ -6,9 +6,10 @@
     #topRequest;
     #indexRequest;
 
-    constructor(Season, endpoint, mode, sortBy) {
+    constructor(Season, apiEndpoint, pageEndpoint, mode, sortBy) {
         this.Season = Season;
-        this.endpoint = $SCRIPT_ROOT + endpoint;
+        this.apiEndpoint = $SCRIPT_ROOT + apiEndpoint;
+        this.pageEndpoint = $SCRIPT_ROOT + pageEndpoint;
         this.mode = mode;
         this.sortBy = sortBy;
     }
@@ -35,7 +36,7 @@
      */
     async loadData(page=1) {
         this.index = axios.get($SCRIPT_ROOT + "/api/players/index")
-        this.top = axios.get(this.endpoint, {
+        this.top = axios.get(this.apiEndpoint, {
             params: {
                 "Season": this.Season,
                 "mode": this.mode,
@@ -125,7 +126,7 @@
                 .classed("pagination-previous", true)
                 .attr(
                     "href",
-                    this.endpoint + this.Season +  "/" + headers["previous_page"] + queryParams
+                    this.pageEndpoint + this.Season +  "/" + headers["previous_page"] + queryParams
                 )
                 .text("Previous")
         }
@@ -133,7 +134,7 @@
             nav.insert("a")
                 .classed("pagination-next", true)
                 .attr(
-                    "href", this.endpoint + this.Season + "/" + headers["next_page"] + queryParams
+                    "href", this.pageEndpoint + this.Season + "/" + headers["next_page"] + queryParams
                 )
                 .text("Next")
             var pageList = nav.insert("ul")
@@ -141,18 +142,18 @@
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", this.endpoint + this.Season + "/1" + queryParams)
+                .attr("href", this.pageEndpoint + this.Season + "/1" + queryParams)
                 .text(1)
             if (!("previous_page" in headers) || (headers["page"] <= 3)) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/2" + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/2" + queryParams)
                     .text(2)
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/3" + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/3" + queryParams)
                     .text(3)
             } else {
                 pageList.insert("li")
@@ -164,29 +165,29 @@
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/" + headers["previous_page"] + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/" + headers["previous_page"] + queryParams)
                     .text(headers["previous_page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/" + headers["page"] + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/" + headers["next_page"] + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])
             }
             if (headers["page"] == headers["total_pages"] - 1) {
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/" + headers["page"] + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/" + headers["page"] + queryParams)
                     .text(headers["page"])
                 pageList.insert("li")
                     .insert("a")
                     .classed("pagination-link", true)
-                    .attr("href", this.endpoint + Season + "/" + headers["next_page"] + queryParams)
+                    .attr("href", this.pageEndpoint + Season + "/" + headers["next_page"] + queryParams)
                     .text(headers["next_page"])                
             } else {
                 pageList.insert("li")
@@ -197,7 +198,7 @@
                     .insert("a")
                     .classed("pagination-link", true)
                     .attr(
-                        "href", this.endpoint + Season + "/" + headers["total_pages"] + queryParams
+                        "href", this.pageEndpoint + Season + "/" + headers["total_pages"] + queryParams
                     )
                     .text(headers["total_pages"])
             }
@@ -207,7 +208,7 @@
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", this.endpoint + Season + "/1" + queryParams)
+                .attr("href", this.pageEndpoint + Season + "/1" + queryParams)
                 .text(1)
             pageList.insert("li")
                 .insert("span")
@@ -216,12 +217,12 @@
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", this.endpoint + Season + "/" + headers["previous_page"] + queryParams)
+                .attr("href", this.pageEndpoint + Season + "/" + headers["previous_page"] + queryParams)
                 .text(headers["previous_page"])
             pageList.insert("li")
                 .insert("a")
                 .classed("pagination-link", true)
-                .attr("href", this.endpoint + Season + "/" + headers["page"] + queryParams)
+                .attr("href", this.pageEndpoint + Season + "/" + headers["page"] + queryParams)
                 .text(headers["page"])
         }
     }
