@@ -8,7 +8,7 @@ Assuming you have used `nbaspa` to download and clean your data as well as train
 model, you can install the requirements via `pip`:
 
 ```console
-$ python -m pip install -r requirements.txt
+$ python -m pip install -r requirements.txt .
 ```
 
 before setting a environment variables, one to indicate the path to your NBA data

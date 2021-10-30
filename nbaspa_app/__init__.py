@@ -1,5 +1,8 @@
 """Initialize flask app."""
 
+__version__ = "2021.10.0"
+__description__ = "NBA SPA web application"
+
 from flask import Flask, render_template
 from flask_assets import Environment
 from flask_smorest import Api
