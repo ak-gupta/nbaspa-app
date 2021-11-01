@@ -32,7 +32,7 @@
                         <a class="navbar-link">Seasons</a>
                         <div class="navbar-dropdown">
                             {% for row in config['SEASONS'] %}
-                                <a class="navbar-item" href="{{ url_for('players_bp.season_home', season=row) }}">{{ row }}</a>
+                                <a class="navbar-item" href="{{ url_for('league_bp.season_home', season=row) }}">{{ row }}</a>
                             {% endfor %}
                         </div>
                     </div>

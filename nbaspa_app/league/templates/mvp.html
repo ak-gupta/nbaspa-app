@@ -52,8 +52,8 @@
     {% assets "shared_js" -%}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
-    {% assets "player_js" -%}
+    {% assets "league_js" -%}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
-    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/mvp_list.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('league_bp.' + config['STATIC_FOLDER'], filename='dist/js/mvp_list.js') }}"></script>
 {% endblock %}

@@ -11,20 +11,27 @@ def compile_assets(assets):
         filters="rjsmin",
         output="dist/js/shared.min.js"
     )
+    # League-page bundle
+    league_js_bundle = Bundle(
+        "league_bp/src/js/awards.js",
+        "league_bp/src/js/compare/*.js",
+        filters="rjsmin",
+        output="dist/js/league.min.js"
+    )
     # Player-page bundle
     player_js_bundle = Bundle(
-        "players_bp/src/js/awards.js",
         "players_bp/src/js/base.js",
         "players_bp/src/js/directory.js",
-        "players_bp/src/js/compare/*.js",
         "players_bp/src/js/player/*.js",
         filters="rjsmin",
         output="dist/js/players.min.js",
     )
     # Register bundles
     assets.register("shared_js", shared_js_bundle)
+    assets.register("league_js", league_js_bundle)
     assets.register("player_js", player_js_bundle)
     # Build
     if app.config["FLASK_ENV"] == "development":
         shared_js_bundle.build()
+        league_js_bundle.build()
         player_js_bundle.build()

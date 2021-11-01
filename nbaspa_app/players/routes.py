@@ -1,9 +1,7 @@
 """Player pages."""
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 from flask import current_app as app
-
-from nbaspa.data.endpoints.parameters import CURRENT_SEASON
 
 players_bp = Blueprint(
     "players_bp",
@@ -12,46 +10,6 @@ players_bp = Blueprint(
     static_folder=app.config["STATIC_FOLDER"],
     static_url_path=f"/players/{app.config['STATIC_FOLDER']}"
 )
-
-
-@players_bp.get("/season/mvp", defaults={"season": CURRENT_SEASON, "page": 1})
-@players_bp.get("/season/mvp/<season>/<int:page>")
-def mvp(season: str, page: int):
-    """Produce an ordered list of players based on page."""
-    return render_template(
-        "mvp.html",
-        title=f"{season} MVP Tracker",
-        season=season,
-        page=page,
-        mode=request.args.get("mode", "survival-plus"),
-        sortBy=request.args.get("sortBy", "mean")
-    )
-
-@players_bp.get("/season/mip", defaults={"season": CURRENT_SEASON, "page": 1})
-@players_bp.get("/season/mip/<season>/<int:page>")
-def mip(season: str, page: int):
-    """Produce an ordered list of players based on page."""
-    return render_template(
-        "mip.html",
-        title=f"{season} MIP Tracker",
-        season=season,
-        page=page,
-        mode=request.args.get("mode", "survival-plus"),
-        sortBy=request.args.get("sortBy", "mean")
-    )
-
-@players_bp.get("/season/roty", defaults={"season": CURRENT_SEASON, "page": 1})
-@players_bp.get("/season/roty/<season>/<int:page>")
-def roty(season: str, page: int):
-    """Produce an ordered list of players based on page."""
-    return render_template(
-        "roty.html",
-        title=f"{season} ROtY Tracker",
-        season=season,
-        page=page,
-        mode=request.args.get("mode", "survival-plus"),
-        sortBy=request.args.get("sortBy", "mean")
-    )
 
 @players_bp.get("/players/directory")
 def player_directory():
@@ -87,18 +45,4 @@ def player_season_summary(playerid: int, season: str):
         "player_season_summary.html",
         playerid=playerid,
         season=season,
-    )
-
-
-@players_bp.get("/season/<season>")
-def season_home(season: str):
-    """Get the season summary page.
-    
-    Parameters
-    ----------
-    season : str
-        The season.
-    """
-    return render_template(
-        "season_home.html", title=f"{season} Summary", season=season,
     )
