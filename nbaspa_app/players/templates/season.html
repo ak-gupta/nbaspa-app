@@ -1,0 +1,33 @@
+{% extends 'player_layout.html' %}
+
+{% block header %}
+    <link
+        rel="stylesheet"
+        href="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/css/player.css') }}"
+        type='text/css'>
+{% endblock %}
+
+{% block datacontent %}
+    <h4 class="title">{{ season }} Impact Summary</h4>
+    <br>
+    <div class="columns">
+        <div id="headline" class="column is-2"></div>
+        <div class="column is-10">
+            <div id="timeGraph" style="text-align: center;"></div>
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+{% block jsScript %}
+    <script>
+        var Season = "{{ season }}";
+        var PlayerID = {{ playerid }};
+    </script>
+
+    {% assets "player_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/base.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/season.js') }}"></script>
+{% endblock %}

@@ -1,7 +1,16 @@
 """Initialize flask app."""
 
-from flask import Flask, render_template
+__version__ = "2021.10.0"
+__description__ = "NBA SPA web application"
 
+from flask import Flask, render_template
+from flask_assets import Environment
+from flask_smorest import Api
+
+from .assets import compile_assets
+
+assets = Environment()
+api = Api()
 
 def not_found(e):
     """Not found error page."""
@@ -30,18 +39,30 @@ def create_app(config: str = "development"):
         app.config.from_object("config.DevelopmentConfig")
     else:
         raise ValueError("Please provide a valid value for ``config``")
+    
+    assets.init_app(app)
+    api.init_app(app)
+
 
     with app.app_context():
         # Include the routes
         from .games.routes import game_bp
         from .home.routes import home_bp
+        from .io.league.routes import io_league
+        from .io.players.routes import io_players
+        from .league.routes import league_bp
         from .players.routes import players_bp
         from .teams.routes import teams_bp
 
         app.register_error_handler(404, not_found)
         app.register_blueprint(game_bp)
         app.register_blueprint(home_bp)
+        app.register_blueprint(io_league)
+        app.register_blueprint(io_players)
         app.register_blueprint(players_bp)
+        app.register_blueprint(league_bp)
         app.register_blueprint(teams_bp)
+
+        compile_assets(assets)
 
         return app
