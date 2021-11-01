@@ -15,7 +15,7 @@ players_bp = Blueprint(
 def player_directory():
     """List all players in a given season."""
     return render_template(
-        "player_directory.html",
+        "directory.html",
         title="Player directory",
     )
 
@@ -28,7 +28,7 @@ def player_summary(playerid: int):
     playerid : int
         The player identifier.
     """
-    return render_template("player_summary.html", playerid=playerid)
+    return render_template("summary.html", playerid=playerid)
 
 @players_bp.get("/players/<int:playerid>/<season>")
 def player_season_summary(playerid: int, season: str):
@@ -42,7 +42,7 @@ def player_season_summary(playerid: int, season: str):
         The season.
     """
     return render_template(
-        "player_season_summary.html",
+        "season.html",
         playerid=playerid,
         season=season,
     )

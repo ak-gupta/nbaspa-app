@@ -1,6 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{{ url_for('league_bp.season_home', season=season) }}">{{ season }}</a></li>
+        <li class="is-active"><a aria-current="page">Rookie of the Year</a></li>
+    </ul>
+</nav>
 <h4 class="title">{{ season }} Rookie of the Year Tracker</h4>
 <br>
 <div class="columns">

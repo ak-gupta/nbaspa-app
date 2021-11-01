@@ -36,6 +36,14 @@
                             {% endfor %}
                         </div>
                     </div>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Awards</a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ url_for('league_bp.mvp') }}">Most Valuable Player</a>
+                            <a class="navbar-item" href="{{ url_for('league_bp.mip') }}">Most Improved Player</a>
+                            <a class="navbar-item" href="{{ url_for('league_bp.roty') }}">Rookie of the Year</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
