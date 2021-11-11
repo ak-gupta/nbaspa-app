@@ -42,7 +42,7 @@ def team_summary(teamid: int):
     teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
     summarydata = gen_summarymetrics(app=app, teamid=teamid)
     return render_template(
-        "summary.html",
+        "teamsummary.html",
         title=teamname,
         teamid=teamid,
         teamname=teamname,
