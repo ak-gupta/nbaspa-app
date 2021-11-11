@@ -19,7 +19,7 @@ class Config:
 
     # Data location
     DATA_DIR = os.environ.get("DATA_DIR")
-    SEASONS = SEASONS
+    SEASONS = {key: value for key, value in SEASONS.items() if key != "2005-06"}
 
 class DevelopmentConfig(Config):
     """Development configuration."""
