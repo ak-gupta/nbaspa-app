@@ -16,17 +16,16 @@ teams_bp = Blueprint(
     "teams_bp",
     __name__,
     template_folder=app.config["TEMPLATES_FOLDER"],
-    static_folder=app.config["STATIC_FOLDER"]
+    static_folder=app.config["STATIC_FOLDER"],
+    static_url_path=f"/teams/{app.config['STATIC_FOLDER']}"
 )
 
 @teams_bp.get("/teams")
 def teams_home():
     """Team homepage."""
-    teamlist = gen_teamlist(app=app)
     return render_template(
         "team_nav.html",
         title="Teams",
-        teamlist=[teamlist[i:i+6] for i in range(0, len(teamlist), 6)]
     )
 
 

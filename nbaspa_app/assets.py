@@ -26,12 +26,20 @@ def compile_assets(assets):
         filters="rjsmin",
         output="dist/js/players.min.js",
     )
+    # Team bundle
+    team_js_bundle = Bundle(
+        "teams_bp/src/js/teamlist.js",
+        filters="rjsmin",
+        output="dist/js/teams.min.js"
+    )
     # Register bundles
     assets.register("shared_js", shared_js_bundle)
     assets.register("league_js", league_js_bundle)
     assets.register("player_js", player_js_bundle)
+    assets.register("teams_js", team_js_bundle)
     # Build
     if app.config["FLASK_ENV"] == "development":
         shared_js_bundle.build()
         league_js_bundle.build()
         player_js_bundle.build()
+        team_js_bundle.build()

@@ -1,26 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    {% for row in teamlist %}
-        <div class="columns">
-            <div class="column"></div>
-            {% for team in row %}
-                <div class="column is-one-twelve">
-                    <div class="card">
-                        <div class="card-image">
-                            <figure class="image is-square">
-                                <a href="{{ url_for('teams_bp.team_summary', teamid=team['teamid']) }}">
-                                    <img src="https://cdn.nba.com/logos/nba/{{ team['teamid'] }}/primary/L/logo.svg">
-                                </a>
-                            </figure>
-                        </div>
-                        <div class="card-header">
-                            <div class="card-header-title">{{ team['teamname'] }}</div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            <div class="column"></div>
-        </div>
-    {% endfor %}
+    <div id="teamList"></div>
+{% endblock %}
+
+{% block jsScript %}
+    {% assets "teams_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('teams_bp.' + config['STATIC_FOLDER'], filename='dist/js/list.js') }}"></script>
 {% endblock %}
