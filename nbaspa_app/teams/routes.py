@@ -2,13 +2,9 @@
 
 from flask import Blueprint, render_template
 from flask import current_app as app
-from nbaspa.data.endpoints.parameters import SEASONS
-import pandas as pd
 
 from .data import (
     gen_teamlist,
-    gen_summarymetrics,
-    gen_gamelog,
     gen_roster
 )
 
@@ -38,33 +34,20 @@ def team_summary(teamid: int):
     team_id : int
         The team identifier.
     """
-    return render_template("teamsummary.html", teamid=teamid,)
+    return render_template("teamsummary.html", teamid=teamid)
 
-
-@teams_bp.get("/teams/<int:teamid>/<season>/gamelog")
-def team_gamelog(teamid: int, season: int):
-    """The team gamelog for a given season.
-
+@teams_bp.get("/teams/<int:teamid>/<season>")
+def team_season_summary(teamid: int, season: int):
+    """The team season summary.
+    
     Parameters
     ----------
-    team_id : int
+    teamid : int
         The team identifier.
-    season : int
-        The season year.
+    season : str
+        The season.
     """
-    teamlist = gen_teamlist(app=app)
-    teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
-    data = gen_gamelog(app=app, teamid=teamid, season=season)
-    data["GAME_DATE"] = pd.to_datetime(data["GAME_DATE"])
-    data["W_PCT"] = (data["W_PCT"] * 100).round(1)
-    return render_template(
-        "gamelog.html",
-        season=season,
-        title=f"{teamname} - {season} Gamelog",
-        teamid=teamid,
-        teamname=teamname,
-        data=data
-    )
+    return render_template("teamseason.html", teamid=teamid, season=season)
 
 
 @teams_bp.get("/teams/<int:teamid>/<season>/players")

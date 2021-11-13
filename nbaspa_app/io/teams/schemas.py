@@ -78,7 +78,7 @@ class TeamGameLogOutputSchema(Schema):
     PF = fields.Int()
     PTS = fields.Int()
 
-class TeamRosterOutputSchema(Schema):
+class LeadersOutputSchema(Schema):
     TeamID = fields.Int()
     SEASON = fields.String()
     LeagueID = fields.String()
@@ -94,3 +94,6 @@ class TeamRosterOutputSchema(Schema):
     EXP = fields.String()
     SCHOOL = fields.String()
     PLAYER_ID = fields.Int()
+    IMPACT_mean = fields.Float()
+    IMPACT_sum = fields.Float()
+    RANK = fields.Int()

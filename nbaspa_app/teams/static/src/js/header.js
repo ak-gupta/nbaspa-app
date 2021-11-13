@@ -28,7 +28,7 @@ async function headerDiv(info, tag) {
     if(typeof Season != 'undefined') {
         navList.append("li")
             .insert("a")
-            .attr("href", obs => $SCRIPT_ROOT + `/teams/${obs.TEAM_ID}/${Season}/gamelog`) /* FIX */
+            .attr("href", obs => $SCRIPT_ROOT + `/teams/${obs.TEAM_ID}/${Season}`)
             .text(Season)
     }
     var cols = div.append("div")

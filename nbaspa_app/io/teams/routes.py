@@ -5,6 +5,7 @@ from pathlib import Path
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import numpy as np
 import pandas as pd
 
 from nbaspa.data.endpoints import TeamStats, TeamGameLog, TeamRoster
@@ -96,21 +97,36 @@ class GameLog(MethodView):
 
 @io_teams.route("/roster")
 class Roster(MethodView):
-    """Load the team roster."""
+    """Load the team roster, ordered by impact."""
 
     @io_teams.arguments(sc.TeamQueryArgsSchema, location="query")
-    @io_teams.response(200, sc.TeamRosterOutputSchema(many=True))
+    @io_teams.response(200, sc.LeadersOutputSchema(many=True))
     def get(self, args):
-        """Retrieve the team roster."""
+        """Retrieve the team roster, ordered by average impact."""
+        # Get the team roster
         loader = TeamRoster(
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
             filesystem=app.config["FILESYSTEM"],
+            TeamID=args["TeamID"],
             Season=args.get("Season", CURRENT_SEASON)
         )
         if not loader.exists():
             abort(404, message="Unable to find the team roster.")
         loader.load()
-        # Parse and return
-        data = loader.get_data()
+        roster = loader.get_data("CommonTeamRoster")
+        # Load the impact ratings
+        gameratings = pd.read_csv(
+            Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON), "impact-plus-summary.csv"),
+            sep="|",
+            index_col=0
+        )
+        # Join and rank
+        roster = pd.merge(
+            roster, gameratings, left_on="PLAYER_ID", right_on="PLAYER_ID", how="left"
+        )
+        roster["IMPACT_mean"].fillna(0, inplace=True)
+        roster["IMPACT_sum"].fillna(0, inplace=True)
+        roster.sort_values(by="IMPACT_mean", ascending=False, inplace=True)
+        roster["RANK"] = np.arange(1, roster.shape[0] + 1)
 
-        return data.to_dict(orient="records")
+        return roster.to_dict(orient="records")

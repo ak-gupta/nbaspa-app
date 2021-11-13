@@ -73,7 +73,7 @@ class TeamSummary {
             .html(
                 obs => {
                     if(obs.column == "SEASON") {
-                        return `<a href="${$SCRIPT_ROOT}/teams/${this.TeamID}/${obs.value}/gamelog">${obs.value}</a>` /* FIX */
+                        return `<a href="${$SCRIPT_ROOT}/teams/${this.TeamID}/${obs.value}">${obs.value}</a>`
                     } else {
                         return obs.value
                     }
