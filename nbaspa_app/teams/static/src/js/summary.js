@@ -30,15 +30,15 @@ class TeamSummary {
         const data = req.data
         // Create the table
         const columns = [
-            {"column": "SEASON", "description": "", "alias": "Season"},
-            {"column": "W", "description": "", "alias": "Wins"},
-            {"column": "L", "description": "", "alias": "Losses"},
-            {"column": "E_OFF_RATING", "description": "Points scored per 100 possessions", "alias": "Offensive rating"},
-            {"column": "E_OFF_RATING_RANK", "description": "Offensive rating rank", "alias": "Rank"},
-            {"column": "E_DEF_RATING", "description": "Points allowed per 100 possessions", "alias": "Defensive rating"},
-            {"column": "E_DEF_RATING", "description": "Defensive rating rank", "alias": "Rank"},
-            {"column": "E_NET_RATING", "description": "Net scoring margin per 100 possessions", "alias": "Net rating"},
-            {"column": "E_NET_RATING_RANK", "description": "Net rating rank", "alias": "Rank"}
+            {"value": "SEASON", "description": "", "alias": "Season"},
+            {"value": "W", "description": "", "alias": "Wins"},
+            {"value": "L", "description": "", "alias": "Losses"},
+            {"value": "E_OFF_RATING", "description": "Points scored per 100 possessions", "alias": "Offensive rating"},
+            {"value": "E_OFF_RATING_RANK", "description": "Offensive rating rank", "alias": "Rank"},
+            {"value": "E_DEF_RATING", "description": "Points allowed per 100 possessions", "alias": "Defensive rating"},
+            {"value": "E_DEF_RATING", "description": "Defensive rating rank", "alias": "Rank"},
+            {"value": "E_NET_RATING", "description": "Net scoring margin per 100 possessions", "alias": "Net rating"},
+            {"value": "E_NET_RATING_RANK", "description": "Net rating rank", "alias": "Rank"}
         ]
         var divs = d3.select(divTag).append("table")
             .classed("table", true)
@@ -62,14 +62,22 @@ class TeamSummary {
             .append("tr")
 
 		// create a cell in each row for each column
-		rows.selectAll('td')
+		rows.selectAll("td")
             .data(row => {
-    		    return columns.map(column => {
-                    return {column: column.column, value: row[column.column]};
+                return columns.map(column => {
+                    return {column: column.value, value: row[column.value]};
 		        });
 		    })
             .enter()
-            .append('td')
-            .text(obs => obs.value);
+            .append("td")
+            .html(
+                obs => {
+                    if(obs.column == "SEASON") {
+                        return `<a href="${$SCRIPT_ROOT}/teams/${this.TeamID}/${obs.value}/gamelog">${obs.value}</a>` /* FIX */
+                    } else {
+                        return obs.value
+                    }
+                }
+            )
     }
 }
