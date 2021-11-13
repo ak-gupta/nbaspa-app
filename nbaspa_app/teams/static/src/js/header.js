@@ -2,10 +2,28 @@
  * @module header The team header
  */
 
+async function setTitle(info) {
+    info = await info
+
+    document.title = info[0].TEAM_NAME
+}
+
 async function headerDiv(info, tag) {
     // Create the header
     info = await info
     var div = d3.select(tag).selectAll("div").data(info).enter()
+    var navList = div.insert("nav")
+        .classed("breadcrumb", true)
+        .attr("aria-label", "breadcrumbs")
+        .insert("ul")
+    navList.append("li")
+        .insert("a")
+        .attr("href", $SCRIPT_ROOT + "/teams")
+        .text("Teams")
+    navList.append("li")
+        .insert("a")
+        .attr("href", obs => $SCRIPT_ROOT + `/teams/${obs.TEAM_ID}`)
+        .text(obs => obs.TEAM_NAME)
     var cols = div.append("div")
         .classed("columns", true)
         .classed("is-mobile", true)
@@ -26,16 +44,4 @@ async function headerDiv(info, tag) {
         .attr(
             "src", obs => `https://cdn.nba.com/logos/nba/${obs.TEAM_ID}/primary/L/logo.svg`
         )
-    var navList = div.insert("nav")
-        .classed("breadcrumb", true)
-        .attr("aria-label", "breadcrumbs")
-        .insert("ul")
-    navList.append("li")
-        .insert("a")
-        .attr("href", $SCRIPT_ROOT + "/teams")
-        .text("Teams")
-    navList.append("li")
-        .insert("a")
-        .attr("href", obs => $SCRIPT_ROOT + `/teams/${obs.TEAM_ID}`)
-        .text(obs => obs.TEAM_NAME)
 }

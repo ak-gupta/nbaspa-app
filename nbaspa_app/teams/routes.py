@@ -38,16 +38,7 @@ def team_summary(teamid: int):
     team_id : int
         The team identifier.
     """
-    teamlist = gen_teamlist(app=app)
-    teamname = [row["teamname"] for row in teamlist if row["teamid"] == teamid][0]
-    summarydata = gen_summarymetrics(app=app, teamid=teamid)
-    return render_template(
-        "teamsummary.html",
-        title=teamname,
-        teamid=teamid,
-        teamname=teamname,
-        data=summarydata
-    )
+    return render_template("teamsummary.html", teamid=teamid,)
 
 
 @teams_bp.get("/teams/<int:teamid>/<season>/gamelog")

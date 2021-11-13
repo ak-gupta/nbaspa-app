@@ -7,4 +7,5 @@ let infoGetter = new TeamNavigation();
 infoGetter.loadData()
 info = infoGetter.filterData(TeamID)
 
+setTitle(info)
 headerDiv(info, "#teamHeader")
