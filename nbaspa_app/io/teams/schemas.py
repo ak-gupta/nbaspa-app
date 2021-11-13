@@ -77,6 +77,9 @@ class TeamGameLogOutputSchema(Schema):
     TOV = fields.Int()
     PF = fields.Int()
     PTS = fields.Int()
+    DAY = fields.Int()
+    MONTH = fields.Int()
+    YEAR = fields.Int()
 
 class LeadersOutputSchema(Schema):
     TeamID = fields.Int()

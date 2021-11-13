@@ -79,6 +79,7 @@ class GameLog(MethodView):
         loader = TeamGameLog(
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
             filesystem=app.config["FILESYSTEM"],
+            TeamID=args["TeamID"],
             Season=args.get("Season", CURRENT_SEASON)
         )
         if not loader.exists():
@@ -92,6 +93,9 @@ class GameLog(MethodView):
         data = data[
             (data["PARSED"] <= bounds["END"]) & (data["PARSED"] >= bounds["START"])
         ]
+        data["DAY"] = data["PARSED"].dt.day
+        data["MONTH"] = data["PARSED"].dt.month
+        data["YEAR"] = data["PARSED"].dt.year
 
         return data.to_dict(orient="records")
 
