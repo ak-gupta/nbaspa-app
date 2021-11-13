@@ -19,6 +19,13 @@ class TeamNavigation {
         this.teams = axios.get($SCRIPT_ROOT + "/api/teams/stats")
     }
 
+    async filterData(TeamID) {
+        const teamReq = await this.teams
+        const allData = teamReq.data
+
+        return allData.filter(obs => obs.TEAM_ID == TeamID)
+    }
+
     async tile(divTag) {
         const teamReq = await this.teams
         const teamData = teamReq.data

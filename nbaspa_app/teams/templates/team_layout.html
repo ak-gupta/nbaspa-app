@@ -2,18 +2,18 @@
 
 {% block content %}
     {% block imagehead %}
-        <div class="columns is-mobile is-vcentered">
-            <div class="column">
-                <span class="title">{% block subtitle %}{{ teamname }}{% endblock %}</span>
-            </div>
-            <div class="column">
-                <div class="is-pulled-right">
-                    <figure class="image is-96x96">
-                        <img src="https://cdn.nba.com/logos/nba/{{ teamid }}/primary/L/logo.svg">
-                    </figure>
-                </div>
-            </div>
-        </div>
+        <div id="teamHeader"></div>
     {% endblock %}
     {% block datacontent %}{% endblock %}
 {% endblock %}
+
+{% block jsScript -%}
+    <script>
+        let TeamID = {{ teamid }}
+    </script>
+    {% assets "teams_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('teams_bp.' + config['STATIC_FOLDER'], filename='dist/js/header.js') }}"></script>
+    {% block pageScript %}{% endblock %}
+{%- endblock %}

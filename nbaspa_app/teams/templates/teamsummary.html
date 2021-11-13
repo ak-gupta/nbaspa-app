@@ -1,6 +1,22 @@
 {% extends 'team_layout.html' %}
 
 {% block datacontent %}
+    <form id="selectForm">
+        <div class="field has-addons">
+            <div class="control">
+                <div class="select">
+                    <select name="Season">
+                        {% for season in config['SEASONS'] -%}
+                            <option value="{{ season }}">{{ season }}</option>
+                        {%- endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="control">
+                <button type="submit" class="button is-link">Go</button>
+            </div>
+        </div>
+    </form>
     <table class="table is-hoverable has-background-light">
         <thead>
             <tr>
@@ -31,4 +47,8 @@
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block pageScript %}
+    <script type="text/javascript" src="{{ url_for('teams_bp.' + config['STATIC_FOLDER'], filename='dist/js/summary.js') }}"></script>
 {% endblock %}

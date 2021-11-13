@@ -28,7 +28,7 @@ def compile_assets(assets):
     )
     # Team bundle
     team_js_bundle = Bundle(
-        "teams_bp/src/js/teamlist.js",
+        "teams_bp/src/js/*.js",
         filters="rjsmin",
         output="dist/js/teams.min.js"
     )
