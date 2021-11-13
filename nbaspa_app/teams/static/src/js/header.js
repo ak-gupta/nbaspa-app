@@ -24,6 +24,13 @@ async function headerDiv(info, tag) {
         .insert("a")
         .attr("href", obs => $SCRIPT_ROOT + `/teams/${obs.TEAM_ID}`)
         .text(obs => obs.TEAM_NAME)
+    // Add navigation if we're on the season page
+    if(typeof Season != 'undefined') {
+        navList.append("li")
+            .insert("a")
+            .attr("href", obs => $SCRIPT_ROOT + `/teams/${obs.TEAM_ID}/${Season}/gamelog`) /* FIX */
+            .text(Season)
+    }
     var cols = div.append("div")
         .classed("columns", true)
         .classed("is-mobile", true)

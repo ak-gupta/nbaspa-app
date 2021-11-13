@@ -33,7 +33,6 @@ class TeamNavigation {
         var i, j, tmp
         for (i = 0, j = teamData.length; i < j; i += 5) {
             tmp = teamData.slice(i, i + 5)
-            console.log(tmp)
             var div = d3.select(divTag)
                 .append("div")
                 .classed("columns", true)

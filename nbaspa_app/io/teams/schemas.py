@@ -11,6 +11,9 @@ class TeamQueryArgsSchema(Schema):
     Season = fields.String(default=CURRENT_SEASON)
     TeamID = fields.Int(required=True, validate=validate.OneOf(list(ParameterValues().TeamID)))
 
+class TeamSummaryQueryArgsSchema(Schema):
+    TeamID = fields.Int(required=True, validate=validate.OneOf(list(ParameterValues().TeamID)))
+
 class TeamStatsOutputSchema(Schema):
     TEAM_NAME = fields.String()
     TEAM_ID = fields.Int()
@@ -42,6 +45,9 @@ class TeamStatsOutputSchema(Schema):
     E_REB_PCT_RANK = fields.Int()
     E_TM_TOV_PCT_RANK = fields.Int()
     E_PACE_RANK = fields.Int()
+
+class TeamSummaryOutputSchema(TeamStatsOutputSchema):
+    SEASON = fields.String()
 
 class TeamGameLogOutputSchema(Schema):
     Team_ID = fields.Int()

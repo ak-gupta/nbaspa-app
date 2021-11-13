@@ -2,6 +2,11 @@
  * @module summary Team summary
  */
 
+// Load team stats
+let summary = new TeamSummary(TeamID);
+summary.loadData()
+summary.createTable("#summaryTable")
+
 // Change the page based on the form input
 formElement = document.getElementById("selectForm")
 formElement.onsubmit = (e) => {

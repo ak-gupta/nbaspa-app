@@ -5,9 +5,11 @@ from pathlib import Path
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import pandas as pd
 
 from nbaspa.data.endpoints import TeamStats, TeamGameLog, TeamRoster
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON
+from nbaspa.data.factory import NBADataFactory
 
 from . import schemas as sc
 
@@ -37,6 +39,34 @@ class AllTeamStats(MethodView):
 
         return data.to_dict(orient="records")
 
+@io_teams.route("/summary")
+class Summary(MethodView):
+    """Single team summary for every season."""
+
+    @io_teams.arguments(sc.TeamSummaryQueryArgsSchema, location="query")
+    @io_teams.response(200, sc.TeamSummaryOutputSchema(many=True))
+    def get(self, args):
+        """Retrieve a team's stats for every season."""
+        calls = []
+        for season in app.config["SEASONS"]:
+            calls.append(
+                (
+                    "TeamStats",
+                    {
+                        "Season": season,
+                        "output_dir": Path(app.config["DATA_DIR"], season),
+                    }
+                )
+            )
+        factory = NBADataFactory(calls=calls, filesystem=app.config["FILESYSTEM"])
+        factory.load()
+        allstats = factory.get_data()
+        # Filter and return
+        allstats = allstats[allstats["TEAM_ID"] == args["TeamID"]].copy()
+        allstats["SEASON"] = list(app.config["SEASONS"].keys())
+
+        return allstats.to_dict(orient="records")
+
 @io_teams.route("/gamelog")
 class GameLog(MethodView):
     """Load the team game log."""
@@ -55,6 +85,12 @@ class GameLog(MethodView):
         loader.load()
         # Parse and return
         data = loader.get_data()
+        # Filter to games within season download bounds
+        data["PARSED"] = pd.to_datetime(data["GAME_DATE"], format="%b %d, %Y")
+        bounds = app.config["SEASONS"][args.get("Season", CURRENT_SEASON)]
+        data = data[
+            (data["PARSED"] <= bounds["END"]) & (data["PARSED"] >= bounds["START"])
+        ]
 
         return data.to_dict(orient="records")
 
