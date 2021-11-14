@@ -116,3 +116,28 @@ class TopMoments(MethodView):
                 "PLAYER1_ID"
             ]
         ].to_dict(orient="records")
+
+@io_game.route("/playbyplay")
+class PlayByPlay(MethodView):
+    """Retrieve play-by-play data for graphing."""
+
+    @io_game.arguments(sc.GameQueryArgsSchema, location="query")
+    @io_game.response(200, sc.PlayByPlayOutputSchema(many=True))
+    def get(self, args):
+        """Retrieve play-by-play data for graphing."""
+        # Determine the season of the game
+        for season, cfg in app.config["SEASONS"].items():
+            if args["GameDate"] >= cfg["START"] and args["GameDate"] <= cfg["END"]:
+                gseason = season
+                break
+        else:
+            abort(404, message="Unable to determine the season of the game.")
+        # Read in the play-by-play survival data
+        data = pd.read_csv(
+            Path(app.config["DATA_DIR"], gseason, "survival-prediction", f"data_{args['GameID']}.csv"),
+            sep="|",
+            index_col=0,
+            dtype={"GAME_ID": str}
+        )
+        
+        return data[["TIME", "WIN_PROB", "SCOREMARGIN"]].to_dict(orient="records")

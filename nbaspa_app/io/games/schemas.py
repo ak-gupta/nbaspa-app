@@ -27,3 +27,8 @@ class MomentsOutputSchema(Schema):
     SURV_PROB_CHANGE = fields.Float()
     DESCRIPTION = fields.String()
     PLAYER1_ID = fields.Int()
+
+class PlayByPlayOutputSchema(Schema):
+    TIME = fields.Int()
+    WIN_PROB = fields.Float()
+    SCOREMARGIN = fields.Int()
