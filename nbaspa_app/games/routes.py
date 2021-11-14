@@ -3,11 +3,10 @@
 from datetime import datetime
 import json
 
-from flask import Blueprint, render_template, redirect, request, url_for
+from flask import Blueprint, render_template, request
 from flask import current_app as app
 
 from .calendar import get_scoreboard, create_list
-from .forms import ScheduleDatePicker
 from .summary import table_data
 from .graph import line_graph, get_moments
 
@@ -20,22 +19,6 @@ game_bp = Blueprint(
     static_folder=app.config["STATIC_FOLDER"],
     static_url_path=f"/games/{app.config['STATIC_FOLDER']}"
 )
-
-
-@game_bp.post("/games")
-def picker():
-    """Using the datepicker to redirect to the correct day."""
-    form = ScheduleDatePicker()
-    gamedate = form.gamedate.data
-
-    return redirect(
-        url_for(
-            "game_bp.schedule",
-            day=gamedate.day,
-            month=gamedate.month,
-            year=gamedate.year
-        )
-    )
 
 
 
@@ -56,23 +39,14 @@ def schedule(day: int, month: int, year: int):
     year : int
         The year of the games.
     """
-    form = ScheduleDatePicker()
     gamedate = datetime(year=year, month=month, day=day)
-    scoreboard = get_scoreboard(app=app, GameDate=gamedate)
-    if scoreboard.exists():
-        datalist = create_list(scoreboard)
-    else:
-        datalist = []
-
     return render_template(
         "schedule.html",
         title="Game Schedule",
-        form=form,
         gamedate=gamedate.strftime("%A, %B %d, %Y"),
         day=day,
         month=month,
         year=year,
-        data=[datalist[i:i+3] for i in range(0, len(datalist), 3)]
     )
 
 
