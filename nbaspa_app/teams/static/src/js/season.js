@@ -120,13 +120,16 @@ class Gamelog {
     async createTable(divTag) {
         const req = await this.gamelog
         const data = req.data
+        data.map(row => {
+            row.RECORD = `${row.W}-${row.L}`
+            return row
+        })
         // Create the table
         const columns = [
             {"value": "GAME_DATE", "alias": "Date"},
             {"value": "MATCHUP", "alias": "Matchup"},
             {"value": "WL", "alias": "Result"},
-            {"value": "W", "alias": "Total wins"},
-            {"value": "L", "alias": "Total losses"},
+            {"value": "RECORD", "alias": "Record"},
             {"value": "W_PCT", "alias": "Win percentage"}
         ]
         var divs = d3.select(divTag).append("table")

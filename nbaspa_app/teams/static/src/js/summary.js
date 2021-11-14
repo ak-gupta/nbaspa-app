@@ -28,17 +28,20 @@ class TeamSummary {
     async createTable(divTag) {
         const req = await this.stats
         const data = req.data
+        data.map(row => {
+            row.RECORD = `${row.W}-${row.L}`
+            row.ORTG_DISPLAY = `${row.E_OFF_RATING} (${row.E_OFF_RATING_RANK})`
+            row.DRTG_DISPLAY = `${row.E_DEF_RATING} (${row.E_DEF_RATING_RANK})`
+            row.NRTG_DISPLAY = `${row.E_NET_RATING} (${row.E_NET_RATING_RANK})`
+            return row
+        })
         // Create the table
         const columns = [
             {"value": "SEASON", "description": "", "alias": "Season"},
-            {"value": "W", "description": "", "alias": "Wins"},
-            {"value": "L", "description": "", "alias": "Losses"},
-            {"value": "E_OFF_RATING", "description": "Points scored per 100 possessions", "alias": "Offensive rating"},
-            {"value": "E_OFF_RATING_RANK", "description": "Offensive rating rank", "alias": "Rank"},
-            {"value": "E_DEF_RATING", "description": "Points allowed per 100 possessions", "alias": "Defensive rating"},
-            {"value": "E_DEF_RATING", "description": "Defensive rating rank", "alias": "Rank"},
-            {"value": "E_NET_RATING", "description": "Net scoring margin per 100 possessions", "alias": "Net rating"},
-            {"value": "E_NET_RATING_RANK", "description": "Net rating rank", "alias": "Rank"}
+            {"value": "RECORD", "description": "", "alias": "Record"},
+            {"value": "ORTG_DISPLAY", "description": "Points scored per 100 possessions", "alias": "Offensive rating (league rank)"},
+            {"value": "DRTG_DISPLAY", "description": "Points allowed per 100 possessions", "alias": "Defensive rating (league rank)"},
+            {"value": "NRTG_DISPLAY", "description": "Net scoring margin per 100 possessions", "alias": "Net rating (league rank)"},
         ]
         var divs = d3.select(divTag).append("table")
             .classed("table", true)
