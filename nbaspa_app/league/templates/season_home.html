@@ -22,11 +22,13 @@
                             Most Valuable Player
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ url_for('league_bp.mip', season=season, page=1) }}">
-                            Most Improved Player
-                        </a>
-                    </li>
+                    {% if season != "2006-07" -%}
+                        <li>
+                            <a href="{{ url_for('league_bp.mip', season=season, page=1) }}">
+                                Most Improved Player
+                            </a>
+                        </li>
+                    {%- endif %}
                     <li>
                         <a href="{{ url_for('league_bp.roty', season=season, page=1) }}">
                             Rookie of the Year

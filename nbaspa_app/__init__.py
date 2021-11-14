@@ -50,6 +50,7 @@ def create_app(config: str = "development"):
         from .home.routes import home_bp
         from .io.league.routes import io_league
         from .io.players.routes import io_players
+        from .io.teams.routes import io_teams
         from .league.routes import league_bp
         from .players.routes import players_bp
         from .teams.routes import teams_bp
@@ -59,6 +60,7 @@ def create_app(config: str = "development"):
         app.register_blueprint(home_bp)
         app.register_blueprint(io_league)
         app.register_blueprint(io_players)
+        app.register_blueprint(io_teams)
         app.register_blueprint(players_bp)
         app.register_blueprint(league_bp)
         app.register_blueprint(teams_bp)
