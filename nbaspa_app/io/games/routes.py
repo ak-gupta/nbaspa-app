@@ -6,8 +6,12 @@ from typing import Dict, List
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import pandas as pd
 
 from nbaspa.data.endpoints import Scoreboard
+from nbaspa.data.endpoints.pbp import EventTypes
+
+EVT = EventTypes()
 
 from . import schemas as sc
 
@@ -60,3 +64,55 @@ class Schedule(MethodView):
             )
         
         return output
+
+@io_game.route("/moments")
+class TopMoments(MethodView):
+    """Retrieve the top moments for a given game."""
+
+    @io_game.arguments(sc.GameQueryArgsSchema, location="query")
+    @io_game.response(200, sc.MomentsOutputSchema(many=True))
+    def get(self, args):
+        """Retrieve the top moments for a given game."""
+        # Determine the season of the game
+        for season, cfg in app.config["SEASONS"].items():
+            if args["GameDate"] >= cfg["START"] and args["GameDate"] <= cfg["END"]:
+                gseason = season
+                break
+        else:
+            abort(404, message="Unable to determine the season of the game.")
+        
+        # Read the play-by-play impact data
+        pbp = pd.read_csv(
+            Path(app.config["DATA_DIR"], gseason, "pbp-impact", f"data_{args['GameID']}.csv"),
+            sep="|",
+            index_col=0,
+            dtype={"GAME_ID": str}
+        )
+        # Remove duplicates and team events
+        pbp = pbp[~pbp.duplicated(subset="TIME", keep="first")].copy()
+        teamevents = [
+            EVT.SUBSTITUTION,
+            EVT.TIMEOUT,
+            EVT.JUMP_BALL,
+            EVT.PERIOD_BEGIN,
+            EVT.UNKNOWN,
+            EVT.REPLAY,
+        ]
+        pbp = pbp[(pbp["PLAYER1_IMPACT"] != 0) & (~pbp["EVENTMSGTYPE"].isin(teamevents))]
+        pbp.sort_values(by="SURV_PROB_CHANGE", ascending=False, key=abs, inplace=True)
+        # Reduce to the top 5 moments
+        pbp = pbp.head(n=5).copy()
+        pbp["DESCRIPTION"] = pbp[["HOMEDESCRIPTION", "VISITORDESCRIPTION"]].bfill(axis=1).iloc[:, 0]
+
+        return pbp[
+            [
+                "TIME",
+                "PERIOD",
+                "PCTIMESTRING",
+                "SCOREMARGIN",
+                "SURV_PROB",
+                "SURV_PROB_CHANGE",
+                "DESCRIPTION",
+                "PLAYER1_ID"
+            ]
+        ].to_dict(orient="records")

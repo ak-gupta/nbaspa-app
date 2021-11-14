@@ -13,3 +13,17 @@ class ScheduleOutputSchema(Schema):
     VISITOR_ABBREVIATION = fields.String()
     HOME_PTS = fields.Int()
     VISITOR_PTS = fields.Int()
+
+class GameQueryArgsSchema(Schema):
+    GameDate = fields.DateTime(format="%Y-%m-%d")
+    GameID = fields.String()
+
+class MomentsOutputSchema(Schema):
+    TIME = fields.Int()
+    PERIOD = fields.Int()
+    PCTIMESTRING = fields.String()
+    SCOREMARGIN = fields.Int()
+    SURV_PROB = fields.Float()
+    SURV_PROB_CHANGE = fields.Float()
+    DESCRIPTION = fields.String()
+    PLAYER1_ID = fields.Int()
