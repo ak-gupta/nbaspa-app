@@ -3,9 +3,9 @@
  */
 
 // Retrieve the schedule data
-let currentGames = new Schedule(GameDate)
+let currentGames = new Schedule(GameDate, "#gameList")
 currentGames.loadData()
-currentGames.tile("#gameList")
+currentGames.tile()
 
 formElement = document.getElementById("datePicker")
 formElement.onsubmit = (e) => {

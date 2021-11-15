@@ -5,8 +5,9 @@
 class Schedule {
     #dateRequest
 
-    constructor(gameDate) {
+    constructor(gameDate, divTag) {
         this.gameDate = gameDate
+        this.divTag = divTag
     }
 
     set games(value) {
@@ -22,10 +23,25 @@ class Schedule {
             params: {
                 "GameDate": this.gameDate
             }
-        })
+        }).catch(
+            error => {
+                if(error.response) {
+                    var div = d3.select(this.divTag)
+                        .selectAll("div")
+                        .data([error.response.data])
+                        .enter()
+                        .insert("div")
+                        .classed("notification", true)
+                        .classed("is-danger", true)
+                        .text(obs => obs.message)
+                } else {
+                    console.log("Error", error.message)
+                }
+            }
+        )
     }
 
-    async tile(divTag) {
+    async tile() {
         const req = await this.games
         const data = req.data
         // Slice the data and create tiles
@@ -33,7 +49,7 @@ class Schedule {
         for(i = 0, j = data.length; i < j; i += 3) {
             tmp = data.slice(i, i + 3)
             // Create the divs
-            var div = d3.select(divTag)
+            var div = d3.select(this.divTag)
                 .append("div")
                 .classed("columns", true)
                 .selectAll("div")

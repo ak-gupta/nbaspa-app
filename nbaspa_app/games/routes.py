@@ -3,7 +3,7 @@
 from datetime import datetime
 import json
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 from flask import current_app as app
 
 from .calendar import get_scoreboard, create_list
@@ -90,34 +90,4 @@ def game(day: int, month: int, year: int, gameid: str):
         point_chart_data=pointchart,
         gameinfo=gameinfo,
         gameid=gameid
-    )
-
-
-@game_bp.get("/games/detail/<gameid>")
-def detail(gameid: str):
-    """Player-level page for each game.
-
-    Parameters
-    ----------
-    gameid : str
-        The game ID.
-    """
-    # Get the player boxscore information
-    playerid = int(request.args["playerid"])
-    _, pbs = table_data(app=app, GameID=gameid)
-    box = [record for record in pbs if record["PLAYER_ID"] == playerid][0]
-
-    # Get the chart data
-    linedata = line_graph(app=app, GameID=gameid)
-    linechart = json.dumps(linedata, indent=2)
-
-    moments = get_moments(app=app, GameID=gameid, num_moments=None, playerid=playerid)
-    pointchart = json.dumps(moments, indent=2)
-
-    return render_template(
-        "detail.html",
-        title=f"Game Detail - {box['PLAYER_NAME']}",
-        box=box,
-        line_chart_data=linechart,
-        point_chart_data=pointchart,
     )
