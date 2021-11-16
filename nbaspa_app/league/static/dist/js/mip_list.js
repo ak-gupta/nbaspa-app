@@ -2,7 +2,7 @@
  * @module mip_list A module dedicated to updating the MIP List
  */
 
- const mip = new AwardList(Season, "/api/league/mip", "/season/mip/", mode, sortBy)
+ const mip = new AwardList(Season, "/api/league/mip", "/league/mip/", mode, sortBy)
  mip.loadData(page)
  mip.updateList(averageHeader="Impact lift per game", totalHeader="Total impact lift")
  mip.createPagination()
@@ -23,6 +23,6 @@
      } else {
          sortBy = "sum"
      }
-     window.location = $SCRIPT_ROOT + `/season/mip/${Season}/1?mode=${mode}&sortBy=${sortBy}`
+     window.location = $SCRIPT_ROOT + `/league/mip/${Season}/1?mode=${mode}&sortBy=${sortBy}`
  }
  
