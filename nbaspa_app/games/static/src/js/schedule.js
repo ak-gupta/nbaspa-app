@@ -26,7 +26,7 @@ class Schedule {
         }).catch(
             error => {
                 if(error.response) {
-                    var div = d3.select(this.divTag)
+                    d3.select(this.divTag)
                         .selectAll("div")
                         .data([error.response.data])
                         .enter()
