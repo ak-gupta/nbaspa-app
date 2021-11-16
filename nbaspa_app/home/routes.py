@@ -16,7 +16,7 @@ home_bp = Blueprint(
 @home_bp.get("/")
 @home_bp.get("/home")
 @home_bp.get("/index")
-def home():
+def homepage():
     """Homepage."""
     return render_template(
         "home.html", title="NBA SPA Homepage", season=CURRENT_SEASON
