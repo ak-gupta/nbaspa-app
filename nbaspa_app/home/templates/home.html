@@ -2,9 +2,9 @@
 
 {% block content -%}
     <div class="content">
+        <p class="title is-2">Welcome!</p>
         <div class="columns">
             <div class="column is-half">
-                <p class="title is-2">Welcome!</p>
                 <p class="subtitle">
                     Player impact metrics are supposed to help us understand one thing: how much
                     does a player impact winning?
@@ -113,6 +113,21 @@
                     </div>
                 </div>
             </div>
+            <div class="column is-half">
+                <p class="title is-4">{{ season }} MVP Tracker</p>
+                <p class="subtitle">See full tracker <a href="{{ url_for('league_bp.mvp') }}">here</a></p>
+                <div id="playerList"></div>
+            </div>
         </div>
     </div>
+{%- endblock %}
+
+{% block jsScript -%}
+    <script>
+        let Season = "{{ season }}"
+    </script>
+    {% assets "league_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('home_bp.' + config['STATIC_FOLDER'], filename='dist/js/tracker.js') }}"></script>
 {%- endblock %}
