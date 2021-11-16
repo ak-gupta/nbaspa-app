@@ -3,7 +3,7 @@
 __version__ = "2021.10.0"
 __description__ = "NBA SPA web application"
 
-from flask import Flask, render_template
+from flask import Flask
 from flask_assets import Environment
 from flask_smorest import Api
 
@@ -11,13 +11,6 @@ from .assets import compile_assets
 
 assets = Environment()
 api = Api()
-
-def not_found(e):
-    """Not found error page."""
-    return render_template(
-        "not_found.html", title="Data Not Found"
-    )
-
 
 def create_app(config: str = "development"):
     """Create the core application.
@@ -48,6 +41,7 @@ def create_app(config: str = "development"):
         # Include the routes
         from .games.routes import game_bp
         from .home.routes import home_bp
+        from .io.games.routes import io_game
         from .io.league.routes import io_league
         from .io.players.routes import io_players
         from .io.teams.routes import io_teams
@@ -55,9 +49,9 @@ def create_app(config: str = "development"):
         from .players.routes import players_bp
         from .teams.routes import teams_bp
 
-        app.register_error_handler(404, not_found)
         app.register_blueprint(game_bp)
         app.register_blueprint(home_bp)
+        app.register_blueprint(io_game)
         app.register_blueprint(io_league)
         app.register_blueprint(io_players)
         app.register_blueprint(io_teams)

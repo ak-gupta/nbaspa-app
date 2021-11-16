@@ -2,7 +2,7 @@
  * @module roty_list A module dedicated to updating the ROtY List
  */
 
-const roty = new AwardList(Season, "/api/league/roty", "/season/roty/", mode, sortBy)
+const roty = new AwardList(Season, "/api/league/roty", "/league/roty/", mode, sortBy)
 roty.loadData(page)
 roty.updateList()
 roty.createPagination()
@@ -23,5 +23,5 @@ formElement.onsubmit = (e) => {
     } else {
         sortBy = "sum"
     }
-    window.location = $SCRIPT_ROOT + `/season/roty/${Season}/1?mode=${mode}&sortBy=${sortBy}`
+    window.location = $SCRIPT_ROOT + `/league/roty/${Season}/1?mode=${mode}&sortBy=${sortBy}`
 }

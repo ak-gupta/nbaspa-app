@@ -2,7 +2,7 @@
  * @module mvp_list A module dedicated to updating the MVP List
  */
 
-const mvp = new AwardList(Season, "/api/league/mvp", "/season/mvp/", mode, sortBy)
+const mvp = new AwardList(Season, "/api/league/mvp", "/league/mvp/", mode, sortBy)
 mvp.loadData(page)
 mvp.updateList()
 mvp.createPagination()
@@ -23,5 +23,5 @@ formElement.onsubmit = (e) => {
     } else {
         sortBy = "sum"
     }
-    window.location = $SCRIPT_ROOT + `/season/mvp/${Season}/1?mode=${mode}&sortBy=${sortBy}`
+    window.location = $SCRIPT_ROOT + `/league/mvp/${Season}/1?mode=${mode}&sortBy=${sortBy}`
 }

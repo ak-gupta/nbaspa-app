@@ -1,44 +1,7 @@
-
 /**
- * Create a hover format
- * @function gameHover
- * @param {number} wprob The win probability
- * @param {number} margin The current scoring margin
- * @param {string} description The event description
- * @param {number} period The period of the game
- * @param {string} time The game time
+ * @module graph Define a loader and visualization for the game data
  */
-function gameHover(wprob, margin, description, period, time, playerid) {
-    return `
-        <div class="card">
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-left">
-                        <img src="https://cdn.nba.com/headshots/nba/latest/260x190/${playerid}.png" width="75px">
-                    </div>
-                    <div class="media-content">
-                        <p class="title is-4">${description}</p>
-                        <p class="subtitle is-6">Q${period} ${time}</p>
-                        <nav class="level">
-                            <div class="level-item has-text-centered">
-                                <div>
-                                    <p class="heading">Win Probability Change</p>
-                                    <p class="title">${wprob}</p>
-                                </div>
-                            </div>
-                            <div class="level-item has-text-centered">
-                                <div>
-                                    <p class="heading">Margin</p>
-                                    <p class="title">${margin}</p>
-                                </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `
-}
+
 
 /**
  * Creates a D3.js visualization for game win probability.
@@ -48,7 +11,7 @@ function gameHover(wprob, margin, description, period, time, playerid) {
  * @param {string} tag The HTML div ID for the graph
  */
 
-function drawGameChart(lineData, dotData, tag) {
+ function drawGameChart(lineData, dotData, tag) {
     var margin = {
         top: 20,
         right: 20,
@@ -143,20 +106,59 @@ function drawGameChart(lineData, dotData, tag) {
                     .duration("100")
                     .attr("r", 6)
                 // Make the div appear
+                div.selectAll("div").remove()
                 div.transition()
                     .duration("100")
                     .style("opacity", 1)
-                // Add data
-                htmlhover = gameHover(
-                    wprob=percentFormat(d.SURV_PROB_CHANGE),
-                    margin=d.SCOREMARGIN,
-                    description=d.DESCRIPTION,
-                    period=d.PERIOD,
-                    time=d.PCTIMESTRING,
-                    playerid=d.PLAYER1_ID
+                // Add hover -- define a card
+                var cardContent = div.insert("div")
+                    .classed("card", true)
+                // Add the image
+                var mediaContent = cardContent.insert("div")
+                    .classed("card-content", true)
+                    .insert("div")
+                    .classed("media", true)
+                mediaContent.insert("div")
+                    .classed("media-left", true)
+                    .insert("img")
+                    .attr(
+                        "src", `https://cdn.nba.com/headshots/nba/latest/260x190/${d.PLAYER1_ID}.png`
                     )
-                div.html(htmlhover)
-                    .style("left", (event.pageX + 10) + "px")
+                    .attr("width", "75px")
+                var divContent = mediaContent.insert("div")
+                    .classed("media-content", true)
+                divContent.insert("p")
+                    .classed("title", true)
+                    .classed("is-4", true)
+                    .text(d.DESCRIPTION)
+                divContent.insert("p")
+                    .classed("subtitle", true)
+                    .classed("is-6", true)
+                    .text(`Q${d.PERIOD} ${d.PCTIMESTRING}`)
+                var nav = divContent.insert("nav")
+                    .classed("level", true)
+                    .classed("is-mobile", true)
+                var wProb = nav.insert("div")
+                    .classed("level-item", true)
+                    .classed("has-text-centered", true)
+                    .insert("div")
+                wProb.insert("p")
+                    .classed("heading", true)
+                    .text("Win Probability Change")
+                wProb.insert("p")
+                    .classed("title", true)
+                    .text(Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 2}).format(d.SURV_PROB_CHANGE))
+                margin = nav.insert("div")
+                    .classed("level-item", true)
+                    .classed("has-text-centered", true)
+                    .insert("div")
+                margin.insert("p")
+                    .classed("heading", true)
+                    .text("Margin")
+                margin.insert("p")
+                    .classed("title", true)
+                    .text(d.SCOREMARGIN)
+                div.style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 15) + "px")
             }
         )

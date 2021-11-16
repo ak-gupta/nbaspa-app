@@ -62,7 +62,10 @@
         <script>
             $SCRIPT_ROOT = {{ request.script_root|tojson }};
         </script>
-        {% block jsScript %}{% endblock %}
+    {% assets "shared_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% block jsScript %}{% endblock %}
     </body>
     <footer class="footer">
         <div class="content has-text-centered">
