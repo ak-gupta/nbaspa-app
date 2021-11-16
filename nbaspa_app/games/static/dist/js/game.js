@@ -2,38 +2,11 @@
  * @module game Create game assets
  */
 
-// Create the header
-let header = new GameHeader(GameDate, GameID)
-header.loadData()
-header.createHeader("#gameHeader")
-header.topPerformers("#topPerformers")
-
-let graph = new GameGraph()
-graph.loadData(GameDate, GameID)
-graph.draw("#gameGraph")
-
-/**
- * Create tabs for the player boxscore data
- * @param {*} event 
- * @param {*} team 
- */
- function openBox(event, team) {
-    // Declare variables
-    var i, tabcontent, tablinks;
-
-    // Hide all tabs
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    // Remove active class
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" is-active", "");
-    }
-
-    // Show the current tab, and add an "active" class
-    document.getElementById(team).style.display = "block";
-    event.currentTarget.className += " is-active";
-}
+// Populate the content
+let game = new Game(GameDate, GameID)
+game.loadData()
+game.createHeader("#gameHeader", "#graphTitle")
+game.topPerformers("#topPerformers")
+game.draw("#gameGraph")
+game.teamBoxscore("#teamBox")
+game.playerBoxscore("#playerBox")

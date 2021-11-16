@@ -1,7 +1,5 @@
 {% extends 'layout.html' %}
 
-{% from 'game_macros.html' import playerbox %}
-
 {% block header %}
     <link
         rel="stylesheet"
@@ -12,64 +10,18 @@
 {% block content %}
     <div id="gameHeader"></div>
     <br>
-    <h4 class="title">Top performers</h4>
-    {% set tophome = homepbs[0] %}
-    {% set topvisitor = visitorpbs[0] %}
+    <h4 class="title is-4">Top performers</h4>
     <br>
     <div id="topPerformers" class="columns"></div>
     <br>
-    <h4 class="title">Win probability over game time</h4>
+    <div id="graphTitle"></div>
     <div id="gameGraph" style="text-align: center;"></div>
     <br>
-    <h4 class="title">Team boxscore</h4>
-    <table class="table has-background-light">
-        <thead>
-            <tr>
-                <th></th>
-                <th><abbr title="Field Goals">FG</abbr></th>
-                <th><abbr title="3 Pointers">FG3</abbr></th>
-                <th><abbr title="Free Throws">FT</abbr></th>
-                <th><abbr title="Rebounds (Off/Def)">Reb</abbr></th>
-                <th><abbr title="Assists">Ast</abbr></th>
-                <th><abbr title="Steals">Stl</abbr></th>
-                <th><abbr title="Blocks">Blk</abbr></th>
-                <th><abbr title="Turnovers">TO</abbr></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in [visitortbs, hometbs] %}
-                <tr>
-                    <td>
-                        <img src="https://cdn.nba.com/logos/nba/{{ row['TEAM_ID'] }}/primary/L/logo.svg" width="50px">
-                    </td>
-                    <td>{{ row['FG_PCT'] }}% ({{ row['FGM'] }}/{{ row['FGA'] }})</td>
-                    <td>{{ row['FG3_PCT'] }}% ({{ row['FG3M'] }}/{{ row['FG3A'] }})</td>
-                    <td>{{ row['FT_PCT'] }}% ({{ row['FTM'] }}/{{ row['FTA'] }})</td>
-                    <td>{{ row['REB'] }} ({{ row['OREB'] }}/{{ row['DREB'] }})</td>
-                    <td>{{ row['AST'] }}</td>
-                    <td>{{ row['STL'] }}</td>
-                    <td>{{ row['BLK'] }}</td>
-                    <td>{{ row['TO'] }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h4 class="title is-4">Boxscore</h4>
+    <div id="teamBox"></div>
     <br>
-    <h4 class="title">Player boxscore</h4>
     <br>
-    <div class="tabs is-centered is-large">
-        <ul>
-            <li class="tablinks" id="defaultTab" onclick="openBox(event, 'visitorPlayerBox')"><a>{{ gameinfo['visitor_abbrev'] }}</a></li>
-            <li class="tablinks" onclick="openBox(event, 'homePlayerBox')"><a>{{ gameinfo['home_abbrev'] }}</a></li>
-        </ul>
-    </div>
-
-    <div id="homePlayerBox" class="tabcontent">
-        {{ playerbox(box=homepbs) }}
-    </div>
-    <div id="visitorPlayerBox" class="tabcontent">
-        {{ playerbox(box=visitorpbs) }}
-    </div>
+    <div id="playerBox" class="columns"></div>
 {% endblock %}
 
 {% block jsScript %}
@@ -81,7 +33,4 @@
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {%- endassets %}
     <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game.js') }}"></script>
-    <script>
-        document.getElementById("defaultTab").click()
-    </script>
 {% endblock %}

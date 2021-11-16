@@ -1,14 +1,9 @@
 """Game information."""
 
 from datetime import datetime
-import json
 
 from flask import Blueprint, render_template
 from flask import current_app as app
-
-from .calendar import get_scoreboard, create_list
-from .summary import table_data
-from .graph import line_graph, get_moments
 
 TODAY = datetime.today()
 
@@ -65,27 +60,9 @@ def game(day: int, month: int, year: int, gameid: str):
     gameid : str
         The game ID.
     """
-    tbs, pbs = table_data(app=app, GameID=gameid)
     gamedate = datetime(year=year, month=month, day=day)
-    scoreboard = get_scoreboard(app=app, GameDate=gamedate)
-    if scoreboard.exists():
-        datalist = create_list(scoreboard)
-        gameinfo = [itm for itm in datalist if itm["game_id"] == gameid][0]
-
-    # Get the chart data
-    linedata = line_graph(app=app, GameID=gameid)
-    linechart = json.dumps(linedata, indent=2)
-
-    moments = get_moments(app=app, GameID=gameid)
-    pointchart = json.dumps(moments, indent=2)
-
     return render_template(
         "game.html",
-        hometbs=[record for record in tbs if record["TEAM_ID"] == gameinfo["home_id"]][0],
-        visitortbs=[record for record in tbs if record["TEAM_ID"] == gameinfo["visitor_id"]][0],
-        homepbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["home_id"]],
-        visitorpbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["visitor_id"]],
-        gameinfo=gameinfo,
         year=gamedate.year,
         month=gamedate.month,
         day=gamedate.day,
