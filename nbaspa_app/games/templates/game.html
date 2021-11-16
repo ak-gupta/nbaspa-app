@@ -10,75 +10,13 @@
 {% endblock %}
 
 {% block content %}
-    <nav class="level">
-        <p class="level-item has-text-centered">
-            <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['visitor_id']) }}">
-                <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['visitor_id'] }}/primary/L/logo.svg" width="100px">
-            </a>
-        </p>
-        <div class="level-item has-text-centered">
-            <p class="title">{{ visitortbs.PTS }}</p>
-        </div>
-        <div class="level-item has-text-centered">
-            <p class="title">{{ hometbs.PTS }}</p>
-        </div>
-        <p class="level-item has-text-centered">
-            <a href="{{ url_for('teams_bp.team_summary', teamid=gameinfo['home_id']) }}">
-                <img src="https://cdn.nba.com/logos/nba/{{ gameinfo['home_id'] }}/primary/L/logo.svg" width="100px">
-            </a>
-        </p>
-    </nav>
+    <div id="gameHeader"></div>
     <br>
     <h4 class="title">Top performers</h4>
     {% set tophome = homepbs[0] %}
     {% set topvisitor = visitorpbs[0] %}
     <br>
-    <div class="columns">
-        {% for row in [topvisitor, tophome] %}
-            <div class="column">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="media">
-                            <div class="media-left">
-                                <a href="{{ url_for('players_bp.player_summary', playerid=row['PLAYER_ID']) }}">
-                                    <img src="https://cdn.nba.com/headshots/nba/latest/260x190/{{ row['PLAYER_ID'] }}.png" height="100px">
-                                </a>
-                            </div>
-                            <div class="media-content">
-                                <p class="title is-4">{{ row['PLAYER_NAME'] }}</p>
-                                <nav class="level is-mobile">
-                                    <div class="level-item has-text-centered">
-                                        <div>
-                                            <p class="heading">SPA</p>
-                                            <p class="title">{{ row['IMPACT'] }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="level-item has-text-centered">
-                                        <div>
-                                            <p class="heading">Points</p>
-                                            <p class="title">{{ row['PTS']|int }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="level-item has-text-centered">
-                                        <div>
-                                            <p class="heading">Assists</p>
-                                            <p class="title">{{ row['AST']|int }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="level-item has-text-centered">
-                                        <div>
-                                            <p class="heading">Rebounds</p>
-                                            <p class="title">{{ row['REB']|int }}</p>
-                                        </div>
-                                    </div>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+    <div id="topPerformers" class="columns"></div>
     <br>
     <h4 class="title">Win probability over game time</h4>
     <div id="gameGraph" style="text-align: center;"></div>
@@ -135,12 +73,15 @@
 {% endblock %}
 
 {% block jsScript %}
-    <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game-graph.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game-tabs.js') }}"></script>
     <script>
-        var lineData = {{ line_chart_data|safe }}
-        var dotData = {{ point_chart_data|safe }}
-        drawGameChart(lineData, dotData, tag="#gameGraph")
+        let GameDate = "{{ year }}-{{ month }}-{{ day }}"
+        let GameID = "{{ gameid }}"
+    </script>
+    {% assets "game_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {%- endassets %}
+    <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/game.js') }}"></script>
+    <script>
         document.getElementById("defaultTab").click()
     </script>
 {% endblock %}

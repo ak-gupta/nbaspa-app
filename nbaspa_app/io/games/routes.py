@@ -8,7 +8,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 import pandas as pd
 
-from nbaspa.data.endpoints import Scoreboard
+from nbaspa.data.endpoints import BoxScoreTraditional, Scoreboard
 from nbaspa.data.endpoints.pbp import EventTypes
 
 EVT = EventTypes()
@@ -141,3 +141,50 @@ class PlayByPlay(MethodView):
         )
         
         return data[["TIME", "WIN_PROB", "SCOREMARGIN"]].to_dict(orient="records")
+
+@io_game.route("/boxscore")
+class BoxScore(MethodView):
+    """Retrieve the player and team boxscore information."""
+
+    @io_game.arguments(sc.GameQueryArgsSchema, location="query")
+    @io_game.response(200, sc.BoxScoreOutputSchema)
+    def get(self, args):
+        """Retrieve the player and teamboxscore information."""
+        # Determine the season of the game
+        for season, cfg in app.config["SEASONS"].items():
+            if args["GameDate"] >= cfg["START"] and args["GameDate"] <= cfg["END"]:
+                gseason = season
+                break
+        else:
+            abort(404, message="Offseason. No games.")
+        
+        loader = BoxScoreTraditional(
+            output_dir=Path(app.config["DATA_DIR"], gseason),
+            GameID=args["GameID"]
+        )
+        if not loader.exists():
+            abort(404, message="Unable to load boxscore for given game.")
+        loader.load()
+        # Load the player and team boxscore data
+        team = loader.get_data("TeamStats")
+        player = loader.get_data("PlayerStats")
+
+        # Load the impact ratings
+        gameimpact = pd.read_csv(
+            Path(app.config["DATA_DIR"], gseason, "game-impact", f"data_{args['GameID']}.csv"),
+            sep="|",
+            index_col=0,
+            dtype={"GAME_ID": str}
+        )
+        # Add impact to the player boxscore data
+        player["IMPACT"] = pd.merge(
+            player,
+            gameimpact,
+            left_on=("GAME_ID", "TEAM_ID", "PLAYER_ID"),
+            right_on=("GAME_ID", "TEAM_ID", "PLAYER_ID"),
+            how="left"
+        )["IMPACT"]
+        player.sort_values(by=["TEAM_ID", "IMPACT"], ascending=False, inplace=True)
+        player = player[~pd.isnull(player["MIN"])]
+
+        return {"TEAM": team.to_dict(orient="records"), "PLAYER": player.to_dict(orient="records")}

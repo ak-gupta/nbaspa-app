@@ -81,13 +81,13 @@ def game(day: int, month: int, year: int, gameid: str):
 
     return render_template(
         "game.html",
-        title=f"{gameinfo['visitor_abbrev']} @ {gameinfo['home_abbrev']} Summary",
         hometbs=[record for record in tbs if record["TEAM_ID"] == gameinfo["home_id"]][0],
         visitortbs=[record for record in tbs if record["TEAM_ID"] == gameinfo["visitor_id"]][0],
         homepbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["home_id"]],
         visitorpbs=[record for record in pbs if record["TEAM_ID"] == gameinfo["visitor_id"]],
-        line_chart_data=linechart,
-        point_chart_data=pointchart,
         gameinfo=gameinfo,
+        year=gamedate.year,
+        month=gamedate.month,
+        day=gamedate.day,
         gameid=gameid
     )

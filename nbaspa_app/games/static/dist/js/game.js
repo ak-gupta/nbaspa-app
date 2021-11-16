@@ -1,9 +1,23 @@
 /**
+ * @module game Create game assets
+ */
+
+// Create the header
+let header = new GameHeader(GameDate, GameID)
+header.loadData()
+header.createHeader("#gameHeader")
+header.topPerformers("#topPerformers")
+
+let graph = new GameGraph()
+graph.loadData(GameDate, GameID)
+graph.draw("#gameGraph")
+
+/**
  * Create tabs for the player boxscore data
  * @param {*} event 
  * @param {*} team 
  */
-function openBox(event, team) {
+ function openBox(event, team) {
     // Declare variables
     var i, tabcontent, tablinks;
 
