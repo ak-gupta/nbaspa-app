@@ -113,6 +113,8 @@ google-resumable-media==2.1.0
     # via google-cloud-storage
 googleapis-common-protos==1.53.0
     # via google-api-core
+gunicorn==20.1.0
+    # via nbaspa-app (setup.cfg)
 heapdict==1.0.1
     # via zict
 hyperopt==0.2.5
@@ -129,7 +131,7 @@ ipython==7.29.0
     # via shap
 itsdangerous==2.0.1
     # via flask
-jedi==0.18.0
+jedi==0.18.1
     # via ipython
 jinja2==3.0.1
     # via

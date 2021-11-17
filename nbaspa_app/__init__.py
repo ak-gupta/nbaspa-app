@@ -3,6 +3,8 @@
 __version__ = "2021.10.0"
 __description__ = "NBA SPA web application"
 
+import os
+
 from flask import Flask
 from flask_assets import Environment
 from flask_smorest import Api
@@ -17,7 +19,7 @@ def create_app(config: str = "development"):
 
     Parameters
     ----------
-    prod : str, optional (default "development")
+    config : str, optional (default "development")
         Whether to use the production configuration or the development.
 
     Returns
@@ -26,6 +28,8 @@ def create_app(config: str = "development"):
         The initialized application.
     """
     app = Flask(__name__, instance_relative_config=False)
+    if "FLASK_CONFIG" in os.environ:
+        config = os.environ["FLASK_CONFIG"]
     if config == "production":
         app.config.from_object("config.ProductionConfig")
     elif config == "development":

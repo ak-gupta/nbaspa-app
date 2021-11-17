@@ -2,24 +2,26 @@
 
 The repository houses a Flask web app for [nbaspa](https://github.com/ak-gupta/nbaspa).
 
-# Set up
+# Usage
 
-Assuming you have used `nbaspa` to download and clean your data as well as train your win probability
-model, you can install the requirements via `pip`:
+The usage below assumes that you have used `nbaspa` to download and clean your training data, build your
+model, and produce impact ratings.
+
+## Basic
+
+Install the requirements via `pip`,
 
 ```console
 $ python -m pip install -r requirements.txt .
 ```
 
-before setting an environment variables to indicate the path to your NBA data
+set an environment variable to indicate the path to your `nbaspa` data directory,
 
 ```console
 $ export DATA_DIR=nba-data
 ```
 
-# Usage
-
-To launch the web app, run
+and launch the web app.
 
 ```console
 $ python wsgi.py
@@ -27,6 +29,34 @@ $ python wsgi.py
 
 You can change the `--host`, `--port`, and `--config`. The `--config` is either `production` or
 `development`, and it refers to the Flask configuration of `config.py`.
+
+## Docker
+
+First, build the docker container
+
+```console
+$ docker build --tag nbaspa_app .
+```
+
+then, run the container with the port of your choice.
+
+```console
+$ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data nbaspa_app
+```
+
+You may need to mount a filesystem to have access to a local data directory:
+
+```console
+$ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data --mount type=bind,src=...,target=/opt nbaspa_app
+```
+
+To change the configuration to point to Google Cloud Storage, supply the `FLASK_CONFIG` environment variable:
+
+```console
+$ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data -e FLASK_CONFIG=production nbaspa_app
+```
+
+**NOTE**: `DATA_DIR=nba-data` with the `production` configuration refers to a Google Cloud Storage bucket with the name `nba-data`.
 
 # Credits
 
@@ -37,4 +67,5 @@ series. In particular, this repository uses
 * [Demystifying Flask's Application Factory](https://hackersandslackers.com/flask-application-factory/), and
 * [The Art of Routing in Flask](https://hackersandslackers.com/flask-routes/)
 
+The docker image used for deploying the web application is adapted from the [Google Cloud Run documentation](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/python).
 Additionally, this project leverages [bulma](https://bulma.io/) for the styling.

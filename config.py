@@ -12,8 +12,7 @@ class Config:
 
     STATIC_FOLDER = "static"
     TEMPLATES_FOLDER = "templates"
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-    API_TITLE = "Backend SPA API"
+    API_TITLE = "NBA SPA web application"
     API_VERSION = "v1"
     OPENAPI_VERSION = "3.1.0"
 
