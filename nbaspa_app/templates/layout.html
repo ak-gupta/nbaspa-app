@@ -4,6 +4,8 @@
         <title>{{ title }}</title>
         <!-- FONT -->
         <link href='//fonts.googleapis.com/css?family=Roboto:400,300,600' rel='stylesheet' type='text/css'>
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/aac33e0289.js" crossorigin="anonymous"></script>
         
         <!-- Mobile specific notes -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,7 +27,7 @@
         <nav class="navbar is-dark" role="navigation" arial-label="main navigation">
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <a class="navbar-item" href="{{ url_for('home_bp.home') }}">Home</a>
+                    <a class="navbar-item" href="{{ url_for('home_bp.homepage') }}">Home</a>
                     <a class="navbar-item" href="{{ url_for('game_bp.schedule') }}">Games</a>
                     <a class="navbar-item" href="{{ url_for('teams_bp.teams_home') }}">Teams</a>
                     <div class="navbar-item has-dropdown is-hoverable">
@@ -68,10 +70,19 @@
     {% block jsScript %}{% endblock %}
     </body>
     <footer class="footer">
-        <div class="content has-text-centered">
-            <p>
-                <strong>nbaspa</strong>
-            </p>
+        <div class="content">
+            <div class="columns">
+                <div class="column is-half">
+                    <p class="subtitle">Contact us</p>
+                    <p><i class="fas fa-inbox"></i>REPLACE@EMAIL.com</p>
+                </div>
+                <div class="column is-half">
+                    <p class="subtitle">Quick links</p>
+                    <p><a href="https://nbaspa.readthedocs.io/en/latest/_model/modelfit.html" target="_blank">Win probability model documentation</a></p>
+                    <p><a href="https://nbaspa.readthedocs.io/en/latest/_spa/definition.html" target="_blank">Definition of player impact</a></p>
+                    <p><a href="https://nbaspa.readthedocs.io/en/latest/notebooks/casestudy.html" target="_blank">Analysis of player impact ratings</a></p>
+                </div>
+            </div>
         </div>
     </footer>
 </html>

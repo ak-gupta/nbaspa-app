@@ -1,9 +1,133 @@
 {% extends 'layout.html' %}
 
 {% block content -%}
-    <br>
-    <h2 class="title">Introduction</h2>
-    <p>
-        Welcome to my small prototype webapp.
-    </p>
+    <div class="content">
+        <p class="title is-2">Welcome!</p>
+        <div class="columns">
+            <div class="column is-half">
+                <p class="subtitle">
+                    Player impact metrics are supposed to help us understand one thing: how much
+                    does a player impact winning?
+                </p>
+                <p>
+                    To answer this question, we used play-by-play data to quantify the impact of
+                    any given play in terms of how it changes the probability of a team winning the
+                    game. We won't go into detail here
+                    (<a href="https://nbaspa.readthedocs.io/en/latest/_spa/definition.html">this documentation</a>
+                    has all the information you need), but we'll lay out the major benefits and
+                    limitationsof our impact metric.
+                </p>
+                <blockquote>The metric is <em>highly contextual</em>.</blockquote>
+                <p>
+                    The metric <em>can</em> capture the effects of out-of-game factors like team
+                    quality and fatigue as well as the time and score of the game. While some might
+                    view this as a limitation, we think that contextual information can provide us
+                    with more information about the impact that a player is adding beyond the
+                    baseline expectation for the team. However, we've added toggles in the player
+                    comparison visualizations to remove the context where desired.
+                </p>
+                <blockquote>A lot of impactful basketball is not captured in play-by-play data.</blockquote>
+                <p>
+                    Especially defense. Rotations, ball denial, and point-of-attack defense are
+                    great examples of impactful plays you won't find on traditional boxscores or
+                    in eventlogs. We would love to attribute credit to players for contesting shots,
+                    but that information is not available to us on a play-by-play basis
+                    (see <a href="https://nbaspa.readthedocs.io/en/latest/usage.html#pulling-data-from-the-nba-api">here</a>
+                    if you want to know more about our underlying data).
+                </p>
+                <p class="title is-4">Interpreting game and season ratings</p>
+                <div class="columns">
+                    <div class="column is-half">
+                        <p class="title is-6">Game-level</p>
+                        <table class="table has-background-light">
+                            <thead>
+                                <tr>
+                                    <th>Impact</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0.75+</td>
+                                    <td>Elite</td>
+                                </tr>
+                                <tr>
+                                    <td>0.4 to 0.75</td>
+                                    <td>Good</td>
+                                </tr>
+                                <tr>
+                                    <td>0.25 to 0.4</td>
+                                    <td>Above average</td>
+                                </tr>
+                                <tr>
+                                    <td>0.15 to 0.25</td>
+                                    <td>Average</td>
+                                </tr>
+                                <tr>
+                                    <td>0.05 to 0.15</td>
+                                    <td>Below average</td>
+                                </tr>
+                                <tr>
+                                    <td>&leq; 0.05</td>
+                                    <td>Bad</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column is-half">
+                        <p class="title is-6">Season-level</p>
+                        <table class="table has-background-light">
+                            <thead>
+                                <tr>
+                                    <th>Impact</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0.55+</td>
+                                    <td>Elite</td>
+                                </tr>
+                                <tr>
+                                    <td>0.3 to 0.55</td>
+                                    <td>Good</td>
+                                </tr>
+                                <tr>
+                                    <td>0.2 to 0.3</td>
+                                    <td>Above average</td>
+                                </tr>
+                                <tr>
+                                    <td>0.15 to 0.2</td>
+                                    <td>Average</td>
+                                </tr>
+                                <tr>
+                                    <td>0.1 to 0.15</td>
+                                    <td>Below average</td>
+                                </tr>
+                                <tr>
+                                    <td>&leq; 0.1</td>
+                                    <td>Bad</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-half">
+                <p class="title is-4">{{ season }} MVP Tracker</p>
+                <p class="subtitle">See full tracker <a href="{{ url_for('league_bp.mvp') }}">here</a></p>
+                <div id="playerList"></div>
+            </div>
+        </div>
+    </div>
+{%- endblock %}
+
+{% block jsScript -%}
+    <script>
+        let Season = "{{ season }}"
+    </script>
+    {% assets "league_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('home_bp.' + config['STATIC_FOLDER'], filename='dist/js/current-mvp.js') }}"></script>
 {%- endblock %}
