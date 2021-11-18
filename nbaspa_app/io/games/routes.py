@@ -6,6 +6,7 @@ from typing import Dict, List
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import fsspec
 import pandas as pd
 
 from nbaspa.data.endpoints import BoxScoreTraditional, Scoreboard
@@ -73,6 +74,7 @@ class TopMoments(MethodView):
     @io_game.response(200, sc.MomentsOutputSchema(many=True))
     def get(self, args):
         """Retrieve the top moments for a given game."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         # Determine the season of the game
         for season, cfg in app.config["SEASONS"].items():
             if args["GameDate"] >= cfg["START"] and args["GameDate"] <= cfg["END"]:
@@ -82,12 +84,10 @@ class TopMoments(MethodView):
             abort(404, message="Unable to determine the season of the game.")
         
         # Read the play-by-play impact data
-        pbp = pd.read_csv(
-            Path(app.config["DATA_DIR"], gseason, "pbp-impact", f"data_{args['GameID']}.csv"),
-            sep="|",
-            index_col=0,
-            dtype={"GAME_ID": str}
-        )
+        with fs.open(
+            Path(app.config["DATA_DIR"], gseason, "pbp-impact", f"data_{args['GameID']}.csv"), "rb"
+        ) as infile:
+            pbp = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
         # Remove duplicates and team events
         pbp = pbp[~pbp.duplicated(subset="TIME", keep="first")].copy()
         teamevents = [
@@ -125,6 +125,7 @@ class PlayByPlay(MethodView):
     @io_game.response(200, sc.PlayByPlayOutputSchema(many=True))
     def get(self, args):
         """Retrieve play-by-play data for graphing."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         # Determine the season of the game
         for season, cfg in app.config["SEASONS"].items():
             if args["GameDate"] >= cfg["START"] and args["GameDate"] <= cfg["END"]:
@@ -133,12 +134,11 @@ class PlayByPlay(MethodView):
         else:
             abort(404, message="Unable to determine the season of the game.")
         # Read in the play-by-play survival data
-        data = pd.read_csv(
+        with fs.open(
             Path(app.config["DATA_DIR"], gseason, "survival-prediction", f"data_{args['GameID']}.csv"),
-            sep="|",
-            index_col=0,
-            dtype={"GAME_ID": str}
-        )
+            "rb"
+        ) as infile:
+            data = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
         
         return data[["TIME", "WIN_PROB", "SCOREMARGIN"]].to_dict(orient="records")
 
@@ -150,6 +150,7 @@ class BoxScore(MethodView):
     @io_game.response(200, sc.BoxScoreOutputSchema)
     def get(self, args):
         """Retrieve the player and teamboxscore information."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         # Determine the season of the game
         for season, cfg in app.config["SEASONS"].items():
             if args["GameDate"] >= cfg["START"] and args["GameDate"] <= cfg["END"]:
@@ -170,12 +171,10 @@ class BoxScore(MethodView):
         player = loader.get_data("PlayerStats")
 
         # Load the impact ratings
-        gameimpact = pd.read_csv(
-            Path(app.config["DATA_DIR"], gseason, "game-impact", f"data_{args['GameID']}.csv"),
-            sep="|",
-            index_col=0,
-            dtype={"GAME_ID": str}
-        )
+        with fs.open(
+            Path(app.config["DATA_DIR"], gseason, "game-impact", f"data_{args['GameID']}.csv"), "rb"
+        ) as infile:
+            gameimpact = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
         # Add impact to the player boxscore data
         player["IMPACT"] = pd.merge(
             player,
