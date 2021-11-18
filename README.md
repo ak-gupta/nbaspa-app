@@ -38,7 +38,9 @@ First, build the docker container
 $ docker build --tag nbaspa_app .
 ```
 
-then, run the container with the port of your choice.
+### Local filesystem
+
+Run the container with the port of your choice.
 
 ```console
 $ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data nbaspa_app
@@ -47,16 +49,43 @@ $ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data nbaspa_app
 You may need to mount a filesystem to have access to a local data directory:
 
 ```console
-$ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data --mount type=bind,src=...,target=/opt nbaspa_app
+$ docker run \
+    --rm \
+    -p 8080:8080 \
+    -e PORT=8080 \
+    -e DATA_DIR=/opt/nba-data \
+    --mount type=bind,src=/opt/<PATH_TO_PARENT_DIRECTORY>,target=/opt \
+    nbaspa_app
+```
+
+### GCS filesystem
+
+Pull the `gcloud` image:
+
+```console
+$ docker pull gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+```
+
+and authenticate ``gcloud`` with service account credentials:
+
+```console
+$ docker run \
+    --name gcloud-config \
+    gcr.io/google.com/cloudsdktool/cloud-sdk gcloud auth activate-service-account SERVICE_ACCOUNT@DOMAIN.COM --key-file=/path/key.json --project=PROJECT_ID
 ```
 
 To change the configuration to point to Google Cloud Storage, supply the `FLASK_CONFIG` environment variable:
 
 ```console
-$ docker run --rm -p 8080:8080 -e PORT=8080 -e DATA_DIR=nba-data -e FLASK_CONFIG=production nbaspa_app
+$ docker run \
+    --rm \
+    --volumes-from gcloud-config \
+    -p 8080:8080 \
+    -e PORT=8080 \
+    -e DATA_DIR=<BUCKET_NAME>/<FOLDER_NAME> \
+    -e FLASK_CONFIG=production \
+    nbaspa_app
 ```
-
-**NOTE**: `DATA_DIR=nba-data` with the `production` configuration refers to a Google Cloud Storage bucket with the name `nba-data`.
 
 # Credits
 
