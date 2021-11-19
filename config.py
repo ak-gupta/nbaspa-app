@@ -35,3 +35,4 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     FILESYSTEM = "gcs"
+    SERVER_NAME = "breaktheboxscore.com"
