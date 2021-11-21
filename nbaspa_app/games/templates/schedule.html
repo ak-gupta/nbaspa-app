@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h4 class="title is-4">Games for {{ gamedate }}</h4>
+    <form id="datePicker">
+        <div class="field is-grouped">
+            <div class="field">
+                <input class="input" name="gamedate" type="date" value="{{ year }}-{{ month }}-{{ day }}">
+            </div>
+            <div class="field">
+                <button type="submit" class="button is-primary">Go</button>
+            </div>
+        </div>
+    </form>
+    <br>
+    <div id="gameList"></div>
+{% endblock %}
+
+{% block jsScript -%}
+    <script>
+        let GameDate = "{{ year }}-{{ month }}-{{ day }}"
+    </script>
+    {% assets "game_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {%- endassets %}
+    <script type="text/javascript" src="{{ url_for('game_bp.' + config['STATIC_FOLDER'], filename='dist/js/schedule.js') }}"></script>
+{%- endblock %}

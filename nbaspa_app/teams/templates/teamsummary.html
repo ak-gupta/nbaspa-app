@@ -1,0 +1,9 @@
+{% extends 'team_layout.html' %}
+
+{% block datacontent %}
+    <div id="summaryTable"></div>
+{% endblock %}
+
+{% block pageScript %}
+    <script type="text/javascript" src="{{ url_for('teams_bp.' + config['STATIC_FOLDER'], filename='dist/js/summary.js') }}"></script>
+{% endblock %}

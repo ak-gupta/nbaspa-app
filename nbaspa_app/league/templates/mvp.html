@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{{ url_for('league_bp.season_home', season=season) }}">{{ season }}</a></li>
+        <li class="is-active"><a aria-current="page">Most Valuable Player</a></li>
+    </ul>
+</nav>
+<h4 class="title">{{ season }} Most Valuable Player Tracker</h4>
+<br>
+<div class="columns">
+    <div class="column is-2">
+        <form id="sortForm">
+            <div class="field">
+                <label class="label">Sort by</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="sortBy">
+                            <option>Average</option>
+                            <option>Total</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Impact type</label>
+                <label class="checkbox">
+                    <input type="checkbox" name="mode">
+                    Include team quality and schedule context
+                </label>
+            </div>
+            <div class="field">
+                <label class="label"></label>
+                <div class="control">
+                    <button type="submit" class="button is-link">Apply</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="column is-10">
+        <div id="pagination">
+            <nav class="pagination is-right" role="navigation" aria-label="pagination"></nav>
+        </div>
+        <div id="playerList"></div>
+    </div>
+</div>
+<br>
+{% endblock %}
+
+{% block jsScript %}
+    <script>
+        let Season = "{{ season }}"
+        let page = {{ page }}
+        var mode = "{{ mode }}"
+        var sortBy = "{{ sortBy }}"
+    </script>
+    {% assets "shared_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% assets "league_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('league_bp.' + config['STATIC_FOLDER'], filename='dist/js/mvp_list.js') }}"></script>
+{% endblock %}

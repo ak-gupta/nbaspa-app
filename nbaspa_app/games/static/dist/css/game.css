@@ -1,0 +1,12 @@
+div.tooltip {
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    pointer-events: none;
+}
+.tab {
+    overflow: hidden;
+}
+.tabcontent {
+    display: none;
+}

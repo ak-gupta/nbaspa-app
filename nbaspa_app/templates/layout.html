@@ -2,42 +2,87 @@
 <html>
     <head>
         <title>{{ title }}</title>
-        {% block header %}{% endblock %}
         <!-- FONT -->
-        <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,600' rel='stylesheet' type='text/css'>
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/aac33e0289.js" crossorigin="anonymous"></script>
+        
         <!-- Mobile specific notes -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        
         <!-- CSS -->
         <link
-            rel="stylesheet"
-            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/normalize.css') }}"
-            type='text/css'>
-        <link
-            rel="stylesheet"
-            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/skeleton.css') }}"
-            type='text/css'>
-        <link
-            rel="stylesheet"
-            href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/custom.css') }}"
-            type='text/css'>
+        rel="stylesheet"
+        href="{{ url_for(config['STATIC_FOLDER'], filename='dist/css/custom.css') }}"
+        type='text/css'>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+        
+        <!-- D3.js for data visualization -->
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <!-- Load axios -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        {% block header %}{% endblock %}
     </head>
-    <body>
-        <div class="container">
-            <div class="navbar-spacer"></div>
-            <nav class="navbar">
-                <div class="container">
-                    <ul class="navbar-list">
-                        <li class="navbar-item">
-                            <a class="navbar-link" href="{{ url_for('home_bp.home') }}">Home</a>
-                            <a class="navbar-link" href="{{ url_for('schedule_bp.schedule') }}">Schedule</a>
-                        </li>
-                    </ul>
+    <body class="has-background-light">
+        <nav class="navbar is-dark" role="navigation" arial-label="main navigation">
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{{ url_for('home_bp.homepage') }}">Home</a>
+                    <a class="navbar-item" href="{{ url_for('game_bp.schedule') }}">Games</a>
+                    <a class="navbar-item" href="{{ url_for('teams_bp.teams_home') }}">Teams</a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Seasons</a>
+                        <div class="navbar-dropdown">
+                            {% for row in config['SEASONS'] %}
+                                <a class="navbar-item" href="{{ url_for('league_bp.season_home', season=row) }}">{{ row }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Awards</a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ url_for('league_bp.mvp') }}">Most Valuable Player</a>
+                            <a class="navbar-item" href="{{ url_for('league_bp.mip') }}">Most Improved Player</a>
+                            <a class="navbar-item" href="{{ url_for('league_bp.roty') }}">Rookie of the Year</a>
+                        </div>
+                    </div>
                 </div>
-            </nav>
-
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" href="{{ url_for('players_bp.player_directory') }}">Player Directory</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <br>
+        <div class="container is-fluid">
             {% block content %}{% endblock %}
         </div>
+        <br>
+        <script>
+            $SCRIPT_ROOT = {{ request.script_root|tojson }};
+        </script>
+    {% assets "shared_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% block jsScript %}{% endblock %}
     </body>
+    <footer class="footer">
+        <div class="content">
+            <div class="columns">
+                <div class="column is-half">
+                    <p class="subtitle">Contact us</p>
+                    <p><i class="fas fa-inbox"></i> akshay@breaktheboxscore.com</p>
+                </div>
+                <div class="column is-half">
+                    <p class="subtitle">Quick links</p>
+                    <p><a href="https://nbaspa.readthedocs.io/en/latest/_model/modelfit.html" target="_blank">Win probability model documentation</a></p>
+                    <p><a href="https://nbaspa.readthedocs.io/en/latest/_spa/definition.html" target="_blank">Definition of player impact</a></p>
+                    <p><a href="https://nbaspa.readthedocs.io/en/latest/notebooks/casestudy.html" target="_blank">Analysis of player impact ratings</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </html>

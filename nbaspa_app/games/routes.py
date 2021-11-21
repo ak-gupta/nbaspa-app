@@ -1,43 +1,70 @@
 """Game information."""
 
-import io
-import base64
+from datetime import datetime
 
 from flask import Blueprint, render_template
 from flask import current_app as app
-import matplotlib.pyplot as plt
 
-from .summary import get_data, create_lineplot
+TODAY = datetime.today()
 
 game_bp = Blueprint(
     "game_bp",
     __name__,
     template_folder=app.config["TEMPLATES_FOLDER"],
-    static_folder=app.config["STATIC_FOLDER"]
+    static_folder=app.config["STATIC_FOLDER"],
+    static_url_path=f"/games/{app.config['STATIC_FOLDER']}"
 )
 
-@game_bp.get("/game/<gameid>")
-def game(gameid):
+
+
+@game_bp.get(
+    "/games",
+    defaults={"day": TODAY.day, "month": TODAY.month, "year": TODAY.year}
+)
+@game_bp.get("/games/<int:day>/<int:month>/<int:year>")
+def schedule(day: int, month: int, year: int):
+    """The schedule page.
+    
+    Parameters
+    ----------
+    day : int
+        The day of the games.
+    month : int
+        The month of the games.
+    year : int
+        The year of the games.
+    """
+    gamedate = datetime(year=year, month=month, day=day)
+    return render_template(
+        "schedule.html",
+        title="Game Schedule",
+        gamedate=gamedate.strftime("%A, %B %d, %Y"),
+        day=day,
+        month=month,
+        year=year,
+    )
+
+
+@game_bp.get("/games/<int:day>/<int:month>/<int:year>/<gameid>")
+def game(day: int, month: int, year: int, gameid: str):
     """The overall game summary page.
 
     Parameters
     ----------
+    day : int
+        The day of the games.
+    month : int
+        The month of the games.
+    year : int
+        The year of the games.
     gameid : str
         The game ID.
     """
-    tbs, pbs, prediction = get_data(app=app, GameID=gameid)
-
-    plot = create_lineplot(data=prediction)
-    img = io.BytesIO()
-    plt.savefig(img, format="png")
-    plt.close()
-    img.seek(0)
-
-    plot_url = base64.b64encode(img.getvalue()).decode("utf-8")
-
+    gamedate = datetime(year=year, month=month, day=day)
     return render_template(
         "game.html",
-        title=f"{tbs.loc[1, 'TEAM_ABBREVIATION']} @ {tbs.loc[0, 'TEAM_ABBREVIATION']} Summary",
-        plot_url=plot_url,
-        teambox=tbs
+        year=gamedate.year,
+        month=gamedate.month,
+        day=gamedate.day,
+        gameid=gameid
     )

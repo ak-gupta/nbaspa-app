@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h4 class="title">Player Search</h4>
+    <br>
+    <div class="field">
+        <div class="control">
+            <input class="input is-medium" type="text" id="playerSearch" onkeyup="directory.search()" placeholder="Find a player...">
+        </div>
+    </div>
+    <br>
+    <div id="playerList"></div>
+    <br>
+{% endblock %}
+
+{% block jsScript %}
+    {% assets "player_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('players_bp.' + config['STATIC_FOLDER'], filename='dist/js/directory.js') }}"></script>
+{% endblock %}

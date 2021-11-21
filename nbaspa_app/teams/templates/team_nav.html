@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div id="teamList"></div>
+{% endblock %}
+
+{% block jsScript %}
+    {% assets "teams_js" -%}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{{ url_for('teams_bp.' + config['STATIC_FOLDER'], filename='dist/js/list.js') }}"></script>
+{% endblock %}
