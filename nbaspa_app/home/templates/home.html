@@ -18,21 +18,22 @@
                     does a player impact winning?
                 </p>
                 <p>
-                    To answer this question, we used play-by-play data to quantify the impact of
-                    any given play on the likelihood that a team will win. We won't go into detail here
-                    (<a href="https://nbaspa.readthedocs.io/en/latest/_spa/definition.html" target="_blank">this documentation</a>
-                    has all the information you need), but we can lay out the major features we've
-                    noticed.
+                    <strong>
+                        To answer this question, we used play-by-play data to quantify the impact of
+                        any given play on the likelihood that a team will win<sup><a href="#footnote1">1</a></sup>.
+                    </strong>
                 </p>
                 <blockquote>
                     Our impact ratings favour high usage, offense first players on teams that play
-                    in a lot of close games.
+                    in a lot of close games. In other words,
+                    <a href="{{ url_for('game_bp.game', year=2020, month=1, day=20, gameid='0021900652') }}">Dame Time&trade;</a>
+                    is real.
                 </blockquote>
                 <p>
                     <strong>The metric is highly contextual</strong>. In addition to time and score,
                     the metric <em>can</em> include the effect of schedule and team quality. Said another
                     way, a basket by a well-rested Steph Curry on the 2015-16 Warriors is not as important
-                    as one by Damian Lillard on the Trailblazers coming off a back-to-back<sup><a href="#footnote1">1</a></sup>.
+                    as one by Damian Lillard on the Trailblazers coming off a back-to-back<sup><a href="#footnote2">2</a></sup>.
                     Context is both useful and dangerous, however. We think that it can provide some
                     insight into how much value a player is adding beyond the expectation given by
                     their situation. To make player comparison easier, we've included toggles to
@@ -43,10 +44,8 @@
                     Especially defense. There are dozens of great examples of impactful plays you
                     won't find in traditional boxscores or eventlogs. We would love to attribute
                     credit to players for contesting shots or creating wide-open looks for their
-                    teammates, but that information is not available to us on a play-by-play basis
-                    (see <a href="https://nbaspa.readthedocs.io/en/latest/usage.html#pulling-data-from-the-nba-api">here</a>
-                    if you want to know more about our underlying data). This means that there are
-                    plenty of players that we will systematically underrate.
+                    teammates, but that information is not available to us on a play-by-play basis<sup><a href="#footnote3">3</a></sup>.
+                    This means that there are plenty of players that we will systematically underrate.
                 </p>
                 <p class="title is-4">Interpreting game and season ratings</p>
                 <div class="columns">
@@ -126,12 +125,20 @@
                     </div>
                 </div>
                 <p id="footnote1">
-                    <sup>1</sup>Historically elite teams play fewer high leverage, clutch minutes. This
+                    <sup>1</sup>See <a href="https://nbaspa.readthedocs.io/en/latest/_spa/definition.html" target="_blank">this documentation</a>
+                    for more information.
+                </p>
+                <p id="footnote2">
+                    <sup>2</sup>Historically elite teams play fewer high leverage, clutch minutes. This
                     leads to a sort of chicken-and-egg problem we're calling the Steph Curry Conundrum.
                     How do you account for the fact that elite teams play in few close games
                     <em>because</em> elite players build that lead? Our answer is... you can't.
                     The best you can do is try to level the field by removing the backdrop of how
                     good a team is when rating how impactful a player is.
+                </p>
+                <p id="footnote3">
+                    <sup>3</sup>See <a href="https://nbaspa.readthedocs.io/en/latest/usage.html#pulling-data-from-the-nba-api" target="_blank">here</a>
+                    if you want to know more about our underlying data.
                 </p>
             </div>
             <div class="column is-half">
