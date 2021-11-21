@@ -1,10 +1,12 @@
 """File I/O paths."""
 
 from pathlib import Path
+from typing import List
 
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import fsspec
 import pandas as pd
 
 from nbaspa.data.endpoints import AllPlayers, PlayerInfo, PlayerGameLog
@@ -27,6 +29,7 @@ class TimeSeries(MethodView):
     @io_players.response(200, sc.TimeSeriesOutput(many=True))
     def get(self, args):
         """Retrieve the season time-series."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         if args["mode"] == "survival":
             fpath = Path(
                 app.config["DATA_DIR"],
@@ -42,7 +45,8 @@ class TimeSeries(MethodView):
                 f"data_{args['PlayerID']}.csv"
             )
         
-        performances = pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str})
+        with fs.open(fpath, "rb") as infile:
+            performances = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
         performances["IMPACT"] = performances["IMPACT"].round(3)
         # Parse game date
         performances["GAME_DATE_PARSED"] = pd.to_datetime(performances["GAME_DATE"])
@@ -72,6 +76,7 @@ class CareerProfile(MethodView):
     @io_players.response(200, sc.CareerProfileOutput(many=True))
     def get(self, args):
         """Load the player impact profile."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         if args["mode"] == "survival":
             fglob = Path(app.config["DATA_DIR"]).glob(
                 f"*/impact-timeseries/data_{args['PlayerID']}.csv"
@@ -81,10 +86,11 @@ class CareerProfile(MethodView):
                 f"*/impact-plus-timeseries/data_{args['PlayerID']}.csv"
             )
         
-        performances = pd.concat(
-            (pd.read_csv(fpath, sep="|", index_col=0, dtype={"GAME_ID": str}) for fpath in fglob),
-            ignore_index=True
-        )
+        dflist: List[pd.DataFrame] = []
+        for fpath in fglob:
+            with fs.open(fpath, "rb") as infile:
+                dflist.append(pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str}))
+        performances = pd.concat(dflist, ignore_index=True)
         performances = performances[performances["IMPACT"] != 0.0].copy()
         # Date parsing
         performances["GAME_DATE_PARSED"] = pd.to_datetime(performances["GAME_DATE"])

@@ -6,6 +6,7 @@ from pathlib import Path
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import fsspec
 import numpy as np
 import pandas as pd
 
@@ -28,6 +29,7 @@ class TopPlayers(MethodView):
     @io_league.paginate()
     def get(self, args, pagination_parameters):
         """Get the top players for a given season."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         if args["mode"] == "survival":
             fpath = Path(
                 app.config["DATA_DIR"], args["Season"], "impact-summary.csv"
@@ -37,7 +39,8 @@ class TopPlayers(MethodView):
                 app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
             )
         
-        gameratings = pd.read_csv(fpath, sep="|", index_col=0)
+        with fs.open(fpath, "rb") as infile:
+            gameratings = pd.read_csv(infile, sep="|", index_col=0)
         gameratings.dropna(inplace=True)
         gameratings["IMPACT_sum"] = gameratings["IMPACT_sum"].round(3)
         gameratings["IMPACT_mean"] = gameratings["IMPACT_mean"].round(3)
@@ -67,6 +70,7 @@ class MostImprovedPlayers(MethodView):
         
         We will exclude all second year players from the list.
         """
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         # Get the player index to filter out players that started last season
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
@@ -97,7 +101,8 @@ class MostImprovedPlayers(MethodView):
                 app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
             )
         
-        current = pd.read_csv(fpath, sep="|", index_col=0)
+        with fs.open(fpath, "rb") as infile:
+            current = pd.read_csv(infile, sep="|", index_col=0)
         current.dropna(inplace=True)
         # Filter out second-year players
         current = current[current["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)].copy()
@@ -112,7 +117,8 @@ class MostImprovedPlayers(MethodView):
             fpath = Path(
                 app.config["DATA_DIR"], str(previousyear), "impact-plus-summary.csv"
             )
-        previous = pd.read_csv(fpath, sep="|", index_col=0)
+        with fs.open(fpath, "rb") as infile:
+            previous = pd.read_csv(fpath, sep="|", index_col=0)
         previous.dropna(inplace=True)
         previous.set_index("PLAYER_ID", inplace=True)
         # Join and get the impact difference
@@ -142,6 +148,7 @@ class RookiePlayers(MethodView):
     @io_league.paginate()
     def get(self, args, pagination_parameters):
         """Get the best performing rookies."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         # Load the player index
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
@@ -170,7 +177,8 @@ class RookiePlayers(MethodView):
                 app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
             )
 
-        ratings = pd.read_csv(fpath, sep="|", index_col=0)
+        with fs.open(fpath, "rb") as infile:
+            ratings = pd.read_csv(fpath, sep="|", index_col=0)
         ratings.dropna(inplace=True)
         ratings = ratings[ratings["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)].copy()
 

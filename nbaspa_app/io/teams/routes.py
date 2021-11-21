@@ -5,6 +5,7 @@ from pathlib import Path
 from flask import current_app as app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+import fsspec
 import numpy as np
 import pandas as pd
 
@@ -107,6 +108,7 @@ class Roster(MethodView):
     @io_teams.response(200, sc.LeadersOutputSchema(many=True))
     def get(self, args):
         """Retrieve the team roster, ordered by average impact."""
+        fs = fsspec.filesystem(app.config["FILESYSTEM"])
         # Get the team roster
         loader = TeamRoster(
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
@@ -119,11 +121,11 @@ class Roster(MethodView):
         loader.load()
         roster = loader.get_data("CommonTeamRoster")
         # Load the impact ratings
-        gameratings = pd.read_csv(
+        with fs.open(
             Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON), "impact-plus-summary.csv"),
-            sep="|",
-            index_col=0
-        )
+            "rb"
+        ) as infile:
+            gameratings = pd.read_csv(infile, sep="|", index_col=0)
         # Join and rank
         roster = pd.merge(
             roster, gameratings, left_on="PLAYER_ID", right_on="PLAYER_ID", how="left"
