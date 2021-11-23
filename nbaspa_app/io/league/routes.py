@@ -1,6 +1,5 @@
 """League routes."""
 
-from datetime import datetime, timedelta
 from pathlib import Path
 
 from flask import current_app as app
@@ -20,6 +19,7 @@ io_league = Blueprint(
     "io_league", __name__, url_prefix="/api/league", description="Load league data"
 )
 
+
 @io_league.route("/mvp")
 class TopPlayers(MethodView):
     """Get the top players for a given season."""
@@ -31,14 +31,12 @@ class TopPlayers(MethodView):
         """Get the top players for a given season."""
         fs = fsspec.filesystem(app.config["FILESYSTEM"])
         if args["mode"] == "survival":
-            fpath = Path(
-                app.config["DATA_DIR"], args["Season"], "impact-summary.csv"
-            )
+            fpath = Path(app.config["DATA_DIR"], args["Season"], "impact-summary.csv")
         elif args["mode"] == "survival-plus":
             fpath = Path(
                 app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
             )
-        
+
         with fs.open(fpath, "rb") as infile:
             gameratings = pd.read_csv(infile, sep="|", index_col=0)
         gameratings.dropna(inplace=True)
@@ -53,10 +51,11 @@ class TopPlayers(MethodView):
 
         output = gameratings.to_dict(orient="records")
         pagination_parameters.item_count = len(output)
-        
+
         return output[
-            pagination_parameters.first_item:(pagination_parameters.last_item + 1)
+            pagination_parameters.first_item : (pagination_parameters.last_item + 1)
         ]
+
 
 @io_league.route("/mip")
 class MostImprovedPlayers(MethodView):
@@ -67,7 +66,7 @@ class MostImprovedPlayers(MethodView):
     @io_league.paginate()
     def get(self, args, pagination_parameters):
         """Get the most improved players for a given season.
-        
+
         We will exclude all second year players from the list.
         """
         fs = fsspec.filesystem(app.config["FILESYSTEM"])
@@ -75,7 +74,7 @@ class MostImprovedPlayers(MethodView):
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
             filesystem=app.config["FILESYSTEM"],
-            Season=args["Season"]
+            Season=args["Season"],
         )
         if not loader.exists():
             abort(404, message="Unable to find roster information.")
@@ -88,24 +87,25 @@ class MostImprovedPlayers(MethodView):
         seasonyear = Season(year=int(args["Season"].split("-")[0]))
         # Exclude second-year players
         playerinfo = playerinfo[
-            (playerinfo["TO_YEAR"] >= seasonyear.year) & (playerinfo["FROM_YEAR"] < (seasonyear - 1).year)
+            (playerinfo["TO_YEAR"] >= seasonyear.year)
+            & (playerinfo["FROM_YEAR"] < (seasonyear - 1).year)
         ].copy()
 
         # Load the current season impact ratings
         if args["mode"] == "survival":
-            fpath = Path(
-                app.config["DATA_DIR"], args["Season"], "impact-summary.csv"
-            )
+            fpath = Path(app.config["DATA_DIR"], args["Season"], "impact-summary.csv")
         elif args["mode"] == "survival-plus":
             fpath = Path(
                 app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
             )
-        
+
         with fs.open(fpath, "rb") as infile:
             current = pd.read_csv(infile, sep="|", index_col=0)
         current.dropna(inplace=True)
         # Filter out second-year players
-        current = current[current["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)].copy()
+        current = current[
+            current["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)
+        ].copy()
         current.set_index("PLAYER_ID", inplace=True)
         # Load previous season impact ratings
         previousyear = seasonyear - 1
@@ -133,9 +133,9 @@ class MostImprovedPlayers(MethodView):
 
         output = current.reset_index().to_dict(orient="records")
         pagination_parameters.item_count = len(output)
-        
+
         return output[
-            pagination_parameters.first_item:(pagination_parameters.last_item + 1)
+            pagination_parameters.first_item : (pagination_parameters.last_item + 1)
         ]
 
 
@@ -153,7 +153,7 @@ class RookiePlayers(MethodView):
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
             filesystem=app.config["FILESYSTEM"],
-            Season=args["Season"]
+            Season=args["Season"],
         )
         if not loader.exists():
             abort(404, message="Unable to find roster information.")
@@ -169,18 +169,18 @@ class RookiePlayers(MethodView):
 
         # Load impact ratings
         if args["mode"] == "survival":
-            fpath = Path(
-                app.config["DATA_DIR"], args["Season"], "impact-summary.csv"
-            )
+            fpath = Path(app.config["DATA_DIR"], args["Season"], "impact-summary.csv")
         elif args["mode"] == "survival-plus":
             fpath = Path(
                 app.config["DATA_DIR"], args["Season"], "impact-plus-summary.csv"
             )
 
         with fs.open(fpath, "rb") as infile:
-            ratings = pd.read_csv(fpath, sep="|", index_col=0)
+            ratings = pd.read_csv(infile, sep="|", index_col=0)
         ratings.dropna(inplace=True)
-        ratings = ratings[ratings["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)].copy()
+        ratings = ratings[
+            ratings["PLAYER_ID"].isin(playerinfo["PERSON_ID"].values)
+        ].copy()
 
         if args["sortBy"] == "mean":
             ratings.sort_values(by="IMPACT_mean", ascending=False, inplace=True)
@@ -190,7 +190,7 @@ class RookiePlayers(MethodView):
 
         output = ratings.to_dict(orient="records")
         pagination_parameters.item_count = len(output)
-        
+
         return output[
-            pagination_parameters.first_item:(pagination_parameters.last_item + 1)
+            pagination_parameters.first_item : (pagination_parameters.last_item + 1)
         ]

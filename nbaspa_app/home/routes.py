@@ -10,14 +10,13 @@ home_bp = Blueprint(
     __name__,
     template_folder=app.config["TEMPLATES_FOLDER"],
     static_folder=app.config["STATIC_FOLDER"],
-    static_url_path=f"/home/{app.config['STATIC_FOLDER']}"
+    static_url_path=f"/home/{app.config['STATIC_FOLDER']}",
 )
+
 
 @home_bp.get("/")
 @home_bp.get("/home")
 @home_bp.get("/index")
 def homepage():
     """Homepage."""
-    return render_template(
-        "home.html", title="NBA SPA Homepage", season=CURRENT_SEASON
-    )
+    return render_template("home.html", title="NBA SPA Homepage", season=CURRENT_SEASON)

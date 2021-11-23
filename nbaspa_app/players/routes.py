@@ -8,8 +8,9 @@ players_bp = Blueprint(
     __name__,
     template_folder=app.config["TEMPLATES_FOLDER"],
     static_folder=app.config["STATIC_FOLDER"],
-    static_url_path=f"/players/{app.config['STATIC_FOLDER']}"
+    static_url_path=f"/players/{app.config['STATIC_FOLDER']}",
 )
+
 
 @players_bp.get("/players/directory")
 def player_directory():
@@ -18,6 +19,7 @@ def player_directory():
         "directory.html",
         title="Player directory",
     )
+
 
 @players_bp.get("/players/<int:playerid>")
 def player_summary(playerid: int):
@@ -29,6 +31,7 @@ def player_summary(playerid: int):
         The player identifier.
     """
     return render_template("summary.html", playerid=playerid)
+
 
 @players_bp.get("/players/<int:playerid>/<season>")
 def player_season_summary(playerid: int, season: str):

@@ -9,13 +9,16 @@ SURV_MODE = fields.String(
     validate=validate.OneOf(["survival", "survival-plus"]), default="survival-plus"
 )
 
+
 class PlayerQueryArgSchema(Schema):
     PlayerID = fields.Int(required=True)
     Season = SEASON_FIELD
     mode = SURV_MODE
 
+
 class IndexQueryArgSchema(Schema):
     Season = fields.String()
+
 
 class TimeSeriesOutput(Schema):
     PLAYER_ID = fields.Int()
@@ -27,6 +30,7 @@ class TimeSeriesOutput(Schema):
     MONTH = fields.Int()
     YEAR = fields.Int()
 
+
 class CareerProfileOutput(Schema):
     PLAYER_ID = fields.Int()
     YEAR = fields.Int()
@@ -35,6 +39,7 @@ class CareerProfileOutput(Schema):
     REB = fields.Float()
     AST = fields.Float()
     SEASON = fields.String()
+
 
 class PlayerIndexOutput(Schema):
     PERSON_ID = fields.Int()
@@ -53,6 +58,7 @@ class PlayerIndexOutput(Schema):
     TEAM_SLUG = fields.String()
     GAMES_PLAYED_FLAG = fields.String()
     OTHERLEAGUE_EXPERIENCE_C = fields.String()
+
 
 class PlayerInfoOutput(Schema):
     PERSON_ID = fields.Int()
@@ -87,6 +93,7 @@ class PlayerInfoOutput(Schema):
     DRAFT_YEAR = fields.String()
     DRAFT_ROUND = fields.String()
     DRAFT_NUMBER = fields.String()
+
 
 class GamelogOutputSchema(Schema):
     SEASON_ID = fields.String()
