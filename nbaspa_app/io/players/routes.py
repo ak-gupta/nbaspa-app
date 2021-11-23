@@ -35,18 +35,20 @@ class TimeSeries(MethodView):
                 app.config["DATA_DIR"],
                 args["Season"],
                 "impact-timeseries",
-                f"data_{args['PlayerID']}.csv"
+                f"data_{args['PlayerID']}.csv",
             )
         elif args["mode"] == "survival-plus":
             fpath = Path(
                 app.config["DATA_DIR"],
                 args["Season"],
                 "impact-plus-timeseries",
-                f"data_{args['PlayerID']}.csv"
+                f"data_{args['PlayerID']}.csv",
             )
-        
+
         with fs.open(fpath, "rb") as infile:
-            performances = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
+            performances = pd.read_csv(
+                infile, sep="|", index_col=0, dtype={"GAME_ID": str}
+            )
         performances["IMPACT"] = performances["IMPACT"].round(3)
         # Parse game date
         performances["GAME_DATE_PARSED"] = pd.to_datetime(performances["GAME_DATE"])
@@ -63,10 +65,11 @@ class TimeSeries(MethodView):
             "GAME_DATE",
             "DAY",
             "MONTH",
-            "YEAR"
+            "YEAR",
         ]
 
         return performances[columns].to_dict(orient="records")
+
 
 @io_players.route("/impact-profile")
 class CareerProfile(MethodView):
@@ -85,11 +88,13 @@ class CareerProfile(MethodView):
             fglob = Path(app.config["DATA_DIR"]).glob(
                 f"*/impact-plus-timeseries/data_{args['PlayerID']}.csv"
             )
-        
+
         dflist: List[pd.DataFrame] = []
         for fpath in fglob:
             with fs.open(fpath, "rb") as infile:
-                dflist.append(pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str}))
+                dflist.append(
+                    pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
+                )
         performances = pd.concat(dflist, ignore_index=True)
         performances = performances[performances["IMPACT"] != 0.0].copy()
         # Date parsing
@@ -107,8 +112,8 @@ class CareerProfile(MethodView):
                     {
                         "Season": season,
                         "output_dir": Path(app.config["DATA_DIR"], season),
-                        "PlayerID": args["PlayerID"]
-                    }
+                        "PlayerID": args["PlayerID"],
+                    },
                 )
             )
         factory = NBADataFactory(calls=calls, filesystem=app.config["FILESYSTEM"])
@@ -120,10 +125,14 @@ class CareerProfile(MethodView):
             gamelog[["Game_ID", "PTS", "REB", "AST"]],
             left_on="GAME_ID",
             right_on="Game_ID",
-            how="left"
+            how="left",
         )
         # Aggregate to the season
-        agg = performances.groupby("SEASON")[["IMPACT", "PTS", "REB", "AST"]].mean().reset_index()
+        agg = (
+            performances.groupby("SEASON")[["IMPACT", "PTS", "REB", "AST"]]
+            .mean()
+            .reset_index()
+        )
         agg["YEAR"] = agg["SEASON"].str.split("-", expand=True)[0]
         agg["YEAR"] = agg["YEAR"].astype(int)
         agg["IMPACT"] = agg["IMPACT"].round(3)
@@ -133,6 +142,7 @@ class CareerProfile(MethodView):
         agg["PLAYER_ID"] = args["PlayerID"]
 
         return agg.to_dict(orient="records")
+
 
 @io_players.route("/index")
 class PlayerIndex(MethodView):
@@ -145,7 +155,7 @@ class PlayerIndex(MethodView):
         loader = AllPlayers(
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
             filesystem=app.config["FILESYSTEM"],
-            Season=args.get("Season", CURRENT_SEASON)
+            Season=args.get("Season", CURRENT_SEASON),
         )
         if not loader.exists():
             abort(404, message="Unable to find roster information.")
@@ -158,7 +168,8 @@ class PlayerIndex(MethodView):
         if "Season" in args:
             seasonyear = int(args["Season"].split("-")[0])
             playerinfo = playerinfo[
-                (playerinfo["TO_YEAR"] >= seasonyear) & (playerinfo["FROM_YEAR"] <= seasonyear)
+                (playerinfo["TO_YEAR"] >= seasonyear)
+                & (playerinfo["FROM_YEAR"] <= seasonyear)
             ].copy()
         else:
             playerinfo = playerinfo[playerinfo["TO_YEAR"] >= 2005].copy()
@@ -166,6 +177,7 @@ class PlayerIndex(MethodView):
         playerinfo.sort_values(by="DISPLAY_FIRST_LAST", ascending=True, inplace=True)
 
         return playerinfo.to_dict(orient="records")
+
 
 @io_players.route("/info")
 class CommonPlayerInfo(MethodView):
@@ -178,13 +190,14 @@ class CommonPlayerInfo(MethodView):
         loader = PlayerInfo(
             PlayerID=args["PlayerID"],
             output_dir=app.config["DATA_DIR"],
-            filesystem=app.config["FILESYSTEM"]
+            filesystem=app.config["FILESYSTEM"],
         )
         if not loader.exists():
             abort(404, message="Unable to find player information.")
         loader.load()
 
         return loader.get_data("CommonPlayerInfo").to_dict(orient="records")[0]
+
 
 @io_players.route("/gamelog")
 class Gamelog(MethodView):
@@ -197,7 +210,7 @@ class Gamelog(MethodView):
         loader = PlayerGameLog(
             output_dir=Path(app.config["DATA_DIR"], args["Season"]),
             filesystem=app.config["FILESYSTEM"],
-            PlayerID=args["PlayerID"]
+            PlayerID=args["PlayerID"],
         )
         if not loader.exists():
             abort(404, message="Unable to find player gamelog.")

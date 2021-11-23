@@ -4,15 +4,23 @@ from marshmallow import Schema, fields, validate
 
 from nbaspa.data.endpoints.parameters import CURRENT_SEASON, ParameterValues
 
+
 class TeamStatsQueryArgsSchema(Schema):
     Season = fields.String(default=CURRENT_SEASON)
 
+
 class TeamQueryArgsSchema(Schema):
     Season = fields.String(default=CURRENT_SEASON)
-    TeamID = fields.Int(required=True, validate=validate.OneOf(list(ParameterValues().TeamID)))
+    TeamID = fields.Int(
+        required=True, validate=validate.OneOf(list(ParameterValues().TeamID))
+    )
+
 
 class TeamSummaryQueryArgsSchema(Schema):
-    TeamID = fields.Int(required=True, validate=validate.OneOf(list(ParameterValues().TeamID)))
+    TeamID = fields.Int(
+        required=True, validate=validate.OneOf(list(ParameterValues().TeamID))
+    )
+
 
 class TeamStatsOutputSchema(Schema):
     TEAM_NAME = fields.String()
@@ -46,8 +54,10 @@ class TeamStatsOutputSchema(Schema):
     E_TM_TOV_PCT_RANK = fields.Int()
     E_PACE_RANK = fields.Int()
 
+
 class TeamSummaryOutputSchema(TeamStatsOutputSchema):
     SEASON = fields.String()
+
 
 class TeamGameLogOutputSchema(Schema):
     Team_ID = fields.Int()
@@ -80,6 +90,7 @@ class TeamGameLogOutputSchema(Schema):
     DAY = fields.Int()
     MONTH = fields.Int()
     YEAR = fields.Int()
+
 
 class LeadersOutputSchema(Schema):
     TeamID = fields.Int()

@@ -8,8 +8,9 @@ teams_bp = Blueprint(
     __name__,
     template_folder=app.config["TEMPLATES_FOLDER"],
     static_folder=app.config["STATIC_FOLDER"],
-    static_url_path=f"/teams/{app.config['STATIC_FOLDER']}"
+    static_url_path=f"/teams/{app.config['STATIC_FOLDER']}",
 )
+
 
 @teams_bp.get("/teams")
 def teams_home():
@@ -31,10 +32,11 @@ def team_summary(teamid: int):
     """
     return render_template("teamsummary.html", teamid=teamid)
 
+
 @teams_bp.get("/teams/<int:teamid>/<season>")
 def team_season_summary(teamid: int, season: int):
     """The team season summary.
-    
+
     Parameters
     ----------
     teamid : int

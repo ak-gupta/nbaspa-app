@@ -19,6 +19,7 @@ io_teams = Blueprint(
     "io_teams", __name__, url_prefix="/api/teams", description="Load team data"
 )
 
+
 @io_teams.route("/stats")
 class AllTeamStats(MethodView):
     """Load all the team stats for a given season."""
@@ -41,6 +42,7 @@ class AllTeamStats(MethodView):
 
         return data.to_dict(orient="records")
 
+
 @io_teams.route("/summary")
 class Summary(MethodView):
     """Single team summary for every season."""
@@ -57,7 +59,7 @@ class Summary(MethodView):
                     {
                         "Season": season,
                         "output_dir": Path(app.config["DATA_DIR"], season),
-                    }
+                    },
                 )
             )
         factory = NBADataFactory(calls=calls, filesystem=app.config["FILESYSTEM"])
@@ -68,6 +70,7 @@ class Summary(MethodView):
         allstats["SEASON"] = list(app.config["SEASONS"].keys())
 
         return allstats.to_dict(orient="records")
+
 
 @io_teams.route("/gamelog")
 class GameLog(MethodView):
@@ -81,7 +84,7 @@ class GameLog(MethodView):
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
             filesystem=app.config["FILESYSTEM"],
             TeamID=args["TeamID"],
-            Season=args.get("Season", CURRENT_SEASON)
+            Season=args.get("Season", CURRENT_SEASON),
         )
         if not loader.exists():
             abort(404, message="Unable to find team gamelog.")
@@ -100,6 +103,7 @@ class GameLog(MethodView):
 
         return data.to_dict(orient="records")
 
+
 @io_teams.route("/roster")
 class Roster(MethodView):
     """Load the team roster, ordered by impact."""
@@ -114,7 +118,7 @@ class Roster(MethodView):
             output_dir=Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON)),
             filesystem=app.config["FILESYSTEM"],
             TeamID=args["TeamID"],
-            Season=args.get("Season", CURRENT_SEASON)
+            Season=args.get("Season", CURRENT_SEASON),
         )
         if not loader.exists():
             abort(404, message="Unable to find the team roster.")
@@ -122,8 +126,12 @@ class Roster(MethodView):
         roster = loader.get_data("CommonTeamRoster")
         # Load the impact ratings
         with fs.open(
-            Path(app.config["DATA_DIR"], args.get("Season", CURRENT_SEASON), "impact-plus-summary.csv"),
-            "rb"
+            Path(
+                app.config["DATA_DIR"],
+                args.get("Season", CURRENT_SEASON),
+                "impact-plus-summary.csv",
+            ),
+            "rb",
         ) as infile:
             gameratings = pd.read_csv(infile, sep="|", index_col=0)
         # Join and rank

@@ -1,6 +1,6 @@
 # Overview
 
-The repository houses a Flask web app for [nbaspa](https://github.com/ak-gupta/nbaspa).
+This repository defines a Flask web app for [nbaspa](https://github.com/ak-gupta/nbaspa).
 
 # Usage
 

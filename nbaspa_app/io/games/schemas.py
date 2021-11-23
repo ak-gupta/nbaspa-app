@@ -2,8 +2,10 @@
 
 from marshmallow import Schema, fields
 
+
 class ScheduleQueryArgsSchema(Schema):
     GameDate = fields.DateTime(format="%Y-%m-%d")
+
 
 class ScheduleOutputSchema(Schema):
     GAME_ID = fields.String()
@@ -14,9 +16,11 @@ class ScheduleOutputSchema(Schema):
     HOME_PTS = fields.Int()
     VISITOR_PTS = fields.Int()
 
+
 class GameQueryArgsSchema(Schema):
     GameDate = fields.DateTime(format="%Y-%m-%d")
     GameID = fields.String()
+
 
 class MomentsOutputSchema(Schema):
     TIME = fields.Int()
@@ -28,10 +32,12 @@ class MomentsOutputSchema(Schema):
     DESCRIPTION = fields.String()
     PLAYER1_ID = fields.Int()
 
+
 class PlayByPlayOutputSchema(Schema):
     TIME = fields.Int()
     WIN_PROB = fields.Float()
     SCOREMARGIN = fields.Int()
+
 
 class TeamBoxScoreOutputSchema(Schema):
     TEAM_ID = fields.Int()
@@ -52,6 +58,7 @@ class TeamBoxScoreOutputSchema(Schema):
     STL = fields.Int()
     BLK = fields.Int()
     TO = fields.Int()
+
 
 class PlayerBoxScoreOutputSchema(Schema):
     TEAM_ID = fields.Int()
@@ -75,6 +82,7 @@ class PlayerBoxScoreOutputSchema(Schema):
     STL = fields.Int()
     BLK = fields.Int()
     TO = fields.Int()
+
 
 class BoxScoreOutputSchema(Schema):
     TEAM = fields.Nested(TeamBoxScoreOutputSchema(many=True))
