@@ -3,20 +3,19 @@
 from flask import current_app as app
 from flask_assets import Bundle
 
+
 def compile_assets(assets):
     """Configure and build bundles."""
     # Shared bundle
     shared_js_bundle = Bundle(
-        "src/js/search.js",
-        filters="rjsmin",
-        output="dist/js/shared.min.js"
+        "src/js/search.js", filters="rjsmin", output="dist/js/shared.min.js"
     )
     # League-page bundle
     league_js_bundle = Bundle(
         "league_bp/src/js/awards.js",
         "league_bp/src/js/compare/*.js",
         filters="rjsmin",
-        output="dist/js/league.min.js"
+        output="dist/js/league.min.js",
     )
     # Player-page bundle
     player_js_bundle = Bundle(
@@ -28,15 +27,11 @@ def compile_assets(assets):
     )
     # Team bundle
     team_js_bundle = Bundle(
-        "teams_bp/src/js/*.js",
-        filters="rjsmin",
-        output="dist/js/teams.min.js"
+        "teams_bp/src/js/*.js", filters="rjsmin", output="dist/js/teams.min.js"
     )
     # Game bundle
     game_js_bundle = Bundle(
-        "game_bp/src/js/*.js",
-        filters="rjsmin",
-        output="dist/js/game.min.js"
+        "game_bp/src/js/*.js", filters="rjsmin", output="dist/js/game.min.js"
     )
     # Register bundles
     assets.register("shared_js", shared_js_bundle)

@@ -14,6 +14,7 @@ from .assets import compile_assets
 assets = Environment()
 api = Api()
 
+
 def create_app(config: str = "development"):
     """Create the core application.
 
@@ -36,10 +37,9 @@ def create_app(config: str = "development"):
         app.config.from_object("config.DevelopmentConfig")
     else:
         raise ValueError("Please provide a valid value for ``config``")
-    
+
     assets.init_app(app)
     api.init_app(app)
-
 
     with app.app_context():
         # Include the routes

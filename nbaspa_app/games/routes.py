@@ -12,19 +12,17 @@ game_bp = Blueprint(
     __name__,
     template_folder=app.config["TEMPLATES_FOLDER"],
     static_folder=app.config["STATIC_FOLDER"],
-    static_url_path=f"/games/{app.config['STATIC_FOLDER']}"
+    static_url_path=f"/games/{app.config['STATIC_FOLDER']}",
 )
 
 
-
 @game_bp.get(
-    "/games",
-    defaults={"day": TODAY.day, "month": TODAY.month, "year": TODAY.year}
+    "/games", defaults={"day": TODAY.day, "month": TODAY.month, "year": TODAY.year}
 )
 @game_bp.get("/games/<int:day>/<int:month>/<int:year>")
 def schedule(day: int, month: int, year: int):
     """The schedule page.
-    
+
     Parameters
     ----------
     day : int
@@ -66,5 +64,5 @@ def game(day: int, month: int, year: int, gameid: str):
         year=gamedate.year,
         month=gamedate.month,
         day=gamedate.day,
-        gameid=gameid
+        gameid=gameid,
     )

@@ -12,13 +12,14 @@ import pandas as pd
 from nbaspa.data.endpoints import BoxScoreTraditional, Scoreboard
 from nbaspa.data.endpoints.pbp import EventTypes
 
-EVT = EventTypes()
-
 from . import schemas as sc
+
+EVT = EventTypes()
 
 io_game = Blueprint(
     "io_game", __name__, url_prefix="/api/game", description="Load game data"
 )
+
 
 @io_game.route("/schedule")
 class Schedule(MethodView):
@@ -35,11 +36,11 @@ class Schedule(MethodView):
                 break
         else:
             abort(404, message="Offseason. No games.")
-        
+
         loader = Scoreboard(
             output_dir=Path(app.config["DATA_DIR"], gseason),
             filesystem=app.config["FILESYSTEM"],
-            GameDate=args["GameDate"].strftime("%m/%d/%Y")
+            GameDate=args["GameDate"].strftime("%m/%d/%Y"),
         )
         if not loader.exists():
             abort(404, message="No games found on this day.")
@@ -60,11 +61,12 @@ class Schedule(MethodView):
                     "VISITOR_TEAM_ID": row["VISITOR_TEAM_ID"],
                     "VISITOR_ABBREVIATION": visitor["TEAM_ABBREVIATION"].values[0],
                     "HOME_PTS": home["PTS"].values[0],
-                    "VISITOR_PTS": visitor["PTS"].values[0]
+                    "VISITOR_PTS": visitor["PTS"].values[0],
                 }
             )
-        
+
         return output
+
 
 @io_game.route("/moments")
 class TopMoments(MethodView):
@@ -82,10 +84,16 @@ class TopMoments(MethodView):
                 break
         else:
             abort(404, message="Unable to determine the season of the game.")
-        
+
         # Read the play-by-play impact data
         with fs.open(
-            Path(app.config["DATA_DIR"], gseason, "pbp-impact", f"data_{args['GameID']}.csv"), "rb"
+            Path(
+                app.config["DATA_DIR"],
+                gseason,
+                "pbp-impact",
+                f"data_{args['GameID']}.csv",
+            ),
+            "rb",
         ) as infile:
             pbp = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
         # Remove duplicates and team events
@@ -98,11 +106,15 @@ class TopMoments(MethodView):
             EVT.UNKNOWN,
             EVT.REPLAY,
         ]
-        pbp = pbp[(pbp["PLAYER1_IMPACT"] != 0) & (~pbp["EVENTMSGTYPE"].isin(teamevents))]
+        pbp = pbp[
+            (pbp["PLAYER1_IMPACT"] != 0) & (~pbp["EVENTMSGTYPE"].isin(teamevents))
+        ]
         pbp.sort_values(by="SURV_PROB_CHANGE", ascending=False, key=abs, inplace=True)
         # Reduce to the top 5 moments
         pbp = pbp.head(n=5).copy()
-        pbp["DESCRIPTION"] = pbp[["HOMEDESCRIPTION", "VISITORDESCRIPTION"]].bfill(axis=1).iloc[:, 0]
+        pbp["DESCRIPTION"] = (
+            pbp[["HOMEDESCRIPTION", "VISITORDESCRIPTION"]].bfill(axis=1).iloc[:, 0]
+        )
 
         return pbp[
             [
@@ -113,9 +125,10 @@ class TopMoments(MethodView):
                 "SURV_PROB",
                 "SURV_PROB_CHANGE",
                 "DESCRIPTION",
-                "PLAYER1_ID"
+                "PLAYER1_ID",
             ]
         ].to_dict(orient="records")
+
 
 @io_game.route("/playbyplay")
 class PlayByPlay(MethodView):
@@ -135,12 +148,18 @@ class PlayByPlay(MethodView):
             abort(404, message="Unable to determine the season of the game.")
         # Read in the play-by-play survival data
         with fs.open(
-            Path(app.config["DATA_DIR"], gseason, "survival-prediction", f"data_{args['GameID']}.csv"),
-            "rb"
+            Path(
+                app.config["DATA_DIR"],
+                gseason,
+                "survival-prediction",
+                f"data_{args['GameID']}.csv",
+            ),
+            "rb",
         ) as infile:
             data = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
-        
+
         return data[["TIME", "WIN_PROB", "SCOREMARGIN"]].to_dict(orient="records")
+
 
 @io_game.route("/boxscore")
 class BoxScore(MethodView):
@@ -158,10 +177,9 @@ class BoxScore(MethodView):
                 break
         else:
             abort(404, message="Offseason. No games.")
-        
+
         loader = BoxScoreTraditional(
-            output_dir=Path(app.config["DATA_DIR"], gseason),
-            GameID=args["GameID"]
+            output_dir=Path(app.config["DATA_DIR"], gseason), GameID=args["GameID"]
         )
         if not loader.exists():
             abort(404, message="Unable to load boxscore for given game.")
@@ -172,18 +190,29 @@ class BoxScore(MethodView):
 
         # Load the impact ratings
         with fs.open(
-            Path(app.config["DATA_DIR"], gseason, "game-impact", f"data_{args['GameID']}.csv"), "rb"
+            Path(
+                app.config["DATA_DIR"],
+                gseason,
+                "game-impact",
+                f"data_{args['GameID']}.csv",
+            ),
+            "rb",
         ) as infile:
-            gameimpact = pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
+            gameimpact = pd.read_csv(
+                infile, sep="|", index_col=0, dtype={"GAME_ID": str}
+            )
         # Add impact to the player boxscore data
         player["IMPACT"] = pd.merge(
             player,
             gameimpact,
             left_on=("GAME_ID", "TEAM_ID", "PLAYER_ID"),
             right_on=("GAME_ID", "TEAM_ID", "PLAYER_ID"),
-            how="left"
+            how="left",
         )["IMPACT"]
         player.sort_values(by=["TEAM_ID", "IMPACT"], ascending=False, inplace=True)
         player = player[~pd.isnull(player["MIN"])]
 
-        return {"TEAM": team.to_dict(orient="records"), "PLAYER": player.to_dict(orient="records")}
+        return {
+            "TEAM": team.to_dict(orient="records"),
+            "PLAYER": player.to_dict(orient="records"),
+        }
