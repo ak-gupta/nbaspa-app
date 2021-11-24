@@ -81,16 +81,15 @@ class CareerProfile(MethodView):
         """Load the player impact profile."""
         fs = fsspec.filesystem(app.config["FILESYSTEM"])
         if args["mode"] == "survival":
-            fglob = Path(app.config["DATA_DIR"]).glob(
-                f"*/impact-timeseries/data_{args['PlayerID']}.csv"
-            )
+            fsuffix = Path("impact-timeseries", f"data_{args['PlayerID']}.csv")
         elif args["mode"] == "survival-plus":
-            fglob = Path(app.config["DATA_DIR"]).glob(
-                f"*/impact-plus-timeseries/data_{args['PlayerID']}.csv"
-            )
+            fsuffix = Path("impact-plus-timeseries", f"data_{args['PlayerID']}.csv")
 
         dflist: List[pd.DataFrame] = []
-        for fpath in fglob:
+        for season in app.config["SEASONS"]:
+            fpath = Path(app.config["DATA_DIR"]) / season / fsuffix
+            if not fs.exists(fpath):
+                continue
             with fs.open(fpath, "rb") as infile:
                 dflist.append(
                     pd.read_csv(infile, sep="|", index_col=0, dtype={"GAME_ID": str})
