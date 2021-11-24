@@ -179,7 +179,9 @@ class BoxScore(MethodView):
             abort(404, message="Offseason. No games.")
 
         loader = BoxScoreTraditional(
-            output_dir=Path(app.config["DATA_DIR"], gseason), GameID=args["GameID"]
+            output_dir=Path(app.config["DATA_DIR"], gseason),
+            filesystem=app.config["FILESYSTEM"],
+            GameID=args["GameID"]
         )
         if not loader.exists():
             abort(404, message="Unable to load boxscore for given game.")
