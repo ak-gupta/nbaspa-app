@@ -118,7 +118,7 @@ class MostImprovedPlayers(MethodView):
                 app.config["DATA_DIR"], str(previousyear), "impact-plus-summary.csv"
             )
         with fs.open(fpath, "rb") as infile:
-            previous = pd.read_csv(fpath, sep="|", index_col=0)
+            previous = pd.read_csv(infile, sep="|", index_col=0)
         previous.dropna(inplace=True)
         previous.set_index("PLAYER_ID", inplace=True)
         # Join and get the impact difference
