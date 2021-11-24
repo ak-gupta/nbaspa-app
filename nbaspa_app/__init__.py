@@ -1,6 +1,6 @@
 """Initialize flask app."""
 
-__version__ = "2021.11.2"
+__version__ = "2021.11.3"
 __description__ = "NBA SPA web application"
 
 import os
